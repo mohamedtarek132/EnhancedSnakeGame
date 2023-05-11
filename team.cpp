@@ -1,0 +1,1403 @@
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Window.hpp>
+#include <iostream>
+using namespace sf;
+using namespace std;
+
+struct Check {
+    //the snake to make sure that the snake didn't hit the walls or itself
+    bool is_the_snake_alive;
+    //to make sure that the player started playing 
+    bool if_the_player_started_playing;
+    //to make sure that the apple was eaten 
+    bool is_the_apple_eaten;
+    //to make sure that the rotten apple was eaten
+    int is_the_rotten_apple_eaten;
+    //to make sure that the setting button in game was pressed
+    bool is_the_setting_in_game_button_pressed;
+    //to make sure that the restart button was pressed
+    bool is_the_restart_button_pressed;
+    //to make sure that the start button was pressed
+    bool is_game_button_pressed;
+    //to make sure that the view high score button was pressed
+    bool is_ranking_button_pressed;
+    //to make sure that the setting button was pressed
+    bool is_setting_button_pressed;
+    //to make sure that the audio button in the settings menu was pressed
+    bool is_audio_button_pressed;
+    //to make sure that the opening ended
+    bool did_the_opening_end;
+
+    bool is_change_snake_button_pressed;
+
+    bool is_snake_1_being_used;
+
+    bool is_snake_2_being_used;
+
+    bool is_snake_3_being_used;
+
+    bool is_snake_changing_colors;
+};
+
+int window_width = 1300, window_height = 800;
+// The maximum number of square for the snake
+const int MAX_NUMBER_OF_SQUARES = 1000;
+
+/* the speed array to make the snake parts to follow each other the 0 in the first dimension means its direction in the x axis and
+ the 1 in the first dimension means its direction in the y axis*/
+int speed[MAX_NUMBER_OF_SQUARES][2];
+//control the size of the snake
+float snake_size_and_speed = 30;
+
+Text text;
+
+Texture body___topleft;
+Texture* body_topleft_texture = &body___topleft;
+
+Texture body___bottomright;
+Texture* body_bottomright_texture = &body___bottomright;
+
+Texture body___bottomleft;
+Texture* body_bottomleft_texture = &body___bottomleft;
+
+Texture body___horizontal;
+Texture* body_horizontal_texture = &body___horizontal;
+
+Texture body___topright;
+Texture* body_topright_texture = &body___topright;
+
+Texture body___vertical;
+Texture* body_vertical_texture = &body___vertical;
+
+Texture head___down;
+Texture* head_down_texture = &head___down;
+
+Texture head___left;
+Texture* head_left_texture = &head___left;
+
+Texture head___right;
+Texture* head_right_texture = &head___right;
+
+Texture head___up;
+Texture* head_up_texture = &head___up;
+
+Texture tail___down;
+Texture* tail_down_texture = &tail___down;
+
+Texture tail___left;
+Texture* tail_left_texture = &tail___left;
+
+Texture tail___right;
+Texture* tail_right_texture = &tail___right;
+
+Texture tail___up;
+Texture* tail_up_texture = &tail___up;
+
+Sound apple_eating_sound, rotten_apple_eating_sound, losing_sound;
+
+Music music;
+
+RenderWindow window(VideoMode(window_width, window_height), "Snake Game");
+
+RectangleShape snake[MAX_NUMBER_OF_SQUARES];
+
+Texture game_background_texture;
+
+Sprite game_background;
+
+void sizenposition();
+
+void collision(CircleShape apple, int& number_of_eaten_apples, Check& check, CircleShape rotten_apple, RectangleShape pause_icon, RectangleShape
+    resume_icon, RectangleShape restart_icon, RectangleShape exit_icon, int ranking[],int &collision_counter);
+
+void update_game(CircleShape& apple, int& counter, Check& check, int number_of_eaten_apples, CircleShape& rotten_appleTexture);
+
+void snake_movement(Check& check);
+
+void changexny();
+
+void draw_game(CircleShape& apple, int& number_of_eaten_apples, Check& check, CircleShape& rotten_apple, RectangleShape& pause_icon
+    , RectangleShape& resume_icon, RectangleShape& restart_icon, Texture snaketailtexture, Texture snakebodytexture,
+    Texture snaketurntexture, Font font, RectangleShape& exit_icon,Sprite game_over,Texture& snakeheadtexture);
+
+void set_rotation( int number_of_eaten_apples, int square_number);
+
+void set_color(int square_number, int number_of_eaten_apples,Check check);
+
+void set_texture(int number_of_eaten_apples, Texture& snaketailtexture, Texture& snakebodytexture, Texture& snaketurntexture
+,Check check,Texture& snakeheadtexture);
+
+void randapple(CircleShape& apple, Check& check, int number_of_eaten_apples);
+
+void randrottenapple(CircleShape& rotten_apple, Check& check, int number_of_eaten_apples);
+
+void apple_counter(int number_of_eaten_apples);
+
+void draw_resume_icon(RectangleShape& resume_icon);
+
+void draw_restart_icon(RectangleShape& restart_icon,Check check);
+
+void draw_exit_icon(RectangleShape& exit_icon,Check check);
+
+void drawMainMenu(Font& font, Sprite main_menu_page);
+
+void drawSettingsMenu(Font& font, Sprite setting_page);
+
+void draw_view_high_score_menu(Sprite ranking_page, Text text, int ranking[]);
+
+void changing_ranking(int number_of_eaten_apples, int ranking[]);
+
+void draw_audio_settings(Sprite music_setting, Sprite exit_setting_music_page);
+
+void draw_change_color(Sprite change_snake_page, Check& check, Sprite Tru_ee);
+
+int main() {
+    // a counter to make the snake move slower by decreasing the number of times the snake will move per second
+    int game_counter = 0;
+    // a counter to keep the opening playing for a second or two
+    int opening_counter = 0;
+    // the number of eaten apples in the game to make the snake grow taller
+    int number_of_eaten_apples = 0;
+    //to keep record of the highest 3 scores in the game
+    int ranking[3] = {};
+
+    int collision_counter = 0;
+    //1 for check snake , 0 for if the player started playing, 0 for is the apple eaten,
+    Check check = {};
+    check.is_the_snake_alive = 1;
+    check.is_snake_1_being_used = 1;
+
+    CircleShape apple_icon(10, 20), rotten_apple_icon(10, 20);
+
+    Sprite opening, main_menu_page, setting_page, ranking_page, setting_music_page, exit_icon_in_setting_music_page, game_over,
+        change_snake_page,Tru_ee;
+
+    Texture resumeicontexture, * resume_icon_texture, restarticontexture, * restart_icon_texture, snakeheadtexture,
+        * apple_icon_texture, * rotten_apple_icon_texture, rottenappletexture, appletexture,
+        snaketurntexture, snakebodytexture, snaketailtexture, * snake_head_texture, exiticontexture, * exit_icon_texture, 
+        opening_texture, main_menu_page_texture, setting_page_texture, ranking_page_texture, setting_music_page_texture,
+        exit_icon_in_setting_music_page_texture, game_over_texture ,change_snake_page_texture,Truee;
+
+    RectangleShape pause_icon, resume_icon, restart_icon, exit_icon;
+
+    SoundBuffer apple_eating_sound_buffer, rotten_apple_eating_sound_buffer, losing_sound_buffer;
+
+    Font font;
+
+    resume_icon_texture = &resumeicontexture;
+    restart_icon_texture = &restarticontexture;
+    exit_icon_texture = &exiticontexture;
+    apple_icon_texture = &appletexture;
+    rotten_apple_icon_texture = &rottenappletexture;
+    snake_head_texture = &snakeheadtexture;
+
+    //loading backgroung music
+    music.openFromFile("Snake Game _music.wav");
+    music.setLoop(true);
+    music.play();
+
+    //loading fong and setting the font of the text
+    font.loadFromFile("font file 2.ttf");
+    text.setFont(font);
+
+    //loading sound of the apple being eaten
+    apple_eating_sound_buffer.loadFromFile("apple_crunch.wav");
+    apple_eating_sound.setBuffer(apple_eating_sound_buffer);
+
+    //loading sound of the rotten apple being eaten
+    rotten_apple_eating_sound_buffer.loadFromFile("player_hurt.wav");
+    rotten_apple_eating_sound.setBuffer(rotten_apple_eating_sound_buffer);
+
+    //loading sound of the snake diying
+    losing_sound_buffer.loadFromFile("gameover.wav");
+    losing_sound.setBuffer(losing_sound_buffer);
+
+
+    //loading textures
+
+    //loading texture of the restart icon 
+    restarticontexture.loadFromFile("restart_button.png");
+    restarticontexture.setSmooth(1);
+    restart_icon.setTexture(restart_icon_texture);
+
+    //loading texture of the resume icon 
+    resumeicontexture.loadFromFile("resume_button.png");
+    resumeicontexture.setSmooth(1);
+    resume_icon.setTexture(resume_icon_texture);
+
+    //loading texture of the exit icon
+    exiticontexture.loadFromFile("exit_button.png");
+    exiticontexture.setSmooth(1);
+    exit_icon.setTexture(exit_icon_texture);
+
+    //loading texture of the apple icon
+    appletexture.loadFromFile("apple.png", IntRect(0, 182, 61, 70));
+    apple_icon.setTexture(apple_icon_texture);
+
+    //loading texture of the rotten apple
+    rottenappletexture.loadFromFile("rotten_apple-removebg-preview.png");
+    rotten_apple_icon.setTexture(rotten_apple_icon_texture);
+
+    //loading texture of the game background
+    game_background_texture.loadFromFile("Background.png");
+    game_background.setTexture(game_background_texture);
+    game_background.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    //loading textures for the snake
+    snakeheadtexture.loadFromFile("Snake sprite sheet.png", IntRect(0, 2, 40, 40));
+    snakeheadtexture.setSmooth(1);
+    snakebodytexture.loadFromFile("Snake sprite sheet.png", IntRect(84, 85, 40, 40));
+    snakebodytexture.setSmooth(1);
+    snaketurntexture.loadFromFile("Snake sprite sheet.png", IntRect(42.17, 0, 40, 40));
+    snaketurntexture.setSmooth(1);
+    snaketailtexture.loadFromFile("Snake sprite sheet.png", IntRect(44, 85, 40, 40));
+    snaketailtexture.setSmooth(1);
+
+
+    body___topleft.loadFromFile("body_topleft.png");
+
+    body___bottomright.loadFromFile("body_bottomright.png");
+
+    body___bottomleft.loadFromFile("body_bottomleft.png");
+
+    body___horizontal.loadFromFile("body_horizontal.png");
+
+    body___topright.loadFromFile("body_topright.png");
+
+    body___vertical.loadFromFile("body_vertical.png");
+
+    head___down.loadFromFile("head_down.png");
+
+    head___left.loadFromFile("head_left.png");
+
+    head___right.loadFromFile("head_right.png");
+
+    head___up.loadFromFile("head_up.png");
+
+    tail___down.loadFromFile("tail_down.png");
+
+    tail___left.loadFromFile("tail_left.png");
+
+    tail___right.loadFromFile("tail_right.png");
+
+    tail___up.loadFromFile("tail_up.png");
+    //loading texture for the opening
+    opening_texture.loadFromFile("opening page.png");
+    opening.setTexture(opening_texture);
+    opening.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    //loading texture for the main menu
+    main_menu_page_texture.loadFromFile("main menu.png");
+    main_menu_page.setTexture(main_menu_page_texture);
+    main_menu_page.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    //loading texture for the setting page
+    setting_page_texture.loadFromFile("setting menu.png");
+    setting_page_texture.setSmooth(1);
+    setting_page.setTexture(setting_page_texture);
+    setting_page.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    //loading texture for the setting music page
+    setting_music_page_texture.loadFromFile("Setting music page.png");
+    setting_music_page.setTexture(setting_music_page_texture);
+    setting_music_page.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    //loading texture for the exit setting music 
+    exit_icon_in_setting_music_page_texture.loadFromFile("exit setting music page.png");
+    exit_icon_in_setting_music_page.setTexture(exit_icon_in_setting_music_page_texture);
+    exit_icon_in_setting_music_page.setScale(0.7, 0.7);
+
+    //loading texture for the ranking page
+    ranking_page_texture.loadFromFile("ranking page.png");
+    ranking_page.setTexture(ranking_page_texture);
+    ranking_page.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    //loading texturer for the game over 
+    game_over_texture.loadFromFile("game_over.png");
+    game_over.setTexture(game_over_texture);
+    game_over.setScale(0.2, 0.2);
+    game_over.setPosition(500, 50);
+
+    change_snake_page_texture.loadFromFile("change snake .png");
+    change_snake_page.setTexture(change_snake_page_texture);
+ 
+    Truee.loadFromFile("true.png");
+    Tru_ee.setTexture(Truee);
+
+    window.setFramerateLimit(70);
+
+    sizenposition();
+
+    //to keep the window open
+    while (window.isOpen()) {
+        Event event;
+        while (window.pollEvent(event)) {
+            //to close the window with the close button
+            if ((event.type == Event::Closed) || Keyboard::isKeyPressed(Keyboard::Escape))
+                window.close();
+        }
+        //to reset the game counter so it won't get past the integer limit
+        if (game_counter == 1000000)
+            game_counter = 0;
+        if (collision_counter == 1000000)
+            collision_counter == 1;
+        //to make sure that the opening ended and that you won't press on any button while it is working
+        if (check.did_the_opening_end)
+            collision(apple_icon, number_of_eaten_apples, check, rotten_apple_icon, pause_icon, resume_icon, restart_icon, 
+                exit_icon, ranking,collision_counter);
+
+        //to make sure that the snake didn't hit itself or the wall,that you didn't press on the in game setting,and that you pressed 
+        //start
+        if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed && check.is_game_button_pressed)
+            update_game(apple_icon, game_counter, check, number_of_eaten_apples, rotten_apple_icon);
+
+        else if (check.is_the_restart_button_pressed) {
+                number_of_eaten_apples = 0;
+                sizenposition();
+                check.is_the_snake_alive = 1;
+                check.if_the_player_started_playing = 0;
+                check.is_the_restart_button_pressed = 0;
+                check.is_the_setting_in_game_button_pressed = 0;
+        }
+        if (check.is_game_button_pressed) {
+            draw_game(apple_icon, number_of_eaten_apples, check, rotten_apple_icon, pause_icon, resume_icon, restart_icon, snaketailtexture,
+                snakebodytexture, snaketurntexture, font, exit_icon,game_over,snakeheadtexture);
+
+        }
+        else if (opening_counter <= 200) {
+            window.clear();
+            window.draw(opening);
+            window.display();
+            opening_counter++;
+        }
+        else if (check.is_setting_button_pressed) {
+
+            drawSettingsMenu(font, setting_page);
+        }
+        else if (check.is_ranking_button_pressed)
+        {
+            draw_view_high_score_menu(ranking_page, text, ranking);
+
+        }
+        else if (check.is_audio_button_pressed) {
+            draw_audio_settings(setting_music_page, exit_icon_in_setting_music_page);
+        }
+        else if (check.is_change_snake_button_pressed)
+        {
+            draw_change_color(change_snake_page,check,Tru_ee);
+        }
+        else {
+            check.did_the_opening_end = 1;
+            drawMainMenu(font, main_menu_page);
+            sizenposition();
+            check.is_the_snake_alive = 1;
+            check.if_the_player_started_playing = 0;
+            check.is_the_restart_button_pressed = 0;
+            check.is_the_setting_in_game_button_pressed = 0;
+            number_of_eaten_apples = 0;
+
+        }
+    }
+    return 0;
+}
+
+//to make all of the squares to have the same size, origin,and initial speed (+ve x direction) 
+void sizenposition() {
+
+    for (int i = 0; i < MAX_NUMBER_OF_SQUARES; i++) {
+        snake[i].setSize(Vector2f(snake_size_and_speed, snake_size_and_speed));
+        snake[i].setOrigin(snake_size_and_speed / 2, snake_size_and_speed / 2);
+        snake[i].setPosition(Vector2f(670 + snake_size_and_speed * (2 - i), 386));
+        speed[i][0] = snake_size_and_speed;
+        speed[i][1] = 0;
+    }
+}
+
+//to know whether the snake collided or not with the boundries,itself,apple,or rotten apple and to check that you pressed on 
+//any button in the game
+void collision(CircleShape apple, int& number_of_eaten_apples, Check& check, CircleShape rotten_apple, RectangleShape pause_icon, RectangleShape
+    resume_icon, RectangleShape restart_icon, RectangleShape exit_icon, int ranking[],int& collision_counter) {
+
+    bool left_or_right_mouse_button_pressed = Mouse::isButtonPressed(Mouse::Left) || Mouse::isButtonPressed(Mouse::Right);
+    bool space_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Space);
+    bool escape_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Escape);
+
+    for (int i = 3; i < number_of_eaten_apples + 2; i++) {
+        if (snake[0].getGlobalBounds().intersects(snake[i].getGlobalBounds()) && check.is_the_snake_alive == 1) {
+            check.is_the_snake_alive = 0;
+            losing_sound.play();
+            changing_ranking(number_of_eaten_apples, ranking);
+            break;
+        }
+    }
+    bool did_snake_hit_right_side_of_the_box = ((int)snake[0].getGlobalBounds().left + (int)snake[0].getGlobalBounds().width) >= 1150;
+    bool did_snake_hit_left_side_of_the_box = snake[0].getGlobalBounds().left <= 145;
+    bool did_snake_hit_bottom_of_the_box = (snake[0].getGlobalBounds().top + snake[0].getGlobalBounds().height) >=
+        (730);
+    bool did_snake_hit_top_of_the_box = snake[0].getGlobalBounds().top - 30 <= 70;
+
+    if ((did_snake_hit_top_of_the_box || did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
+        did_snake_hit_right_side_of_the_box) && check.is_the_snake_alive == 1) {
+        check.is_the_snake_alive = 0;
+        changing_ranking(number_of_eaten_apples, ranking);
+        losing_sound.play();
+    }
+
+    if (snake[0].getGlobalBounds().intersects(apple.getGlobalBounds()) && check.is_the_apple_eaten == 0) {
+        check.is_the_apple_eaten = 1;
+        number_of_eaten_apples++;
+        apple_eating_sound.play();
+    }
+
+    if (snake[0].getGlobalBounds().intersects(rotten_apple.getGlobalBounds()) && check.is_the_rotten_apple_eaten == 0
+        && number_of_eaten_apples > 0) {
+        number_of_eaten_apples--;
+        check.is_the_rotten_apple_eaten = 1;
+        rotten_apple_eating_sound.play();
+    }
+
+    //in game buttons
+    bool mouse_position_is_inside_resume_icon_box_in_game=0;
+    bool mouse_position_is_inside_restart_icon_box_in_game=0;
+    int icon_width = 765 - 580;
+    int icon_height = 485 - 425;
+    bool mouse_position_is_inside_exit_icon_box_in_game=0;
+    bool mouse_position_is_inside_pause_icon_box_in_game =
+        Mouse::getPosition(window).x >= 1200 &&
+        Mouse::getPosition(window).x <= 1300 &&
+        Mouse::getPosition(window).y >= 5 &&
+        Mouse::getPosition(window).y <= 75;
+    if (collision_counter % 15 == 0) {
+        if (check.is_the_snake_alive) {
+            mouse_position_is_inside_resume_icon_box_in_game =
+                Mouse::getPosition(window).x >= 580 &&
+                Mouse::getPosition(window).x <= 580 + icon_width &&
+                Mouse::getPosition(window).y >= 225 &&
+                Mouse::getPosition(window).y <= (225 + icon_height);
+
+            mouse_position_is_inside_restart_icon_box_in_game =
+                Mouse::getPosition(window).x >= 580 &&
+                Mouse::getPosition(window).x <= 580 + icon_width &&
+                Mouse::getPosition(window).y >= 325 &&
+                Mouse::getPosition(window).y <= (325 + icon_height);
+            mouse_position_is_inside_exit_icon_box_in_game =
+                Mouse::getPosition(window).x >= 580 &&
+                Mouse::getPosition(window).x <= 580 + icon_width &&
+                Mouse::getPosition(window).y >= 425 &&
+                Mouse::getPosition(window).y <= 425 + icon_height;
+        }
+        else {
+
+            mouse_position_is_inside_restart_icon_box_in_game =
+                Mouse::getPosition(window).x >= 430 &&
+                Mouse::getPosition(window).x <= (430 + icon_width) &&
+                Mouse::getPosition(window).y >= 325 &&
+                Mouse::getPosition(window).y <= (325 + icon_height);
+            mouse_position_is_inside_exit_icon_box_in_game =
+                Mouse::getPosition(window).x >= 660 &&
+                Mouse::getPosition(window).x <= 660 + icon_width &&
+                Mouse::getPosition(window).y >= 325 &&
+                Mouse::getPosition(window).y <= 325 + icon_height;
+        }
+
+        if ((left_or_right_mouse_button_pressed && mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed) {
+            check.is_the_setting_in_game_button_pressed = 1;
+        }
+        if (check.is_game_button_pressed && left_or_right_mouse_button_pressed && !check.is_ranking_button_pressed
+            && !check.is_setting_button_pressed && !check.is_audio_button_pressed  && !check.is_change_snake_button_pressed ) {
+
+            if (mouse_position_is_inside_resume_icon_box_in_game && check.is_the_setting_in_game_button_pressed) {
+                check.is_the_setting_in_game_button_pressed = 0;
+            }
+
+            if (((mouse_position_is_inside_restart_icon_box_in_game)) && (check.is_the_snake_alive == 0 ||
+                check.is_the_setting_in_game_button_pressed)) {
+                check.is_the_restart_button_pressed = 1;
+            }
+
+            if (mouse_position_is_inside_exit_icon_box_in_game && (check.is_the_snake_alive == 0 || check.is_the_setting_in_game_button_pressed)) {
+                check.is_game_button_pressed = 0;
+            }
+        }
+
+        //main menu buttons
+
+        int left_x_position_of_the_main_menu_buttons = 560;
+        int width_of_main_menu_buttons = 190;
+        bool mouse_position_is_inside_start_button_in_main_menu =
+            Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
+            Mouse::getPosition(window).x <= left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons &&
+            Mouse::getPosition(window).y >= 460 &&
+            Mouse::getPosition(window).y <= 510;
+
+        bool mouse_position_is_inside_view_high_score_button_in_main_menu =
+            Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
+            Mouse::getPosition(window).x <= left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons &&
+            Mouse::getPosition(window).y >= 555 &&
+            Mouse::getPosition(window).y <= 605;
+
+        bool mouse_position_is_inside_setting_button_in_main_menu =
+            Mouse::getPosition(window).x >= 30 &&
+            Mouse::getPosition(window).x <= 145 &&
+            Mouse::getPosition(window).y >= 670 &&
+            Mouse::getPosition(window).y <= 755;
+
+        bool mouse_position_is_inside_exit_button_in_main_menu =
+            Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
+            Mouse::getPosition(window).x <= left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons &&
+            Mouse::getPosition(window).y >= 640 &&
+            Mouse::getPosition(window).y <= 690;
+        if (left_or_right_mouse_button_pressed && !check.is_game_button_pressed && !check.is_ranking_button_pressed
+            && !check.is_setting_button_pressed && !check.is_audio_button_pressed && check.is_change_snake_button_pressed == 0) {
+            if ((mouse_position_is_inside_start_button_in_main_menu))
+            {
+                // "Start" button pressed
+                check.is_game_button_pressed = 1;
+                // start the game
+            }
+            else if ((mouse_position_is_inside_view_high_score_button_in_main_menu))
+            {
+                check.is_ranking_button_pressed = 1;
+                // "View High Score" button pressed
+                // show the high scores
+            }
+            else if ((mouse_position_is_inside_setting_button_in_main_menu))
+            {
+                // "Settings" button pressed
+                check.is_setting_button_pressed = 1;
+            }
+            else if ((mouse_position_is_inside_exit_button_in_main_menu))
+            {
+                // "Exit" button pressed
+                window.close();
+            }
+        }
+
+        //ranking buttons
+        bool mouse_position_is_inside_exit_button_in_ranking_page =
+            Mouse::getPosition(window).x >= 825 &&
+            Mouse::getPosition(window).x <= 925 &&
+            Mouse::getPosition(window).y >= 645 &&
+            Mouse::getPosition(window).y <= 730;
+        if (left_or_right_mouse_button_pressed && mouse_position_is_inside_exit_button_in_ranking_page && check.is_ranking_button_pressed &&
+            !check.is_game_button_pressed && !check.is_setting_button_pressed && check.is_audio_button_pressed == 0 &&
+            check.is_change_snake_button_pressed == 0) {
+            check.is_ranking_button_pressed = 0;
+        }
+        //setting buttons
+        bool mouse_position_is_inside_audio_button_in_setting_page =
+            Mouse::getPosition(window).x >= 525 &&
+            Mouse::getPosition(window).x <= 780 &&
+            Mouse::getPosition(window).y >= 300 &&
+            Mouse::getPosition(window).y <= 385;
+        bool mouse_position_is_inside_full_screen_button_in_setting_page =
+            Mouse::getPosition(window).x >= 525 &&
+            Mouse::getPosition(window).x <= 780 &&
+            Mouse::getPosition(window).y >= 400 &&
+            Mouse::getPosition(window).y <= 485;
+        bool mouse_position_is_inside_exit_button_in_setting_page =
+            Mouse::getPosition(window).x >= 525 &&
+            Mouse::getPosition(window).x <= 780 &&
+            Mouse::getPosition(window).y >= 500 &&
+            Mouse::getPosition(window).y <= 585;
+
+        if (check.is_setting_button_pressed && left_or_right_mouse_button_pressed && !check.is_audio_button_pressed  &&
+            !check.is_ranking_button_pressed && !check.is_game_button_pressed && !check.is_change_snake_button_pressed ) {
+
+            if (mouse_position_is_inside_audio_button_in_setting_page) {
+                check.is_audio_button_pressed = 1;
+                check.is_setting_button_pressed = 0;
+            }
+            else if (mouse_position_is_inside_full_screen_button_in_setting_page) {
+                check.is_change_snake_button_pressed = 1;
+                check.is_setting_button_pressed = 0;
+            }
+            else if (mouse_position_is_inside_exit_button_in_setting_page) {
+                check.is_setting_button_pressed = 0;
+            }
+        }
+        //audio buttons
+        bool mouse_position_is_inside_ON_Audio_in_audio_setting_page =
+            Mouse::getPosition(window).x >= 615 &&
+            Mouse::getPosition(window).x <= 683 &&
+            Mouse::getPosition(window).y >= 390 &&
+            Mouse::getPosition(window).y <= 445;
+        bool mouse_position_is_inside_OFF_Audio_in_setting_page =
+            Mouse::getPosition(window).x >= 739 &&
+            Mouse::getPosition(window).x <= 800 &&
+            Mouse::getPosition(window).y >= 390 &&
+            Mouse::getPosition(window).y <= 445;
+        bool mouse_position_is_inside_ON_Music_in_setting_page =
+            Mouse::getPosition(window).x >= 615 &&
+            Mouse::getPosition(window).x <= 683 &&
+            Mouse::getPosition(window).y >= 523 &&
+            Mouse::getPosition(window).y <= 576;
+        bool mouse_position_is_inside_OFF_Music_in_setting_page =
+            Mouse::getPosition(window).x >= 739 &&
+            Mouse::getPosition(window).x <= 800 &&
+            Mouse::getPosition(window).y >= 523 &&
+            Mouse::getPosition(window).y <= 576;
+        bool mouse_position_is_inside_exit_button_in_music_setting_page =
+            Mouse::getPosition(window).x >= 845 &&
+            Mouse::getPosition(window).x <= 925 &&
+            Mouse::getPosition(window).y >= 255 &&
+            Mouse::getPosition(window).y <= 330;
+
+        if (left_or_right_mouse_button_pressed && check.is_audio_button_pressed && !check.is_change_snake_button_pressed &&
+            !check.is_game_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed) {
+            if (mouse_position_is_inside_ON_Audio_in_audio_setting_page) {
+                apple_eating_sound.setVolume(100);
+                losing_sound.setVolume(100);
+                rotten_apple_eating_sound.setVolume(100);
+            }
+            else if (mouse_position_is_inside_OFF_Audio_in_setting_page) {
+                apple_eating_sound.setVolume(0);
+                losing_sound.setVolume(0);
+                rotten_apple_eating_sound.setVolume(0);
+            }
+            else if (mouse_position_is_inside_ON_Music_in_setting_page) {
+                music.setVolume(100);
+            }
+            else if (mouse_position_is_inside_OFF_Music_in_setting_page) {
+                music.setVolume(0);
+            }
+            else if (mouse_position_is_inside_exit_button_in_music_setting_page) {
+                check.is_audio_button_pressed = 0;
+                check.is_setting_button_pressed = 1;
+            }
+        }
+        bool mouse_position_is_inside_Exit_in_change_color_page =
+            Mouse::getPosition(window).x >= 556 &&
+            Mouse::getPosition(window).x <= 725 &&
+            Mouse::getPosition(window).y >= 527 &&
+            Mouse::getPosition(window).y <= 574;
+        bool mouse_position_is_inside_first_snake_in_change_color_page =
+            Mouse::getPosition(window).x >= 467 &&
+            Mouse::getPosition(window).x <= 516 &&
+            Mouse::getPosition(window).y >= 313 &&
+            Mouse::getPosition(window).y <= 360;
+        bool mouse_position_is_inside_second_snake_in_change_color_page =
+            Mouse::getPosition(window).x >= 628 &&
+            Mouse::getPosition(window).x <= 678 &&
+            Mouse::getPosition(window).y >= 313 &&
+            Mouse::getPosition(window).y <= 360;
+        bool mouse_position_is_inside_third_snake_in_change_color_page =
+            Mouse::getPosition(window).x >= 790 &&
+            Mouse::getPosition(window).x <= 840 &&
+            Mouse::getPosition(window).y >= 313 &&
+            Mouse::getPosition(window).y <= 360;
+        bool mouse_position_is_inside_first_color_option_in_change_color_page =
+            Mouse::getPosition(window).x >= 524 &&
+            Mouse::getPosition(window).x <= 571 &&
+            Mouse::getPosition(window).y >= 444 &&
+            Mouse::getPosition(window).y <= 475;
+        bool mouse_position_is_inside_second_color_option_in_change_color_page =
+            Mouse::getPosition(window).x >= 715 &&
+            Mouse::getPosition(window).x <= 762 &&
+            Mouse::getPosition(window).y >= 444 &&
+            Mouse::getPosition(window).y <= 475;
+        if (left_or_right_mouse_button_pressed && check.is_change_snake_button_pressed && !check.is_audio_button_pressed &&
+            !check.is_game_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed) {
+            if (mouse_position_is_inside_Exit_in_change_color_page)
+            {
+                check.is_setting_button_pressed = 1;
+                check.is_change_snake_button_pressed = 0;
+            }
+            if (mouse_position_is_inside_first_snake_in_change_color_page)
+            {
+                check.is_snake_1_being_used = 1;
+                check.is_snake_2_being_used = 0;
+                check.is_snake_3_being_used = 0;
+            }
+            else if (mouse_position_is_inside_second_snake_in_change_color_page)
+            {
+                check.is_snake_1_being_used = 0;
+                check.is_snake_2_being_used = 1;
+                check.is_snake_3_being_used = 0;
+            }
+            else if (mouse_position_is_inside_third_snake_in_change_color_page)
+            {
+                check.is_snake_1_being_used = 0;
+                check.is_snake_2_being_used = 0;
+                check.is_snake_3_being_used = 1;
+            }
+            if (mouse_position_is_inside_first_color_option_in_change_color_page)
+            {
+                check.is_snake_changing_colors = 1;
+            }
+            else if (mouse_position_is_inside_second_color_option_in_change_color_page)
+            {
+                check.is_snake_changing_colors = 0;
+            }
+
+        }
+    }
+    collision_counter++;
+}
+
+void update_game(CircleShape& apple, int& game_counter, Check& check, int number_of_eaten_apples, CircleShape& rotten_apple) {
+    //the time it will take the snake to change positions which will make it move faster
+    int speedtimer = snake_size_and_speed * 0.25;
+    //the time it will take the apple to change positions
+    int apple_timer = 6 * 50;
+    //the time it will take the rotten apple to change positions
+    int rotten_apple_timer = apple_timer * 2;
+
+    //the higher the numofapples the lower it take the apple,rotten apple,and snake to change positions
+    if (number_of_eaten_apples >= 60) {
+        speedtimer *= 0.25;
+        apple_timer *= 0.25;
+        rotten_apple_timer *= 0.25;
+    }
+    else if (number_of_eaten_apples >= 40) {
+        speedtimer *= 0.5;
+        apple_timer *= 0.5;
+        rotten_apple_timer *= 0.5;
+    }
+    else if (number_of_eaten_apples >= 20) {
+        speedtimer *= 0.75;
+        apple_timer *= 0.75;
+        rotten_apple_timer *= 0.75;
+    }
+
+    if (game_counter % speedtimer == 0)
+        snake_movement(check);
+    if (game_counter % apple_timer == 0)
+        randapple(apple, check, number_of_eaten_apples);
+    if ((game_counter % rotten_apple_timer == 0))
+        randrottenapple(rotten_apple, check, number_of_eaten_apples);
+    game_counter++;
+
+}
+
+//use check move
+/*to change the direction of the snake when the player presses w / s / a / d or the arrow buttons and it will keep moving
+in the same direction as the last button pressed */
+void snake_movement(Check& check) {
+    bool is_d_or_right_key_pressed = Keyboard::isKeyPressed(Keyboard::D) || Keyboard::isKeyPressed(Keyboard::Right);
+    bool is_a_or_left_key_pressed = Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::Left);
+    bool is_s_or_down_key_pressed = Keyboard::isKeyPressed(Keyboard::S) || Keyboard::isKeyPressed(Keyboard::Down);
+    bool is_w_or_up_key_pressed = Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up);
+
+    bool snake_isnt_going_left = speed[0][0] != (-1 * snake_size_and_speed);
+    bool snake_isnt_going_right = speed[0][0] != snake_size_and_speed;
+    bool snake_isnt_going_up = speed[0][1] != -1 * snake_size_and_speed;
+    bool snake_isnt_going_down = speed[0][1] != snake_size_and_speed;
+
+    if (is_d_or_right_key_pressed && snake_isnt_going_left) {
+        speed[0][0] = snake_size_and_speed; speed[0][1] = 0;
+        changexny();
+        check.if_the_player_started_playing = 1;
+    }
+    else if (is_a_or_left_key_pressed && snake_isnt_going_right) {
+        speed[0][0] = -1 * snake_size_and_speed; speed[0][1] = 0;
+        changexny();
+        check.if_the_player_started_playing = 1;
+    }
+    else if (is_s_or_down_key_pressed && snake_isnt_going_up)
+    {
+        speed[0][0] = 0; speed[0][1] = snake_size_and_speed;
+        changexny();
+        check.if_the_player_started_playing = 1;
+    }
+    else if (is_w_or_up_key_pressed && snake_isnt_going_down)
+    {
+        speed[0][0] = 0; speed[0][1] = -1 * snake_size_and_speed;
+        changexny();
+        check.if_the_player_started_playing = 1;
+    }
+    else {
+        if (check.if_the_player_started_playing)
+            changexny();
+
+    }
+}
+
+
+//to make sure that all squares moved in their direction and then passed that direction to the next square
+void changexny() {
+    for (int i = 0; i < MAX_NUMBER_OF_SQUARES; i++) {
+        snake[i].move(speed[i][0], speed[i][1]);
+    }
+    for (int i = MAX_NUMBER_OF_SQUARES - 1; i >= 1; i--) {
+        speed[i][0] = speed[i - 1][0];
+        speed[i][1] = speed[i - 1][1];
+    }
+}
+
+//use check apple and collided
+//to draw everything in the game
+void draw_game(CircleShape& apple, int& number_of_eaten_apples, Check& check, CircleShape& rotten_apple, RectangleShape& pause_icon,
+    RectangleShape& resume_icon, RectangleShape& restart_icon, Texture snaketailtexture, Texture snakebodytexture,
+    Texture snaketurntexture, Font font, RectangleShape& exit_icon,Sprite game_over,Texture& snakeheadtexture) {
+
+    window.clear(Color(0, 29, 0, 233));
+    //Background
+    window.draw(game_background);
+
+    //to check if the apple was eaten
+    if (check.is_the_apple_eaten == 0) {
+        window.draw(apple);
+    }
+
+    if (check.is_the_rotten_apple_eaten == 0 && number_of_eaten_apples > 0) {
+        window.draw(rotten_apple);
+    }
+        set_texture(number_of_eaten_apples, snaketailtexture, snakebodytexture, snaketurntexture,check,snakeheadtexture);
+        for (int square_number = 0; square_number < number_of_eaten_apples + 3; square_number++) {
+            set_color(square_number, number_of_eaten_apples,check);
+            if (check.is_snake_1_being_used)
+            set_rotation(number_of_eaten_apples, square_number);
+           
+            window.draw(snake[square_number]);
+
+        }
+            apple_counter(number_of_eaten_apples);
+            if (check.is_the_setting_in_game_button_pressed && check.is_the_snake_alive) {
+                draw_resume_icon(resume_icon);
+                draw_restart_icon(restart_icon, check);
+                draw_exit_icon(exit_icon, check);
+
+            }
+            if (!check.is_the_snake_alive) {
+                window.draw(game_over);
+                draw_restart_icon(restart_icon, check);
+                draw_exit_icon(exit_icon, check);
+            }
+            window.display();
+        
+}
+
+void set_texture(int number_of_eaten_apples, Texture& snaketailtexture, Texture& snakebodytexture,
+    Texture& snaketurntexture,Check check,Texture& snakeheadtexture) {
+    Texture* snake_turn_texture, * snake_body_texture, * snake_tail_texture,*snake_head_texture;
+    snake_turn_texture = &snaketurntexture;
+    snake_body_texture = &snakebodytexture;
+    snake_tail_texture = &snaketailtexture;
+    snake_head_texture = &snakeheadtexture;
+    if (check.is_snake_1_being_used) {
+
+        for (int i = 0; i < number_of_eaten_apples + 3; i++) {
+            bool is_snake_turn = speed[i][0] == speed[i + 1][1] || speed[i][0] == -speed[i + 1]
+                [1] || speed[i][1] == speed[i + 1][0] || speed[i][1] == -speed[i + 1][0];
+            if (i == 0)
+                snake[i].setTexture(snake_head_texture);
+            else if (is_snake_turn)
+                snake[i].setTexture(snake_turn_texture);
+            else if (i == number_of_eaten_apples + 2) {
+                snake[i].setTexture(snake_tail_texture);
+            }
+            else {
+                snake[i].setTexture(snake_body_texture);
+            }
+        }
+    }
+    else if (check.is_snake_2_being_used) {
+        for (int i = 0; i < number_of_eaten_apples + 3; i++) {
+            snake[i].setRotation(0);
+            if (i == 0)
+            {
+                if (speed[i][0] == snake_size_and_speed) {
+                    snake[i].setTexture(head_right_texture);
+                }
+                else if (speed[i][0] == -snake_size_and_speed) {
+                    snake[i].setTexture(head_left_texture);
+                }
+                else if (speed[i][1] == snake_size_and_speed) {
+                    snake[i].setTexture(head_down_texture);
+                }
+                else if (speed[i][1] == -snake_size_and_speed) {
+                    snake[i].setTexture(head_up_texture);
+                }
+            }
+            else if (i == number_of_eaten_apples + 2)
+            {
+
+                if (speed[i][1]== - snake_size_and_speed) {
+                    snake[i].setTexture(tail_down_texture);
+                }
+                else if (speed[i][1]==snake_size_and_speed) {
+                    snake[i].setTexture(tail_up_texture);
+                }
+                else if (speed[i][0] == snake_size_and_speed) {
+                    snake[i].setTexture(tail_left_texture);
+                }
+                else if (speed[i][0]==-snake_size_and_speed) {
+                    snake[i].setTexture(tail_right_texture);
+                }
+                
+            }
+            else
+            {
+                if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == -snake_size_and_speed) ||
+                    (speed[i + 1][1] == snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
+                    snake[i].setTexture(body_topleft_texture);
+                }
+                else if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == snake_size_and_speed) ||
+                    (speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
+                    snake[i].setTexture(body_bottomleft_texture);
+                }
+                else if ((speed[i + 1][1] == snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
+                    (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == -snake_size_and_speed)) {
+                    snake[i].setTexture(body_topright_texture);
+                }
+                else if ((speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
+                    (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == snake_size_and_speed)) {
+                    snake[i].setTexture(body_bottomright_texture);
+                }
+
+                else if (speed[i][0] == snake_size_and_speed) {
+                    snake[i].setTexture(body_horizontal_texture);
+                }
+                else if (speed[i][0] == -snake_size_and_speed) {
+                    snake[i].setTexture(body_horizontal_texture);
+                }
+                else if (speed[i][1] == snake_size_and_speed) {
+                    snake[i].setTexture(body_vertical_texture);
+                }
+                else if (speed[i][1] == -snake_size_and_speed) {
+                    snake[i].setTexture(body_vertical_texture);
+                }
+
+
+            }
+        }
+    }
+    else if (check.is_snake_3_being_used) {
+        for (int i = 0; i < number_of_eaten_apples + 3; i++) {
+            snake[i].setTexture(NULL);
+        }
+    }
+}
+
+//to change colors of the snake with every key pressed and to change the angle of the rotation of each square based on their direction
+void set_color(int square_number, int number_of_eaten_apples,Check check) {
+    if (check.is_snake_changing_colors) {
+        if (number_of_eaten_apples < 20) {
+            if (speed[0][0] == snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Magenta);
+                else
+                    snake[square_number].setFillColor(Color::White);
+            }
+            else if (speed[0][0] == -1 * snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Green);
+                else
+                    snake[square_number].setFillColor(Color::Blue);
+            }
+            else if (speed[0][1] == snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::White);
+                else
+                    snake[square_number].setFillColor(Color::Red);
+            }
+            else if (speed[0][1] == -1 * snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Cyan);
+                else
+                    snake[square_number].setFillColor(Color::Red);
+            }
+        }
+        else if (number_of_eaten_apples >= 20 && number_of_eaten_apples < 40) {
+            if (speed[0][0] == snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::White);
+                else
+                    snake[square_number].setFillColor(Color::Magenta);
+            }
+            else if (speed[0][0] == -1 * snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Black);
+                else
+                    snake[square_number].setFillColor(Color::Cyan);
+            }
+            else if (speed[0][1] == snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Cyan);
+                else
+                    snake[square_number].setFillColor(Color::Blue);
+            }
+            else if (speed[0][1] == -1 * snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Black);
+                else
+                    snake[square_number].setFillColor(Color::Red);
+            }
+        }
+        else if (number_of_eaten_apples >= 40 && number_of_eaten_apples < 60) {
+            if (speed[0][0] == snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Red);
+                else
+                    snake[square_number].setFillColor(Color::Magenta);
+            }
+            else if (speed[0][0] == -1 * snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Black);
+                else
+                    snake[square_number].setFillColor(Color::White);
+            }
+            else if (speed[0][1] == snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Cyan);
+                else
+                    snake[square_number].setFillColor(Color::Green);
+            }
+            else if (speed[0][1] == -1 * snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Blue);
+                else
+                    snake[square_number].setFillColor(Color::Red);
+            }
+        }
+        else {
+            if (speed[0][0] == snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Green);
+                else
+                    snake[square_number].setFillColor(Color::Magenta);
+            }
+            else if (speed[0][0] == -1 * snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Magenta);
+                else
+                    snake[square_number].setFillColor(Color::Cyan);
+            }
+            else if (speed[0][1] == snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Cyan);
+                else
+                    snake[square_number].setFillColor(Color::White);
+            }
+            else if (speed[0][1] == -1 * snake_size_and_speed) {
+                if (square_number % 2 == 0)
+                    snake[square_number].setFillColor(Color::Black);
+                else
+                    snake[square_number].setFillColor(Color::Blue);
+            }
+        }
+    }
+    else {
+        if (number_of_eaten_apples < 20) {
+            
+            snake[square_number].setFillColor(Color::Green) ;
+        }
+        else if (number_of_eaten_apples >= 20 && number_of_eaten_apples < 40) {
+
+            snake[square_number].setFillColor(Color::Blue);
+        }
+        else if (number_of_eaten_apples >= 40 && number_of_eaten_apples < 60) {
+            snake[square_number].setFillColor(Color::Red);
+        }
+        else {
+            snake[square_number].setFillColor(Color::Black);
+        }
+        
+    }
+}
+
+void set_rotation(int number_of_eaten_apples, int square_number) {
+
+    bool is_snake_turn = (speed[square_number][0] == speed[square_number + 1][1] || speed[square_number][0] == -speed[square_number + 1][1] ||
+        speed[square_number][1] == speed[square_number + 1][0] || speed[square_number][1] == -speed[square_number + 1][0]);
+
+    bool is_this_square_going_right = speed[square_number][0] == snake_size_and_speed;
+    bool is_this_square_going_left = speed[square_number][0] == -snake_size_and_speed;
+    bool is_this_square_going_upward = speed[square_number][1] == -snake_size_and_speed;
+    bool is_this_square_going_downward = speed[square_number][1] == snake_size_and_speed;
+
+    bool is_the_next_square_going_right = speed[square_number + 1][0] == snake_size_and_speed;
+    bool is_the_next_square_going_left = speed[square_number + 1][0] == -snake_size_and_speed;
+    bool is_the_next_square_going_upward = speed[square_number + 1][1] == -snake_size_and_speed;
+    bool is_the_next_square_going_downward = speed[square_number + 1][1] == snake_size_and_speed;
+
+    if (square_number != (number_of_eaten_apples + 2) || is_snake_turn) {
+        if (is_snake_turn && square_number != 0) {
+
+            if ((is_the_next_square_going_right && is_this_square_going_upward) ||
+                (is_the_next_square_going_downward && is_this_square_going_left)) {
+                snake[square_number].setRotation(180);
+            }
+
+            else if ((is_the_next_square_going_right && is_this_square_going_downward) ||
+                (is_the_next_square_going_upward && is_this_square_going_left)) {
+
+                snake[square_number].setRotation(90);
+            }
+
+            else if ((is_the_next_square_going_downward && is_this_square_going_right) ||
+                (is_the_next_square_going_left && is_this_square_going_upward)) {
+
+                snake[square_number].setRotation(270);
+            }
+
+            else if ((is_the_next_square_going_upward && is_this_square_going_right) ||
+                (is_the_next_square_going_left && is_this_square_going_downward)) {
+
+                snake[square_number].setRotation(0);
+            }
+        }
+        else {
+            if (is_this_square_going_right) {
+                snake[square_number].setRotation(270);
+            }
+            else if (is_this_square_going_left) {
+                snake[square_number].setRotation(90);
+            }
+            else if (is_this_square_going_downward)
+                snake[square_number].setRotation(0);
+            else if (is_this_square_going_upward)
+                snake[square_number].setRotation(180);
+        }
+    }
+    else {
+        if (is_this_square_going_right)
+            snake[square_number].setRotation(90);
+        else if (is_this_square_going_left)
+            snake[square_number].setRotation(270);
+        else if (is_this_square_going_downward)
+            snake[square_number].setRotation(180);
+        else if (is_this_square_going_upward)
+            snake[square_number].setRotation(0);
+    }
+
+}
+
+//to create score counter
+void apple_counter(int number_of_eaten_apples) {
+    // Display score
+    text.setCharacterSize(30);
+    text.setFillColor(sf::Color::White);
+    text.setString("Score: " + std::to_string(number_of_eaten_apples));
+    text.setPosition(70, 20);
+    window.draw(text);
+}
+
+//use check apple
+//to change the position of the apple 
+void randapple(CircleShape& apple, Check& check, int number_of_eaten_apples) {
+    apple.setPosition(Vector2f(rand() % (1005 - (int)snake_size_and_speed) + 145, rand() %
+        (640 - (int)snake_size_and_speed) + 70));
+
+    //to make sure that the apple do not appear on the snake body
+    for (int i = 0; i < number_of_eaten_apples + 2; i++) {
+        if (snake[i].getGlobalBounds().intersects(apple.getGlobalBounds())) {
+            apple.setPosition(Vector2f(rand() % (1005 - (int)snake_size_and_speed) + 145, rand() %
+                (640 - (int)snake_size_and_speed) + 70));
+            i = 0;
+        }
+    }
+    apple.setRadius(snake_size_and_speed * 0.5);
+    check.is_the_apple_eaten = 0;
+}
+
+//to change the position of rotten apple
+void randrottenapple(CircleShape& rotten_apple, Check& check, int number_of_eaten_apples) {
+    rotten_apple.setPosition(Vector2f(rand() % (1005 - (int)snake_size_and_speed * 2) + 145, rand() %
+        (640 - (int)snake_size_and_speed * 2) + 70));
+    //to make sure that the rotten apple do not appear on the snake body
+    for (int i = 0; i < number_of_eaten_apples + 2; i++) {
+        if (snake[i].getGlobalBounds().intersects(rotten_apple.getGlobalBounds())) {
+            rotten_apple.setPosition(Vector2f(rand() % (1005 - (int)snake_size_and_speed * 2) + 145, rand() %
+                (640 - (int)snake_size_and_speed * 2) + 70));
+            i = 0;
+        }
+    }
+    rotten_apple.setRadius(snake_size_and_speed);
+    check.is_the_rotten_apple_eaten = 0;
+}
+
+//o draw the pause button
+void draw_resume_icon(RectangleShape& resume_icon) {
+    resume_icon.setPosition(550, 200);
+    resume_icon.setSize(Vector2f(250, 200));
+    resume_icon.setFillColor(Color::White);
+    window.draw(resume_icon);
+}
+
+void draw_restart_icon(RectangleShape& restart_icon,Check check) {
+    if (check.is_the_snake_alive == 0)
+    restart_icon.setPosition(400, 300);
+    else
+    restart_icon.setPosition(550, 300);
+    restart_icon.setSize(Vector2f(250, 200));
+    restart_icon.setFillColor(Color::White);
+    window.draw(restart_icon);
+}
+
+void draw_exit_icon(RectangleShape& exit_icon,Check check) {
+    if (check.is_the_snake_alive == 0)
+        exit_icon.setPosition(630, 300);
+    else
+        exit_icon.setPosition(550, 400);
+    exit_icon.setSize(Vector2f(250, 200));
+    exit_icon.setFillColor(Color::White);
+    window.draw(exit_icon);
+}
+
+void drawMainMenu(Font& font, Sprite main_menu_page)
+{
+    // create the "Start" button
+    window.clear(Color(0, 29, 0, 233));
+
+    window.draw(main_menu_page);
+    //Background
+    Text startButton;
+    startButton.setFont(font);
+    startButton.setString("Start");
+    startButton.setCharacterSize(32);
+    startButton.setFillColor(Color::White);
+    startButton.setPosition(Vector2f(window.getSize().x / 2 - 35, window.getSize().y / 2 + 50));
+
+    // create the "View High Score" button
+    Text highScoreButton;
+    highScoreButton.setFont(font);
+    highScoreButton.setString("High Score");
+    highScoreButton.setCharacterSize(29);
+    highScoreButton.setFillColor(Color::White);
+    highScoreButton.setPosition(Vector2f(window.getSize().x / 2 - 75, window.getSize().y / 2 + 150));
+
+    // create the "Exit" button
+    Text exitButton;
+    exitButton.setFont(font);
+    exitButton.setString("Exit");
+    exitButton.setCharacterSize(32);
+    exitButton.setFillColor(Color::White);
+    exitButton.setPosition(Vector2f(window.getSize().x / 2 - 25, window.getSize().y / 2 + 245));
+
+    window.draw(startButton);
+    window.draw(highScoreButton);
+    //window.draw(settingsButton);
+    window.draw(exitButton);
+    window.display();
+}
+
+void drawSettingsMenu(Font& font, Sprite setting_page)
+{
+    // Background
+    window.clear(Color(0, 29, 0, 233));
+    window.draw(setting_page);
+    // create the "Audio" button
+    Text audioButton;
+    audioButton.setFont(font);
+    audioButton.setString("Audio");
+    audioButton.setCharacterSize(32);
+    audioButton.setFillColor(Color::White);
+    audioButton.setPosition(Vector2f(window.getSize().x / 2 - 40, window.getSize().y / 2 - 75));
+
+    // create the "fullScreen" button
+    Text change_snake_button;
+    change_snake_button.setFont(font);
+    change_snake_button.setString("Change snake");
+    change_snake_button.setCharacterSize(32);
+    change_snake_button.setFillColor(Color::White);
+    change_snake_button.setPosition(Vector2f(window.getSize().x / 2 -100, window.getSize().y / 2 + 20));
+
+
+    // create the "Back" button
+    Text backButton;
+    backButton.setFont(font);
+    backButton.setString("Back");
+    backButton.setCharacterSize(32);
+    backButton.setFillColor(Color::White);
+    backButton.setPosition(Vector2f(window.getSize().x / 2 - 30, window.getSize().y / 2 +120));
+
+
+
+    window.draw(audioButton);
+    window.draw(change_snake_button);
+    window.draw(backButton);
+    window.display();
+}
+
+void draw_view_high_score_menu(Sprite ranking_page, Text text, int ranking[])
+{
+    window.clear();
+    window.draw(ranking_page);
+    string number;
+    text.setCharacterSize(32);
+    text.setStyle(Text::Bold);
+    for (int q = 0; q < 3; q++) {
+        int u = 1000;
+
+        for (int i = 0; i < 4; i++) {
+            if (i > 0)
+                u = u / 10;
+            number = '0' + ((ranking[q] / u) % 10);
+            text.setString(number);
+            text.setPosition(Vector2f(725 + (20 * i), 340 + 100 * q));
+            window.draw(text);
+        }
+    }
+
+    window.display();
+
+}
+
+void changing_ranking(int number_of_eaten_apples, int ranking[])
+{
+
+    int swipe;
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (ranking[i] < number_of_eaten_apples)
+        {
+            swipe = ranking[i];
+            ranking[i] = number_of_eaten_apples;
+            if (i == 0) {
+                swap(ranking[1], ranking[2]);
+                ranking[1] = swipe;
+            }
+            else if (i == 1) {
+                swap(ranking[2], swipe);
+            }
+            break;
+        }
+
+    }
+
+}
+
+void draw_audio_settings(Sprite music_setting , Sprite exit_setting_music_page) {
+    window.clear();
+    window.draw(music_setting);
+    exit_setting_music_page.setPosition(Vector2f(780, 200));
+    window.draw(exit_setting_music_page);
+    window.display();
+}
+
+void draw_change_color(Sprite change_snake_page, Check& check, Sprite Tru_ee)
+{
+    window.clear();
+    window.draw(change_snake_page);
+    if (check.is_snake_1_being_used)
+    {
+        Tru_ee.setPosition(340, 210);
+    }
+    else if (check.is_snake_2_being_used)
+    {
+        Tru_ee.setPosition(500, 210);
+    }
+    else if (check.is_snake_3_being_used)
+    {
+        Tru_ee.setPosition(660, 210);
+    }
+    window.draw(Tru_ee);
+    if (check.is_snake_changing_colors)
+    {
+        Tru_ee.setPosition(400, 330);
+
+    }
+    else
+    {
+        Tru_ee.setPosition(590, 330);
+
+    }
+    window.draw(Tru_ee);
+    window.display();
+
+}
