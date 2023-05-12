@@ -1,0 +1,193 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(517,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (smfl project.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  team.cpp
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(246,65): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(253,69): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(289,57): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(294,64): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(300,62): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(305,68): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(310,54): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(315,62): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(320,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(345,31): warning C4553: '==': result of expression not used; did you intend '='?
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(413,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(742,20): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(750,23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(751,24): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(752,31): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(755,23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(756,24): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(757,31): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(760,23): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(761,24): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(762,31): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(790,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(795,26): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(801,40): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(807,43): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(822,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(822,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1183,43): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1182,76): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1189,51): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1188,84): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1193,42): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1200,47): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1199,87): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1205,55): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1204,95): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1253,90): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1253,61): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1261,94): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1261,65): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1269,89): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1269,60): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1289,90): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1289,61): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1297,98): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1297,69): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1306,89): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1306,60): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1331,59): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\hp\source\repos\snake game\smfl project\team.cpp(1331,43): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  smfl project.vcxproj -> C:\Users\hp\source\repos\snake game\x64\Debug\snake game.exe
