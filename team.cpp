@@ -338,7 +338,7 @@ int main() {
     textures.setting_page_texture.loadFromFile("setting menu.png");
     textures.setting_page_texture.setSmooth(1);
     shapes.setting_page.setTexture(textures.setting_page_texture);
-    shapes.setting_page.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+    shapes.setting_page.setScale((1300.0 / 1800), (800.0 / 1300.0));
 
     //loading texture for the setting music page
     textures.setting_music_page_texture.loadFromFile("Setting music page.png");
@@ -359,7 +359,6 @@ int main() {
     textures.game_over_texture.loadFromFile("game_over.png");
     shapes.game_over.setTexture(textures.game_over_texture);
     shapes.game_over.setScale(0.2, 0.2);
-    shapes.game_over.setPosition(500, 50);
 
     textures.change_snake_page_texture.loadFromFile("change snake .png");
     shapes.change_snake_page.setTexture(textures.change_snake_page_texture);
@@ -459,6 +458,8 @@ void change_size(shape& shapes) {
     shapes.restart_icon.setScale(1.5, 1.5);
     shapes.exit_icon.setScale(1.5, 1.5);
     shapes.resume_icon.setScale(1.5, 1.5);
+    shapes.game_over.setScale(0.25, 0.25);
+    shapes.exit_icon_in_setting_music_page.setScale(1, 1);
 }
 
 //to make all of the squares to have the same size, origin,and initial speed (+ve x direction) 
@@ -532,11 +533,11 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
     int in_game_second_button = in_game_first_button + icon_height + in_game_space_between_buttons;
     int in_game_third_button = in_game_second_button + icon_height + in_game_space_between_buttons;
     if (check.is_resize_button_pressed) {
-        icon_width = 765 - 580;
-        icon_height = 485 - 425;
-        in_game_buttons_x_position = 580;
-        in_game_first_button = 225;
-        in_game_space_between_buttons = 40;
+        icon_width = 1125 - 845;
+        icon_height = 425 - 340;
+        in_game_buttons_x_position = 845;
+        in_game_space_between_buttons = 15;
+        in_game_first_button = 340;
         in_game_second_button = in_game_first_button + icon_height + in_game_space_between_buttons;
         in_game_third_button = in_game_second_button + icon_height + in_game_space_between_buttons;
     }
@@ -556,40 +557,59 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             Mouse::getPosition(window).y >= 5 &&
             Mouse::getPosition(window).y <= 100;
     }
-
-    if (collision_counter % 15 == 0) {
+    int time=15;
+    if (check.is_resize_button_pressed)
+        time = 35;
+    if (collision_counter % time == 0) {
         if (check.is_the_snake_alive) {
-            mouse_position_is_inside_resume_icon_box_in_game =
-                Mouse::getPosition(window).x >= in_game_buttons_x_position &&
-                Mouse::getPosition(window).x <= in_game_buttons_x_position + icon_width &&
-                Mouse::getPosition(window).y >= in_game_first_button &&
-                Mouse::getPosition(window).y <= (in_game_first_button + icon_height);
+            if (check.is_resize_button_pressed) {
+                mouse_position_is_inside_resume_icon_box_in_game =
+                    Mouse::getPosition(window).x >= in_game_buttons_x_position &&
+                    Mouse::getPosition(window).x <= in_game_buttons_x_position + icon_width &&
+                    Mouse::getPosition(window).y >= in_game_first_button &&
+                    Mouse::getPosition(window).y <= (in_game_first_button + icon_height);
 
-            mouse_position_is_inside_restart_icon_box_in_game =
-                Mouse::getPosition(window).x >= in_game_buttons_x_position &&
-                Mouse::getPosition(window).x <= in_game_buttons_x_position + icon_width &&
-                Mouse::getPosition(window).y >= in_game_second_button &&
-                Mouse::getPosition(window).y <= (in_game_second_button + icon_height);
+                mouse_position_is_inside_restart_icon_box_in_game =
+                    Mouse::getPosition(window).x >= in_game_buttons_x_position &&
+                    Mouse::getPosition(window).x <= in_game_buttons_x_position + icon_width &&
+                    Mouse::getPosition(window).y >= in_game_second_button &&
+                    Mouse::getPosition(window).y <= (in_game_second_button + icon_height);
 
-            mouse_position_is_inside_exit_icon_box_in_game =
-                Mouse::getPosition(window).x >= in_game_buttons_x_position &&
-                Mouse::getPosition(window).x <= in_game_buttons_x_position + icon_width &&
-                Mouse::getPosition(window).y >= in_game_third_button &&
-                Mouse::getPosition(window).y <= in_game_third_button + icon_height;
+                mouse_position_is_inside_exit_icon_box_in_game =
+                    Mouse::getPosition(window).x >= in_game_buttons_x_position &&
+                    Mouse::getPosition(window).x <= in_game_buttons_x_position + icon_width &&
+                    Mouse::getPosition(window).y >= in_game_third_button &&
+                    Mouse::getPosition(window).y <= in_game_third_button + icon_height;
+            }
         }
         else {
+            if (!check.is_resize_button_pressed) {
+                mouse_position_is_inside_restart_icon_box_in_game =
+                    Mouse::getPosition(window).x >= 430 &&
+                    Mouse::getPosition(window).x <= (430 + icon_width) &&
+                    Mouse::getPosition(window).y >= 325 &&
+                    Mouse::getPosition(window).y <= (325 + icon_height);
 
-            mouse_position_is_inside_restart_icon_box_in_game =
-                Mouse::getPosition(window).x >= 430 &&
-                Mouse::getPosition(window).x <= (430 + icon_width) &&
-                Mouse::getPosition(window).y >= 325 &&
-                Mouse::getPosition(window).y <= (325 + icon_height);
+                mouse_position_is_inside_exit_icon_box_in_game =
+                    Mouse::getPosition(window).x >= 660 &&
+                    Mouse::getPosition(window).x <= 660 + icon_width &&
+                    Mouse::getPosition(window).y >= 325 &&
+                    Mouse::getPosition(window).y <= 325 + icon_height;
+            }
+            else {
+                mouse_position_is_inside_restart_icon_box_in_game =
+                    Mouse::getPosition(window).x >= 645 &&
+                    Mouse::getPosition(window).x <= 925 &&
+                    Mouse::getPosition(window).y >= 440 &&
+                    Mouse::getPosition(window).y <= (525);
 
-            mouse_position_is_inside_exit_icon_box_in_game =
-                Mouse::getPosition(window).x >= 660 &&
-                Mouse::getPosition(window).x <= 660 + icon_width &&
-                Mouse::getPosition(window).y >= 325 &&
-                Mouse::getPosition(window).y <= 325 + icon_height;
+                mouse_position_is_inside_exit_icon_box_in_game =
+                    Mouse::getPosition(window).x >= 1045 &&
+                    Mouse::getPosition(window).x <= 1325 &&
+                    Mouse::getPosition(window).y >= 440 &&
+                    Mouse::getPosition(window).y <= 530;
+            }
+
         }
 
         if ((left_or_right_mouse_button_pressed && mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed) {
@@ -783,7 +803,33 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             Mouse::getPosition(window).x <= 925 &&
             Mouse::getPosition(window).y >= 255 &&
             Mouse::getPosition(window).y <= 330;
-
+        if (check.is_resize_button_pressed) {
+            mouse_position_is_inside_ON_Audio_in_audio_setting_page =
+                Mouse::getPosition(window).x >= 910 &&
+                Mouse::getPosition(window).x <= 1005 &&
+                Mouse::getPosition(window).y >= 530 &&
+                Mouse::getPosition(window).y <= 600;
+            mouse_position_is_inside_OFF_Audio_in_setting_page =
+                Mouse::getPosition(window).x >= 1090 &&
+                Mouse::getPosition(window).x <= 1185 &&
+                Mouse::getPosition(window).y >= 530 &&
+                Mouse::getPosition(window).y <= 600;
+            mouse_position_is_inside_ON_Music_in_setting_page =
+                Mouse::getPosition(window).x >= 910 &&
+                Mouse::getPosition(window).x <= 1005 &&
+                Mouse::getPosition(window).y >= 705 &&
+                Mouse::getPosition(window).y <= 775;
+            mouse_position_is_inside_OFF_Music_in_setting_page =
+                Mouse::getPosition(window).x >= 1085 &&
+                Mouse::getPosition(window).x <= 1180 &&
+                Mouse::getPosition(window).y >= 710 &&
+                Mouse::getPosition(window).y <= 780;
+            mouse_position_is_inside_exit_button_in_music_setting_page =
+                Mouse::getPosition(window).x >= 1195 &&
+                Mouse::getPosition(window).x <= 1305 &&
+                Mouse::getPosition(window).y >= 325 &&
+                Mouse::getPosition(window).y <= 435;
+        }
         if (left_or_right_mouse_button_pressed && check.is_audio_button_pressed && !check.is_change_snake_button_pressed &&
             !check.is_game_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed) {
             if (mouse_position_is_inside_ON_Audio_in_audio_setting_page) {
@@ -807,6 +853,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
                 check.is_setting_button_pressed = 1;
             }
         }
+
         bool mouse_position_is_inside_Exit_in_change_color_page =
             Mouse::getPosition(window).x >= 556 &&
             Mouse::getPosition(window).x <= 725 &&
@@ -837,6 +884,38 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             Mouse::getPosition(window).x <= 762 &&
             Mouse::getPosition(window).y >= 444 &&
             Mouse::getPosition(window).y <= 475;
+        if (check.is_resize_button_pressed) {
+            mouse_position_is_inside_Exit_in_change_color_page =
+                Mouse::getPosition(window).x >= 810 &&
+                Mouse::getPosition(window).x <= 1075 &&
+                Mouse::getPosition(window).y >= 710 &&
+                Mouse::getPosition(window).y <= 775;
+            mouse_position_is_inside_first_snake_in_change_color_page =
+                Mouse::getPosition(window).x >= 685 &&
+                Mouse::getPosition(window).x <= 760 &&
+                Mouse::getPosition(window).y >= 420 &&
+                Mouse::getPosition(window).y <= 490;
+            mouse_position_is_inside_second_snake_in_change_color_page =
+                Mouse::getPosition(window).x >= 760 + (925 - 760) &&
+                Mouse::getPosition(window).x <= 760 + (925 - 760) + (760 - 685) &&
+                Mouse::getPosition(window).y >= 420 &&
+                Mouse::getPosition(window).y <= 490;
+            mouse_position_is_inside_third_snake_in_change_color_page =
+                Mouse::getPosition(window).x >= 760 + (925 - 760) * 2 + (760 - 685) &&
+                Mouse::getPosition(window).x <= 760 + (925 - 760) * 2 + (760 - 685) * 2 &&
+                Mouse::getPosition(window).y >= 420 &&
+                Mouse::getPosition(window).y <= 490;
+            mouse_position_is_inside_first_color_option_in_change_color_page =
+                Mouse::getPosition(window).x >= 770 &&
+                Mouse::getPosition(window).x <= 845 &&
+                Mouse::getPosition(window).y >= 600 &&
+                Mouse::getPosition(window).y <= 640;
+            mouse_position_is_inside_second_color_option_in_change_color_page =
+                Mouse::getPosition(window).x >= 845 + (1055 - 845) &&
+                Mouse::getPosition(window).x <= 845 + (1055 - 845) + (845 - 770) &&
+                Mouse::getPosition(window).y >= 600 &&
+                Mouse::getPosition(window).y <= 640;
+        }
         if (left_or_right_mouse_button_pressed && check.is_change_snake_button_pressed && !check.is_audio_button_pressed &&
             !check.is_game_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed) {
             if (mouse_position_is_inside_Exit_in_change_color_page)
@@ -879,6 +958,9 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
 void update_game(shape& shapes, int& game_counter, Check& check, int number_of_eaten_apples) {
     //the time it will take the snake to change positions which will make it move faster
     int speedtimer = snake_size_and_speed * 0.25;
+    if (check.is_resize_button_pressed) {
+        speedtimer *= 1.5;
+    }
     //the time it will take the apple to change positions
     int apple_timer = 6 * 50;
     //the time it will take the rotten apple to change positions
@@ -901,12 +983,8 @@ void update_game(shape& shapes, int& game_counter, Check& check, int number_of_e
         rotten_apple_timer *= 0.75;
     }
 
-    if (game_counter % speedtimer == 0 && !check.is_resize_button_pressed)
+    if (game_counter % speedtimer == 0 )
         snake_movement(check);
-    else if (check.is_resize_button_pressed){
-        if (game_counter % (int)(speedtimer*1.5) == 0)
-        snake_movement(check);
-    }
 
     if (game_counter % apple_timer == 0)
         randapple(shapes, check, number_of_eaten_apples);
@@ -1004,6 +1082,11 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font fo
 
             }
             if (!check.is_the_snake_alive) {
+                if (check.is_resize_button_pressed) {
+                    shapes.game_over.setPosition(800, 100);
+                }
+                else
+                    shapes.game_over.setPosition(500, 50);
                 window.draw(shapes.game_over);
                 draw_restart_icon(shapes, check);
                 draw_exit_icon(shapes, check);
@@ -1324,15 +1407,14 @@ void apple_counter(int number_of_eaten_apples,Check check) {
 //use check apple
 //to change the position of the apple 
 void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
-    shapes.apple_icon.setPosition(Vector2f(rand() % (1005 - (int)snake_size_and_speed) + 145, rand() %
-        (640 - (int)snake_size_and_speed) + 70));
-
+    shapes.apple_icon.setPosition(Vector2f(rand() % ((1707-213) - (int)snake_size_and_speed) + 213, rand() %
+        ((982-95) - (int)snake_size_and_speed) + 95));
     //to make sure that the apple do not appear on the snake body
     for (int i = 0; i < number_of_eaten_apples + 2; i++) {
         if (snake[i].getGlobalBounds().intersects(shapes.apple_icon.getGlobalBounds())||shapes.apple_icon.getGlobalBounds().
             intersects(shapes.rotten_apple_icon.getGlobalBounds())) {
-            shapes.apple_icon.setPosition(Vector2f(rand() % (1005 - (int)snake_size_and_speed) + 145, rand() %
-                (640 - (int)snake_size_and_speed) + 70));
+            shapes.apple_icon.setPosition(Vector2f(rand() % ((1707 - 213) - (int)snake_size_and_speed) + 213, rand() %
+                ((982 - 95) - (int)snake_size_and_speed) + 95));
             i = 0;
         }
     }
@@ -1342,14 +1424,14 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
 
 //to change the position of rotten apple
 void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
-    shapes.rotten_apple_icon.setPosition(Vector2f(rand() % (1005 - (int)snake_size_and_speed * 2) + 145, rand() %
-        (640 - (int)snake_size_and_speed * 2) + 70));
+    shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((1707 - 213) - (int)snake_size_and_speed) + 213, rand() %
+        ((982 - 95) - (int)snake_size_and_speed) + 95));
     //to make sure that the rotten apple do not appear on the snake body
     for (int i = 0; i < number_of_eaten_apples + 2; i++) {
         if (snake[i].getGlobalBounds().intersects(shapes.rotten_apple_icon.getGlobalBounds())|| shapes.rotten_apple_icon.
             getGlobalBounds().intersects(shapes.apple_icon.getGlobalBounds())) {
-            shapes.rotten_apple_icon.setPosition(Vector2f(rand() % (1005 - (int)snake_size_and_speed * 2) + 145, rand() %
-                (640 - (int)snake_size_and_speed * 2) + 70));
+            shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((1707 - 213) - (int)snake_size_and_speed) + 213, rand() %
+                ((982 - 95) - (int)snake_size_and_speed) + 95));
             i = 0;
         }
     }
@@ -1359,16 +1441,25 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
 
 //o draw the pause button
 void draw_resume_icon(shape shapes,Check check) {
-    shapes.resume_icon.setPosition(550, 200);
-    shapes.resume_icon.setSize(Vector2f(250, 200));
     shapes.resume_icon.setFillColor(Color::White);
+    shapes.resume_icon.setSize(Vector2f(250, 200));
+    shapes.resume_icon.setPosition(550, 200);
+    if (check.is_resize_button_pressed) {
+        shapes.resume_icon.setPosition(800, 300);
+    }
     window.draw(shapes.resume_icon);
 }
 
 void draw_restart_icon(shape shapes,Check check) {
     if (check.is_the_snake_alive == 0)
-        shapes.restart_icon.setPosition(400, 300);
+        if (check.is_resize_button_pressed)
+            shapes.restart_icon.setPosition(600, 400);
+        else
+            shapes.restart_icon.setPosition(400, 300);
     else
+        if (check.is_resize_button_pressed)
+            shapes.restart_icon.setPosition(800, 400);
+        else
         shapes.restart_icon.setPosition(550, 300);
     shapes.restart_icon.setSize(Vector2f(250, 200));
     shapes.restart_icon.setFillColor(Color::White);
@@ -1377,8 +1468,14 @@ void draw_restart_icon(shape shapes,Check check) {
 
 void draw_exit_icon(shape shapes,Check check) {
     if (check.is_the_snake_alive == 0)
+        if (check.is_resize_button_pressed)
+            shapes.exit_icon.setPosition(1000, 400);
+        else
         shapes.exit_icon.setPosition(630, 300);
     else
+        if (check.is_resize_button_pressed)
+            shapes.exit_icon.setPosition(800, 500);
+        else
         shapes.exit_icon.setPosition(550, 400);
     shapes.exit_icon.setSize(Vector2f(250, 200));
     shapes.exit_icon.setFillColor(Color::White);
@@ -1544,6 +1641,8 @@ void draw_audio_settings(shape shapes,Check check) {
     window.clear();
     window.draw(shapes.setting_music_page);
     shapes.exit_icon_in_setting_music_page.setPosition(Vector2f(780, 200));
+    if (check.is_resize_button_pressed)
+    shapes.exit_icon_in_setting_music_page.setPosition(Vector2f(1100, 250));
     window.draw(shapes.exit_icon_in_setting_music_page);
     window.display();
 }
@@ -1552,30 +1651,58 @@ void draw_change_color(shape shapes, Check& check)
 {
     window.clear();
     window.draw(shapes.change_snake_page);
-    if (check.is_snake_1_being_used)
-    {
-        shapes.Tru_ee.setPosition(340, 210);
-    }
-    else if (check.is_snake_2_being_used)
-    {
-        shapes.Tru_ee.setPosition(500, 210);
-    }
-    else if (check.is_snake_3_being_used)
-    {
-        shapes.Tru_ee.setPosition(660, 210);
-    }
-    window.draw(shapes.Tru_ee);
-    if (check.is_snake_changing_colors)
-    {
-        shapes.Tru_ee.setPosition(400, 330);
+    if (check.is_resize_button_pressed) {
+        if (check.is_snake_1_being_used)
+        {
+            shapes.Tru_ee.setPosition(570, 330);
+        }
+        else if (check.is_snake_2_being_used)
+        {
+            shapes.Tru_ee.setPosition(810, 330);
+        }
+        else if (check.is_snake_3_being_used)
+        {
+            shapes.Tru_ee.setPosition(1050, 330);
+        }
+        window.draw(shapes.Tru_ee);
+        if (check.is_snake_changing_colors)
+        {
+            shapes.Tru_ee.setPosition(655, 495);
 
-    }
-    else
-    {
-        shapes.Tru_ee.setPosition(590, 330);
+        }
+        else
+        {
+            shapes.Tru_ee.setPosition(940, 495);
 
+        }
+        window.draw(shapes.Tru_ee);
     }
-    window.draw(shapes.Tru_ee);
+    else {
+        if (check.is_snake_1_being_used)
+        {
+            shapes.Tru_ee.setPosition(340, 210);
+        }
+        else if (check.is_snake_2_being_used)
+        {
+            shapes.Tru_ee.setPosition(500, 210);
+        }
+        else if (check.is_snake_3_being_used)
+        {
+            shapes.Tru_ee.setPosition(660, 210);
+        }
+        window.draw(shapes.Tru_ee);
+        if (check.is_snake_changing_colors)
+        {
+            shapes.Tru_ee.setPosition(400, 330);
+
+        }
+        else
+        {
+            shapes.Tru_ee.setPosition(590, 330);
+
+        }
+        window.draw(shapes.Tru_ee);
+    }
     window.display();
 
 }
