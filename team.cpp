@@ -610,17 +610,11 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
     bool mouse_position_is_inside_restart_icon_box_in_game = 0;
     bool mouse_position_is_inside_exit_icon_box_in_game = 0;
     bool mouse_position_is_inside_pause_icon_box_in_game =
-        Mouse::getPosition(window).x >= 1200 &&
-        Mouse::getPosition(window).x <= 1300 &&
-        Mouse::getPosition(window).y >= 5 &&
-        Mouse::getPosition(window).y <= 75;
-    if (check.is_resize_button_pressed) {
-        mouse_position_is_inside_pause_icon_box_in_game =
-            Mouse::getPosition(window).x >= 1773 &&
-            Mouse::getPosition(window).x <= 1920 &&
-            Mouse::getPosition(window).y >= 5 &&
-            Mouse::getPosition(window).y <= 100;
-    }
+        Mouse::getPosition(window).x >= 1200 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 1300 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 5 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 75 * screen_factor_y;
+    
     if (left_or_right_mouse_button_pressed)
         check.is_mouse_pressed_once++;
     else
@@ -699,48 +693,36 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
     int setting_icon_height = 755 - 670;
     int setting_icon_x_position = 30;
     int setting_icon_y_position = 670;
-    if (check.is_resize_button_pressed) {
-        left_x_position_of_the_main_menu_buttons = 825;
-        width_of_main_menu_buttons = 1105 - 825;
-        height_of_main_menu_buttons = 80;
-        first_button = 600;
-        space_between_main_menu_buttons = 45;
-        second_button = first_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
-        third_button = second_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
-        setting_icon_width = 215 - 45;
-        setting_icon_height = 1015 - 905;
-        setting_icon_x_position = 45;
-        setting_icon_y_position = 905;
-    }
+    
     bool mouse_position_is_inside_start_button_in_main_menu =
-        Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
-        Mouse::getPosition(window).x <= left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons &&
-        Mouse::getPosition(window).y >= first_button &&
-        Mouse::getPosition(window).y <= first_button + height_of_main_menu_buttons;
+        Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons * screen_factor_x &&
+        Mouse::getPosition(window).x <= (left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons) * screen_factor_x &&
+        Mouse::getPosition(window).y >= first_button * screen_factor_y &&
+        Mouse::getPosition(window).y <= (first_button + height_of_main_menu_buttons) * screen_factor_y;
     bool mouse_position_is_inside_view_high_score_button_in_main_menu =
-        Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
-        Mouse::getPosition(window).x <= left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons &&
-        Mouse::getPosition(window).y >= second_button &&
-        Mouse::getPosition(window).y <= second_button + height_of_main_menu_buttons;
+        Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons * screen_factor_x &&
+        Mouse::getPosition(window).x <= (left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons)* screen_factor_x&&
+        Mouse::getPosition(window).y >= second_button * screen_factor_y &&
+        Mouse::getPosition(window).y <= (second_button + height_of_main_menu_buttons) * screen_factor_y;
 
     bool mouse_position_is_inside_exit_button_in_main_menu =
-        Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
-        Mouse::getPosition(window).x <= (left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons) &&
-        Mouse::getPosition(window).y >= third_button &&
-        Mouse::getPosition(window).y <= third_button + height_of_main_menu_buttons;
+        Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons * screen_factor_x &&
+        Mouse::getPosition(window).x <= (left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons) * screen_factor_x &&
+        Mouse::getPosition(window).y >= third_button * screen_factor_y &&
+        Mouse::getPosition(window).y <= (third_button + height_of_main_menu_buttons) * screen_factor_y;
 
     bool mouse_position_is_inside_setting_button_in_main_menu =
-        Mouse::getPosition(window).x >= setting_icon_x_position &&
-        Mouse::getPosition(window).x <= setting_icon_x_position + setting_icon_width &&
-        Mouse::getPosition(window).y >= setting_icon_y_position &&
-        Mouse::getPosition(window).y <= setting_icon_y_position + setting_icon_height;
+        Mouse::getPosition(window).x >= setting_icon_x_position * screen_factor_x &&
+        Mouse::getPosition(window).x <= (setting_icon_x_position + setting_icon_width) * screen_factor_x &&
+        Mouse::getPosition(window).y >= setting_icon_y_position * screen_factor_y &&
+        Mouse::getPosition(window).y <= (setting_icon_y_position + setting_icon_height) * screen_factor_y;
 
     //ranking buttons
     bool mouse_position_is_inside_exit_button_in_ranking_page =
-        Mouse::getPosition(window).x >= 825 &&
-        Mouse::getPosition(window).x <= 925 &&
-        Mouse::getPosition(window).y >= 645 &&
-        Mouse::getPosition(window).y <= 730;
+        Mouse::getPosition(window).x >= 825 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 925 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 645 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 730 * screen_factor_y;
 
     //setting buttons
     int setting_buttons_x_position = 525;
@@ -750,64 +732,49 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
     int setting_first_button = 300;
     int setting_second_button = setting_first_button + setting_buttons_height + setting_space_between_buttons;
     int setting_third_button = setting_second_button + setting_buttons_height + setting_space_between_buttons;
-    if (check.is_resize_button_pressed) {
-        setting_buttons_x_position = 780;
-        setting_buttons_width = 1150 - 780;
-        setting_buttons_height = 520 - 405;
-        setting_space_between_buttons = 540 - 520;
-        setting_first_button = 405;
-        setting_second_button = setting_first_button + setting_buttons_height + setting_space_between_buttons;
-        setting_third_button = setting_second_button + setting_buttons_height + setting_space_between_buttons;
-    }
+    
     bool mouse_position_is_inside_audio_button_in_setting_page =
-        Mouse::getPosition(window).x >= setting_buttons_x_position &&
-        Mouse::getPosition(window).x <= setting_buttons_x_position + setting_buttons_width &&
-        Mouse::getPosition(window).y >= setting_first_button &&
-        Mouse::getPosition(window).y <= setting_first_button + setting_buttons_height;
+        Mouse::getPosition(window).x >= setting_buttons_x_position * screen_factor_x &&
+        Mouse::getPosition(window).x <= (setting_buttons_x_position + setting_buttons_width)* screen_factor_x&&
+        Mouse::getPosition(window).y >= setting_first_button * screen_factor_y &&
+        Mouse::getPosition(window).y <= (setting_first_button + setting_buttons_height) * screen_factor_y;
     bool mouse_position_is_inside_change_color_button_in_setting_page =
-        Mouse::getPosition(window).x >= setting_buttons_x_position &&
-        Mouse::getPosition(window).x <= setting_buttons_x_position + setting_buttons_width &&
-        Mouse::getPosition(window).y >= setting_second_button &&
-        Mouse::getPosition(window).y <= setting_second_button + setting_buttons_height;
+        Mouse::getPosition(window).x >= setting_buttons_x_position * screen_factor_x &&
+        Mouse::getPosition(window).x <= (setting_buttons_x_position + setting_buttons_width) * screen_factor_x &&
+        Mouse::getPosition(window).y >= setting_second_button * screen_factor_y &&
+        Mouse::getPosition(window).y <= (setting_second_button + setting_buttons_height)* screen_factor_y;
     bool mouse_position_is_inside_exit_button_in_setting_page =
-        Mouse::getPosition(window).x >= setting_buttons_x_position &&
-        Mouse::getPosition(window).x <= setting_buttons_x_position + setting_buttons_width &&
-        Mouse::getPosition(window).y >= setting_third_button &&
-        Mouse::getPosition(window).y <= setting_third_button + setting_buttons_height;
+        Mouse::getPosition(window).x >= setting_buttons_x_position * screen_factor_x &&
+        Mouse::getPosition(window).x <= (setting_buttons_x_position + setting_buttons_width) * screen_factor_x &&
+        Mouse::getPosition(window).y >= setting_third_button * screen_factor_y &&
+        Mouse::getPosition(window).y <= (setting_third_button + setting_buttons_height) * screen_factor_y;
     //audio buttons
     bool mouse_position_is_inside_ON_Audio_in_audio_setting_page =
-        Mouse::getPosition(window).x >= 615 &&
-        Mouse::getPosition(window).x <= 683 &&
-        Mouse::getPosition(window).y >= 390 &&
-        Mouse::getPosition(window).y <= 445;
+        Mouse::getPosition(window).x >= 615 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 683 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 390 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 445 * screen_factor_y;
     bool mouse_position_is_inside_OFF_Audio_in_setting_page =
-        Mouse::getPosition(window).x >= 739 &&
-        Mouse::getPosition(window).x <= 800 &&
-        Mouse::getPosition(window).y >= 390 &&
-        Mouse::getPosition(window).y <= 445;
+        Mouse::getPosition(window).x >= 739 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 800 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 390 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 445 * screen_factor_y;
     bool mouse_position_is_inside_ON_Music_in_setting_page =
-        Mouse::getPosition(window).x >= 615 &&
-        Mouse::getPosition(window).x <= 683 &&
-        Mouse::getPosition(window).y >= 523 &&
-        Mouse::getPosition(window).y <= 576;
+        Mouse::getPosition(window).x >= 615 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 683 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 523 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 576 * screen_factor_y;
     bool mouse_position_is_inside_OFF_Music_in_setting_page =
-        Mouse::getPosition(window).x >= 739 &&
-        Mouse::getPosition(window).x <= 800 &&
-        Mouse::getPosition(window).y >= 523 &&
-        Mouse::getPosition(window).y <= 576;
+        Mouse::getPosition(window).x >= 739 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 800 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 523 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 576 * screen_factor_y;
     bool mouse_position_is_inside_exit_button_in_music_setting_page =
-        Mouse::getPosition(window).x >= 845 &&
-        Mouse::getPosition(window).x <= 925 &&
-        Mouse::getPosition(window).y >= 255 &&
-        Mouse::getPosition(window).y <= 330;
+        Mouse::getPosition(window).x >= 845 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 925 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 255 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 330 * screen_factor_y;
 
-    if (check.is_resize_button_pressed) {
-        mouse_position_is_inside_exit_button_in_ranking_page =
-            Mouse::getPosition(window).x >= 1220 &&
-            Mouse::getPosition(window).x <= 1365 &&
-            Mouse::getPosition(window).y >= 870 &&
-            Mouse::getPosition(window).y <= 990;
-    }
 
     bool mouse_position_is_inside_Exit_in_change_color_page =
         Mouse::getPosition(window).x >= 25 * screen_factor_x &&
@@ -845,33 +812,6 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).y >= 496 * screen_factor_y &&
         Mouse::getPosition(window).y <= 539 * screen_factor_y;
 
-    if (check.is_resize_button_pressed) {
-        mouse_position_is_inside_ON_Audio_in_audio_setting_page =
-            Mouse::getPosition(window).x >= 910 &&
-            Mouse::getPosition(window).x <= 1005 &&
-            Mouse::getPosition(window).y >= 530 &&
-            Mouse::getPosition(window).y <= 600;
-        mouse_position_is_inside_OFF_Audio_in_setting_page =
-            Mouse::getPosition(window).x >= 1090 &&
-            Mouse::getPosition(window).x <= 1185 &&
-            Mouse::getPosition(window).y >= 530 &&
-            Mouse::getPosition(window).y <= 600;
-        mouse_position_is_inside_ON_Music_in_setting_page =
-            Mouse::getPosition(window).x >= 910 &&
-            Mouse::getPosition(window).x <= 1005 &&
-            Mouse::getPosition(window).y >= 705 &&
-            Mouse::getPosition(window).y <= 775;
-        mouse_position_is_inside_OFF_Music_in_setting_page =
-            Mouse::getPosition(window).x >= 1085 &&
-            Mouse::getPosition(window).x <= 1180 &&
-            Mouse::getPosition(window).y >= 710 &&
-            Mouse::getPosition(window).y <= 780;
-        mouse_position_is_inside_exit_button_in_music_setting_page =
-            Mouse::getPosition(window).x >= 1195 &&
-            Mouse::getPosition(window).x <= 1305 &&
-            Mouse::getPosition(window).y >= 325 &&
-            Mouse::getPosition(window).y <= 435;
-    }
     bool mouse_position_is_inside_story_button =
         Mouse::getPosition(window).x >= 520 * screen_factor_x &&
         Mouse::getPosition(window).x <= 795 * screen_factor_x &&
@@ -1197,12 +1137,8 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font fo
         draw_exit_icon(shapes, check);
 
     }
-    if (!check.is_the_snake_alive) {
-        if (check.is_resize_button_pressed) {
-            shapes.game_over.setPosition(800, 100);
-        }
-        else
-            shapes.game_over.setPosition(500, 50);
+    if (!check.is_the_snake_alive) {      
+        shapes.game_over.setPosition(500 * screen_factor_x, 50 * screen_factor_y);
         window.draw(shapes.game_over);
         draw_restart_icon(shapes, check);
         draw_exit_icon(shapes, check);
@@ -1594,11 +1530,7 @@ void apple_counter(int number_of_eaten_apples, Check check) {
     // Display score
     text.setFillColor(sf::Color::White);
     text.setCharacterSize(30);
-    text.setPosition(70, 20);
-    if (check.is_resize_button_pressed) {
-        text.setCharacterSize(40);
-        text.setPosition(85, 25);
-    }
+    text.setPosition(70 * screen_factor_x, 20 * screen_factor_y);
     text.setString("Score: " + std::to_string(number_of_eaten_apples));
     window.draw(text);
 }
@@ -1746,16 +1678,16 @@ void drawSettingsMenu(Font& font, shape shapes, Check check)
     audioButton.setFont(font);
     audioButton.setString("Audio");
     audioButton.setFillColor(Color::White);
-    audioButton.setCharacterSize(32);
-    audioButton.setPosition(Vector2f(window.getSize().x / 2 - 40, window.getSize().y / 2 - 75));
+    audioButton.setCharacterSize(32 * screen_factor_x * screen_factor_y);
+    audioButton.setPosition(Vector2f(window.getSize().x / 2 - 40 * screen_factor_x, window.getSize().y / 2 - 75 * screen_factor_y));
 
     // create the "fullScreen" button
     Text change_snake_button;
     change_snake_button.setFont(font);
     change_snake_button.setString("Change snake");
     change_snake_button.setFillColor(Color::White);
-    change_snake_button.setCharacterSize(32);
-    change_snake_button.setPosition(Vector2f(window.getSize().x / 2 - 100, window.getSize().y / 2 + 20));
+    change_snake_button.setCharacterSize(32 * screen_factor_x * screen_factor_y);
+    change_snake_button.setPosition(Vector2f(window.getSize().x / 2 - 100 * screen_factor_x, window.getSize().y / 2 + 20 * screen_factor_y));
 
 
     // create the "Back" button
@@ -1763,19 +1695,9 @@ void drawSettingsMenu(Font& font, shape shapes, Check check)
     backButton.setFont(font);
     backButton.setString("Back");
     backButton.setFillColor(Color::White);
-    backButton.setCharacterSize(32);
-    backButton.setPosition(Vector2f(window.getSize().x / 2 - 30, window.getSize().y / 2 + 120));
-    if (check.is_resize_button_pressed) {
-        audioButton.setCharacterSize(40);
-        audioButton.setPosition(Vector2f(window.getSize().x / 2 - 50, window.getSize().y / 2 - 100));
-
-        change_snake_button.setCharacterSize(40);
-        change_snake_button.setPosition(Vector2f(window.getSize().x / 2 - 110, window.getSize().y / 2 + 30));
-
-        backButton.setCharacterSize(40);
-        backButton.setPosition(Vector2f(window.getSize().x / 2 - 30, window.getSize().y / 2 + 160));
-    }
-
+    backButton.setCharacterSize(32 * screen_factor_x * screen_factor_y);
+    backButton.setPosition(Vector2f(window.getSize().x / 2 - 30 * screen_factor_x, window.getSize().y / 2 + 120 * screen_factor_y));
+   
 
     window.draw(audioButton);
     window.draw(change_snake_button);
@@ -1788,11 +1710,7 @@ void draw_view_high_score_menu(shape shapes, Text text, int ranking[], Check che
     window.clear();
     window.draw(shapes.ranking_page);
     string number;
-    text.setCharacterSize(32);
-    if (check.is_resize_button_pressed) {
-        text.setCharacterSize(40);
-
-    }
+    text.setCharacterSize(32 * screen_factor_x * screen_factor_y);
     text.setStyle(Text::Bold);
     for (int q = 0; q < 3; q++) {
         int u = 1000;
@@ -1802,10 +1720,7 @@ void draw_view_high_score_menu(shape shapes, Text text, int ranking[], Check che
                 u = u / 10;
             number = '0' + ((ranking[q] / u) % 10);
             text.setString(number);
-            text.setPosition(Vector2f(725 + (20 * i), 340 + 100 * q));
-            if (check.is_resize_button_pressed) {
-                text.setPosition(Vector2f(1060 + (30 * i), 470 + 130 * q));
-            }
+            text.setPosition(Vector2f(725 * screen_factor_x + (20 * i * screen_factor_x), 340 * screen_factor_y + 100 * q * screen_factor_y));
             window.draw(text);
         }
     }
@@ -1842,9 +1757,7 @@ void changing_ranking(int number_of_eaten_apples, int ranking[])
 void draw_audio_settings(shape shapes, Check check) {
     window.clear();
     window.draw(shapes.setting_music_page);
-    shapes.exit_icon_in_setting_music_page.setPosition(Vector2f(780, 200));
-    if (check.is_resize_button_pressed)
-        shapes.exit_icon_in_setting_music_page.setPosition(Vector2f(1100, 250));
+    shapes.exit_icon_in_setting_music_page.setPosition(Vector2f(780 * screen_factor_x, 200 * screen_factor_y));
     window.draw(shapes.exit_icon_in_setting_music_page);
     window.display();
 }
@@ -1853,61 +1766,34 @@ void draw_change_color(shape shapes, Check& check)
 {
     window.clear();
     window.draw(shapes.change_snake_page);
-    if (check.is_resize_button_pressed) {
+    
         if (check.is_snake_1_being_used)
         {
-            shapes.Tru_ee.setPosition(570, 330);
+            shapes.Tru_ee.setPosition(505 * screen_factor_x, 223 * screen_factor_y);
         }
         else if (check.is_snake_2_being_used)
         {
-            shapes.Tru_ee.setPosition(810, 330);
+            shapes.Tru_ee.setPosition(313 * screen_factor_x, 223 * screen_factor_y);
         }
         else if (check.is_snake_3_being_used)
         {
-            shapes.Tru_ee.setPosition(1050, 330);
-        }
-        window.draw(shapes.Tru_ee);
-        if (check.is_snake_changing_colors)
-        {
-            shapes.Tru_ee.setPosition(655, 495);
-
-        }
-        else
-        {
-            shapes.Tru_ee.setPosition(940, 495);
-
-        }
-        window.draw(shapes.Tru_ee);
-    }
-    else {
-        if (check.is_snake_1_being_used)
-        {
-            shapes.Tru_ee.setPosition(505, 223);
-        }
-        else if (check.is_snake_2_being_used)
-        {
-            shapes.Tru_ee.setPosition(313, 223);
-        }
-        else if (check.is_snake_3_being_used)
-        {
-            shapes.Tru_ee.setPosition(697, 223);
+            shapes.Tru_ee.setPosition(697 * screen_factor_x, 223 * screen_factor_y);
         }
         else if (check.is_snake_4_being_used)
         {
-            shapes.Tru_ee.setPosition(409, 223);
+            shapes.Tru_ee.setPosition(409 * screen_factor_x, 223 * screen_factor_y);
         }
         window.draw(shapes.Tru_ee);
         if (check.is_snake_changing_colors)
         {
-            shapes.Tru_ee.setPosition(397, 387);
+            shapes.Tru_ee.setPosition(397 * screen_factor_x, 387 * screen_factor_y);
 
         }
         else
         {
-            shapes.Tru_ee.setPosition(563, 387);
+            shapes.Tru_ee.setPosition((int)(563 *screen_factor_x), (int)(387 *screen_factor_y));
 
         }
         window.draw(shapes.Tru_ee);
-    }
     window.display();
 }
