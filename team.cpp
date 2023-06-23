@@ -86,6 +86,7 @@ struct shapetextures {
     Texture* snake_body_texture;
     Texture* snake_tail_texture;
     Texture game_mode_page_texture;
+    Texture story_mode_page_texture;
 };
 struct shape {
     CircleShape apple_icon;
@@ -101,6 +102,7 @@ struct shape {
     Sprite change_snake_page;
     Sprite Tru_ee;
     Sprite game_mode_page;
+    Sprite story_mode_page;
 
     RectangleShape pause_icon;
     RectangleShape resume_icon;
@@ -117,6 +119,7 @@ const int MAX_NUMBER_OF_SQUARES = 1000;
 int speed[MAX_NUMBER_OF_SQUARES][2];
 double screen_factor_x = 1;
 double screen_factor_y = 1;
+int story_level = 1;
 //control the size of the snake
 float snake_size_and_speed = 30;
 
@@ -415,6 +418,10 @@ int main() {
     shapes.game_mode_page.setTexture(textures.game_mode_page_texture);
     shapes.game_mode_page.setScale((1300.0 / 1800), (800.0 / 1300));
 
+    textures.story_mode_page_texture.loadFromFile("story mode.png");
+    shapes.story_mode_page.setTexture(textures.story_mode_page_texture);
+    shapes.story_mode_page.setScale((1300.0 / 1800), (800.0 / 1300));
+
     window.setFramerateLimit(70);
 
     sizenposition();
@@ -449,6 +456,11 @@ int main() {
         if (check.is_start_button_pressed) {
             window.clear();
             window.draw(shapes.game_mode_page);
+            window.display();
+        }
+        else if (check.is_story_mode_pressed) {
+            window.clear();
+            window.draw(shapes.story_mode_page);
             window.display();
         }
         else if (check.is_survive_mode_pressed) {
@@ -520,6 +532,7 @@ void change_size(shape& shapes) {
     screen_factor_x = VideoMode::getDesktopMode().width / 1300.0;
     screen_factor_y = VideoMode::getDesktopMode().height / 800.0;
     shapes.game_mode_page.setScale(VideoMode::getDesktopMode().width / 1800.0, VideoMode::getDesktopMode().height / 1300.0);
+    shapes.story_mode_page.setScale(VideoMode::getDesktopMode().width / 1800.0, VideoMode::getDesktopMode().height / 1300.0);
 }
 
 //to make all of the squares to have the same size, origin,and initial speed (+ve x direction) 
@@ -797,7 +810,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
     }
 
     bool mouse_position_is_inside_Exit_in_change_color_page =
-        Mouse::getPosition(window).x >= 25*screen_factor_x &&
+        Mouse::getPosition(window).x >= 25 * screen_factor_x &&
         Mouse::getPosition(window).x <= 120 * screen_factor_x &&
         Mouse::getPosition(window).y >= 690 * screen_factor_y &&
         Mouse::getPosition(window).y <= 785 * screen_factor_y;
@@ -869,11 +882,28 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).x <= 795 * screen_factor_x &&
         Mouse::getPosition(window).y >= 470 * screen_factor_y &&
         Mouse::getPosition(window).y <= (470 + (410 - 320)) * screen_factor_y;
-    bool mouse_position_is_inside_exit_button_in_game_modes_page= 
+    bool mouse_position_is_inside_exit_button_in_game_modes_page =
+        Mouse::getPosition(window).x >= 5 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 115 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 700 * screen_factor_y &&
+        Mouse::getPosition(window).y <= (790) * screen_factor_y;
+
+    bool mouse_position_is_inside_continue_button_in_story_mode_page =
+        Mouse::getPosition(window).x >= 770 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 1175 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 430 * screen_factor_y &&
+        Mouse::getPosition(window).y <= (550) * screen_factor_y;
+    bool mouse_position_is_inside_new_game_button_in_story_mode_page =
+        Mouse::getPosition(window).x >= 770 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 1175 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 635 * screen_factor_y &&
+        Mouse::getPosition(window).y <= (635 + 120) * screen_factor_y;
+    bool mouse_position_is_inside_exit_button_in_story_mode_page =
         Mouse::getPosition(window).x >= 5 * screen_factor_x &&
         Mouse::getPosition(window).x <= 115 * screen_factor_x &&
         Mouse::getPosition(window).y >= 700 * screen_factor_y &&
         Mouse::getPosition(window).y <= (790) * screen_factor_y;;
+
     if (Mouse::isButtonPressed(Mouse::Right)) {
         cout << Mouse::getPosition(window).x << ' ' << Mouse::getPosition(window).y << endl;
     }
@@ -885,7 +915,6 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             // "Start" button pressed
             check.is_start_button_pressed = 1;
             check.is_main_menu_open = 0;
-            cout << 2 << ' ' << collision_counter << endl;
             // start the game
         }
         else if ((mouse_position_is_inside_view_high_score_button_in_main_menu))
@@ -1021,6 +1050,21 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         else if (mouse_position_is_inside_exit_button_in_game_modes_page) {
             check.is_start_button_pressed = 0;
 
+        }
+    }
+    else if (left_or_right_mouse_button_pressed && check.is_story_mode_pressed && !check.is_start_button_pressed && !check.is_change_snake_button_pressed &&
+        !check.is_audio_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed &&
+        !check.is_survive_mode_pressed && !check.is_main_menu_open) {
+
+        if (mouse_position_is_inside_new_game_button_in_story_mode_page) {
+
+        }
+        else if (mouse_position_is_inside_continue_button_in_story_mode_page) {
+
+        }
+        else if (mouse_position_is_inside_exit_button_in_game_modes_page) {
+            check.is_story_mode_pressed = 0;
+            check.is_start_button_pressed = 1;
         }
     }
 
