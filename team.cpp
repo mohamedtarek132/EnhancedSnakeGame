@@ -20,7 +20,7 @@ struct Check {
     //to make sure that the restart button was pressed
     bool is_the_restart_button_pressed;
     //to make sure that the start button was pressed
-    bool is_game_button_pressed;
+    bool is_start_button_pressed;
     //to make sure that the view high score button was pressed
     bool is_ranking_button_pressed;
     //to make sure that the setting button was pressed
@@ -42,7 +42,19 @@ struct Check {
 
     bool is_snake_changing_colors;
 
-    bool is_resize_button_pressed = 0;
+    bool is_resize_button_pressed ;
+
+    bool is_survive_mode_pressed ;
+
+    bool is_new_story_mode_pressed ;
+
+    bool is_continue_story_mode_pressed;
+
+    bool is_story_mode_pressed;
+
+    bool is_main_menu_open;
+
+    int is_mouse_pressed_once;
 
     };
 struct shapetextures {
@@ -73,6 +85,7 @@ struct shapetextures {
     Texture* snake_turn_texture;
     Texture* snake_body_texture;
     Texture* snake_tail_texture;
+    Texture game_mode_page_texture;
 };
 struct shape {
     CircleShape apple_icon;
@@ -87,6 +100,7 @@ struct shape {
     Sprite game_over;
     Sprite change_snake_page;
     Sprite Tru_ee;
+    Sprite game_mode_page;
 
     RectangleShape pause_icon;
     RectangleShape resume_icon;
@@ -397,6 +411,10 @@ int main() {
     textures.Truee.loadFromFile("true.png");
     shapes.Tru_ee.setTexture(textures.Truee);
 
+    textures.game_mode_page_texture.loadFromFile("game mode.png");
+    shapes.game_mode_page.setTexture(textures.game_mode_page_texture);
+    shapes.game_mode_page.setScale((1300.0 / 1800), (800.0 / 1300));
+
     window.setFramerateLimit(70);
 
     sizenposition();
@@ -428,20 +446,24 @@ int main() {
 
         //to make sure that the snake didn't hit itself or the wall,that you didn't press on the in game setting,and that you pressed 
         //start
-        if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed && check.is_game_button_pressed)
-            update_game(shapes, game_counter, check, number_of_eaten_apples);
-
-        else if (check.is_the_restart_button_pressed) {
-            number_of_eaten_apples = 0;
-            sizenposition();
-            check.is_the_snake_alive = 1;
-            check.if_the_player_started_playing = 0;
-            check.is_the_restart_button_pressed = 0;
-            check.is_the_setting_in_game_button_pressed = 0;
+        if (check.is_start_button_pressed) {
+            window.clear();
+            window.draw(shapes.game_mode_page);
+            window.display();
         }
-        if (check.is_game_button_pressed) {
-            draw_game(shapes, number_of_eaten_apples, check, font, textures);
+        else if (check.is_survive_mode_pressed) {
+            if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed)
+                update_game(shapes, game_counter, check, number_of_eaten_apples);
 
+            else if (check.is_the_restart_button_pressed) {
+                number_of_eaten_apples = 0;
+                sizenposition();
+                check.is_the_snake_alive = 1;
+                check.if_the_player_started_playing = 0;
+                check.is_the_restart_button_pressed = 0;
+                check.is_the_setting_in_game_button_pressed = 0;
+            }
+            draw_game(shapes, number_of_eaten_apples, check, font, textures);
         }
         else if (opening_counter <= 200) {
             window.clear();
@@ -474,6 +496,7 @@ int main() {
             check.is_the_restart_button_pressed = 0;
             check.is_the_setting_in_game_button_pressed = 0;
             number_of_eaten_apples = 0;
+            check.is_main_menu_open = 1;
 
         }
 
@@ -496,6 +519,7 @@ void change_size(shape& shapes) {
     shapes.exit_icon_in_setting_music_page.setScale(1, 1);
     screen_factor_x = VideoMode::getDesktopMode().width / 1300.0;
     screen_factor_y = VideoMode::getDesktopMode().height / 800.0;
+    shapes.game_mode_page.setScale(VideoMode::getDesktopMode().width / 1800.0, VideoMode::getDesktopMode().height / 1300.0);
 }
 
 //to make all of the squares to have the same size, origin,and initial speed (+ve x direction) 
@@ -514,7 +538,7 @@ void sizenposition() {
 //any button in the game
 void collision(shape shapes, int& number_of_eaten_apples, Check& check, int ranking[], int& collision_counter) {
 
-    bool left_or_right_mouse_button_pressed = Mouse::isButtonPressed(Mouse::Left) || Mouse::isButtonPressed(Mouse::Right);
+    bool left_or_right_mouse_button_pressed = Mouse::isButtonPressed(Mouse::Left);
     bool space_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Space);
     bool escape_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Escape);
 
@@ -568,15 +592,6 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
     int in_game_space_between_buttons = 40;
     int in_game_second_button = in_game_first_button + icon_height + in_game_space_between_buttons;
     int in_game_third_button = in_game_second_button + icon_height + in_game_space_between_buttons;
-    if (check.is_resize_button_pressed) {
-        icon_width = 1125 - 845;
-        icon_height = 425 - 340;
-        in_game_buttons_x_position = 845;
-        in_game_space_between_buttons = 15;
-        in_game_first_button = 340;
-        in_game_second_button = in_game_first_button + icon_height + in_game_space_between_buttons;
-        in_game_third_button = in_game_second_button + icon_height + in_game_space_between_buttons;
-    }
 
     bool mouse_position_is_inside_resume_icon_box_in_game = 0;
     bool mouse_position_is_inside_restart_icon_box_in_game = 0;
@@ -593,424 +608,431 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             Mouse::getPosition(window).y >= 5 &&
             Mouse::getPosition(window).y <= 100;
     }
-    int time = 15;
-    if (check.is_resize_button_pressed)
-        time = 35;
-    if (collision_counter % time == 0) {
-        if (check.is_the_snake_alive) {
-            if (check.is_resize_button_pressed) {
-                mouse_position_is_inside_resume_icon_box_in_game =
-                    Mouse::getPosition(window).x >= in_game_buttons_x_position &&
-                    Mouse::getPosition(window).x <= in_game_buttons_x_position + icon_width &&
-                    Mouse::getPosition(window).y >= in_game_first_button &&
-                    Mouse::getPosition(window).y <= (in_game_first_button + icon_height);
+    if (left_or_right_mouse_button_pressed)
+        check.is_mouse_pressed_once++;
+    else
+        check.is_mouse_pressed_once = 0;
+    if (check.is_mouse_pressed_once > 1)
+        left_or_right_mouse_button_pressed = 0;
 
-                mouse_position_is_inside_restart_icon_box_in_game =
-                    Mouse::getPosition(window).x >= in_game_buttons_x_position &&
-                    Mouse::getPosition(window).x <= in_game_buttons_x_position + icon_width &&
-                    Mouse::getPosition(window).y >= in_game_second_button &&
-                    Mouse::getPosition(window).y <= (in_game_second_button + icon_height);
+    if (check.is_the_snake_alive) {
+        mouse_position_is_inside_resume_icon_box_in_game =
+            Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
+            Mouse::getPosition(window).x <= (in_game_buttons_x_position + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= in_game_first_button * screen_factor_y &&
+            Mouse::getPosition(window).y <= (in_game_first_button + icon_height) * screen_factor_y;
 
-                mouse_position_is_inside_exit_icon_box_in_game =
-                    Mouse::getPosition(window).x >= in_game_buttons_x_position &&
-                    Mouse::getPosition(window).x <= in_game_buttons_x_position + icon_width &&
-                    Mouse::getPosition(window).y >= in_game_third_button &&
-                    Mouse::getPosition(window).y <= in_game_third_button + icon_height;
-            }
-        }
-        else {
-            if (!check.is_resize_button_pressed) {
-                mouse_position_is_inside_restart_icon_box_in_game =
-                    Mouse::getPosition(window).x >= 430 &&
-                    Mouse::getPosition(window).x <= (430 + icon_width) &&
-                    Mouse::getPosition(window).y >= 325 &&
-                    Mouse::getPosition(window).y <= (325 + icon_height);
+        mouse_position_is_inside_restart_icon_box_in_game =
+            Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
+            Mouse::getPosition(window).x <= (in_game_buttons_x_position + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= in_game_second_button * screen_factor_y &&
+            Mouse::getPosition(window).y <= (in_game_second_button + icon_height) * screen_factor_y;
 
-                mouse_position_is_inside_exit_icon_box_in_game =
-                    Mouse::getPosition(window).x >= 660 &&
-                    Mouse::getPosition(window).x <= 660 + icon_width &&
-                    Mouse::getPosition(window).y >= 325 &&
-                    Mouse::getPosition(window).y <= 325 + icon_height;
-            }
-            else {
-                mouse_position_is_inside_restart_icon_box_in_game =
-                    Mouse::getPosition(window).x >= 645 &&
-                    Mouse::getPosition(window).x <= 925 &&
-                    Mouse::getPosition(window).y >= 440 &&
-                    Mouse::getPosition(window).y <= (525);
+        mouse_position_is_inside_exit_icon_box_in_game =
+            Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
+            Mouse::getPosition(window).x <= (in_game_buttons_x_position + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= in_game_third_button * screen_factor_y &&
+            Mouse::getPosition(window).y <= (in_game_third_button + icon_height) * screen_factor_y;
 
-                mouse_position_is_inside_exit_icon_box_in_game =
-                    Mouse::getPosition(window).x >= 1045 &&
-                    Mouse::getPosition(window).x <= 1325 &&
-                    Mouse::getPosition(window).y >= 440 &&
-                    Mouse::getPosition(window).y <= 530;
-            }
+    }
+    else {
+        mouse_position_is_inside_restart_icon_box_in_game =
+            Mouse::getPosition(window).x >= 430 * screen_factor_x &&
+            Mouse::getPosition(window).x <= (430 + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= 325 * screen_factor_y &&
+            Mouse::getPosition(window).y <= (325 + icon_height) * screen_factor_y;
 
-        }
+        mouse_position_is_inside_exit_icon_box_in_game =
+            Mouse::getPosition(window).x >= 660 * screen_factor_x &&
+            Mouse::getPosition(window).x <= (660 + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= 325 * screen_factor_y &&
+            Mouse::getPosition(window).y <= (325 + icon_height) * screen_factor_y;
 
-        if ((left_or_right_mouse_button_pressed && mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed) {
-            check.is_the_setting_in_game_button_pressed = 1;
-        }
-        if (check.is_game_button_pressed && left_or_right_mouse_button_pressed && !check.is_ranking_button_pressed
-            && !check.is_setting_button_pressed && !check.is_audio_button_pressed && !check.is_change_snake_button_pressed) {
+    }
 
-            if (mouse_position_is_inside_resume_icon_box_in_game && check.is_the_setting_in_game_button_pressed) {
-                check.is_the_setting_in_game_button_pressed = 0;
-            }
+    if (!check.is_the_setting_in_game_button_pressed && ((left_or_right_mouse_button_pressed &&
+        mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed)) {
+        check.is_the_setting_in_game_button_pressed = 1;
+    }
+    else if (check.is_survive_mode_pressed && !check.is_ranking_button_pressed
+        && !check.is_setting_button_pressed && !check.is_audio_button_pressed && !check.is_change_snake_button_pressed) {
 
-            if (((mouse_position_is_inside_restart_icon_box_in_game)) && (check.is_the_snake_alive == 0 ||
-                check.is_the_setting_in_game_button_pressed)) {
-                check.is_the_restart_button_pressed = 1;
-            }
-
-            if (mouse_position_is_inside_exit_icon_box_in_game && (check.is_the_snake_alive == 0 || check.is_the_setting_in_game_button_pressed)) {
-                check.is_game_button_pressed = 0;
-            }
+        if ((mouse_position_is_inside_resume_icon_box_in_game && left_or_right_mouse_button_pressed) ||
+            space_button_is_pressed && check.is_the_setting_in_game_button_pressed) {
+            check.is_the_setting_in_game_button_pressed = 0;
         }
 
-        //main menu buttons
-
-        int left_x_position_of_the_main_menu_buttons = 560;
-        int width_of_main_menu_buttons = 190;
-        int height_of_main_menu_buttons = 50;
-        int first_button = 460;
-        int space_between_main_menu_buttons = 45;
-        int second_button = first_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
-        int third_button = second_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
-        int setting_icon_width = 145 - 30;
-        int setting_icon_height = 755 - 670;
-        int setting_icon_x_position = 30;
-        int setting_icon_y_position = 670;
-        if (check.is_resize_button_pressed) {
-            left_x_position_of_the_main_menu_buttons = 825;
-            width_of_main_menu_buttons = 1105 - 825;
-            height_of_main_menu_buttons = 80;
-            first_button = 600;
-            space_between_main_menu_buttons = 45;
-            second_button = first_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
-            third_button = second_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
-            setting_icon_width = 215 - 45;
-            setting_icon_height = 1015 - 905;
-            setting_icon_x_position = 45;
-            setting_icon_y_position = 905;
+        else if (mouse_position_is_inside_restart_icon_box_in_game && (check.is_the_snake_alive == 0 ||
+            check.is_the_setting_in_game_button_pressed) && left_or_right_mouse_button_pressed) {
+            check.is_the_restart_button_pressed = 1;
         }
 
-        bool mouse_position_is_inside_start_button_in_main_menu =
-            Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
-            Mouse::getPosition(window).x <= left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons &&
-            Mouse::getPosition(window).y >= first_button &&
-            Mouse::getPosition(window).y <= first_button + height_of_main_menu_buttons;
-        bool mouse_position_is_inside_view_high_score_button_in_main_menu =
-            Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
-            Mouse::getPosition(window).x <= left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons &&
-            Mouse::getPosition(window).y >= second_button &&
-            Mouse::getPosition(window).y <= second_button + height_of_main_menu_buttons;
+        else if (mouse_position_is_inside_exit_icon_box_in_game && (check.is_the_snake_alive == 0
+            || check.is_the_setting_in_game_button_pressed) && left_or_right_mouse_button_pressed) {
+            check.is_survive_mode_pressed = 0;
+        }
+    }
 
-        bool mouse_position_is_inside_exit_button_in_main_menu =
-            Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
-            Mouse::getPosition(window).x <= (left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons) &&
-            Mouse::getPosition(window).y >= third_button &&
-            Mouse::getPosition(window).y <= third_button + height_of_main_menu_buttons;
+    //main menu buttons
 
-        bool mouse_position_is_inside_setting_button_in_main_menu =
-            Mouse::getPosition(window).x >= setting_icon_x_position &&
-            Mouse::getPosition(window).x <= setting_icon_x_position + setting_icon_width &&
-            Mouse::getPosition(window).y >= setting_icon_y_position &&
-            Mouse::getPosition(window).y <= setting_icon_y_position + setting_icon_height;
+    int left_x_position_of_the_main_menu_buttons = 560;
+    int width_of_main_menu_buttons = 190;
+    int height_of_main_menu_buttons = 50;
+    int first_button = 460;
+    int space_between_main_menu_buttons = 45;
+    int second_button = first_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
+    int third_button = second_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
+    int setting_icon_width = 145 - 30;
+    int setting_icon_height = 755 - 670;
+    int setting_icon_x_position = 30;
+    int setting_icon_y_position = 670;
+    if (check.is_resize_button_pressed) {
+        left_x_position_of_the_main_menu_buttons = 825;
+        width_of_main_menu_buttons = 1105 - 825;
+        height_of_main_menu_buttons = 80;
+        first_button = 600;
+        space_between_main_menu_buttons = 45;
+        second_button = first_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
+        third_button = second_button + space_between_main_menu_buttons + height_of_main_menu_buttons;
+        setting_icon_width = 215 - 45;
+        setting_icon_height = 1015 - 905;
+        setting_icon_x_position = 45;
+        setting_icon_y_position = 905;
+    }
+    bool mouse_position_is_inside_start_button_in_main_menu =
+        Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
+        Mouse::getPosition(window).x <= left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons &&
+        Mouse::getPosition(window).y >= first_button &&
+        Mouse::getPosition(window).y <= first_button + height_of_main_menu_buttons;
+    bool mouse_position_is_inside_view_high_score_button_in_main_menu =
+        Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
+        Mouse::getPosition(window).x <= left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons &&
+        Mouse::getPosition(window).y >= second_button &&
+        Mouse::getPosition(window).y <= second_button + height_of_main_menu_buttons;
 
-        if (left_or_right_mouse_button_pressed && !check.is_game_button_pressed && !check.is_ranking_button_pressed
-            && !check.is_setting_button_pressed && !check.is_audio_button_pressed && check.is_change_snake_button_pressed == 0) {
-            if ((mouse_position_is_inside_start_button_in_main_menu))
-            {
-                // "Start" button pressed
-                check.is_game_button_pressed = 1;
-                // start the game
-            }
-            else if ((mouse_position_is_inside_view_high_score_button_in_main_menu))
-            {
-                check.is_ranking_button_pressed = 1;
-                // "View High Score" button pressed
-                // show the high scores
-            }
-            else if ((mouse_position_is_inside_setting_button_in_main_menu))
-            {
-                // "Settings" button pressed
-                check.is_setting_button_pressed = 1;
-            }
-            else if ((mouse_position_is_inside_exit_button_in_main_menu))
-            {
-                // "Exit" button pressed
-                window.close();
-            }
-        }
+    bool mouse_position_is_inside_exit_button_in_main_menu =
+        Mouse::getPosition(window).x >= left_x_position_of_the_main_menu_buttons &&
+        Mouse::getPosition(window).x <= (left_x_position_of_the_main_menu_buttons + width_of_main_menu_buttons) &&
+        Mouse::getPosition(window).y >= third_button &&
+        Mouse::getPosition(window).y <= third_button + height_of_main_menu_buttons;
 
-        //ranking buttons
-        bool mouse_position_is_inside_exit_button_in_ranking_page =
-            Mouse::getPosition(window).x >= 825 &&
-            Mouse::getPosition(window).x <= 925 &&
-            Mouse::getPosition(window).y >= 645 &&
-            Mouse::getPosition(window).y <= 730;
-        if (check.is_resize_button_pressed) {
-            mouse_position_is_inside_exit_button_in_ranking_page =
-                Mouse::getPosition(window).x >= 1220 &&
-                Mouse::getPosition(window).x <= 1365 &&
-                Mouse::getPosition(window).y >= 870 &&
-                Mouse::getPosition(window).y <= 990;
-        }
-        if (left_or_right_mouse_button_pressed && mouse_position_is_inside_exit_button_in_ranking_page && check.is_ranking_button_pressed &&
-            !check.is_game_button_pressed && !check.is_setting_button_pressed && check.is_audio_button_pressed == 0 &&
-            check.is_change_snake_button_pressed == 0) {
-            check.is_ranking_button_pressed = 0;
-        }
-        //setting buttons
-        int setting_buttons_x_position = 525;
-        int setting_buttons_width = 780 - 525;
-        int setting_buttons_height = 85;
-        int setting_space_between_buttons = 15;
-        int setting_first_button = 300;
-        int setting_second_button = setting_first_button + setting_buttons_height + setting_space_between_buttons;
-        int setting_third_button = setting_second_button + setting_buttons_height + setting_space_between_buttons;
-        if (check.is_resize_button_pressed) {
-            setting_buttons_x_position = 780;
-            setting_buttons_width = 1150 - 780;
-            setting_buttons_height = 520 - 405;
-            setting_space_between_buttons = 540 - 520;
-            setting_first_button = 405;
-            setting_second_button = setting_first_button + setting_buttons_height + setting_space_between_buttons;
-            setting_third_button = setting_second_button + setting_buttons_height + setting_space_between_buttons;
-        }
-        if (Mouse::isButtonPressed(Mouse::Right)) {
-            cout << Mouse::getPosition(window).x << ' ' << Mouse::getPosition(window).y << endl;
-        }
-        bool mouse_position_is_inside_audio_button_in_setting_page =
-            Mouse::getPosition(window).x >= setting_buttons_x_position &&
-            Mouse::getPosition(window).x <= setting_buttons_x_position + setting_buttons_width &&
-            Mouse::getPosition(window).y >= setting_first_button &&
-            Mouse::getPosition(window).y <= setting_first_button + setting_buttons_height;
-        bool mouse_position_is_inside_change_color_button_in_setting_page =
-            Mouse::getPosition(window).x >= setting_buttons_x_position &&
-            Mouse::getPosition(window).x <= setting_buttons_x_position + setting_buttons_width &&
-            Mouse::getPosition(window).y >= setting_second_button &&
-            Mouse::getPosition(window).y <= setting_second_button + setting_buttons_height;
-        bool mouse_position_is_inside_exit_button_in_setting_page =
-            Mouse::getPosition(window).x >= setting_buttons_x_position &&
-            Mouse::getPosition(window).x <= setting_buttons_x_position + setting_buttons_width &&
-            Mouse::getPosition(window).y >= setting_third_button &&
-            Mouse::getPosition(window).y <= setting_third_button + setting_buttons_height;
+    bool mouse_position_is_inside_setting_button_in_main_menu =
+        Mouse::getPosition(window).x >= setting_icon_x_position &&
+        Mouse::getPosition(window).x <= setting_icon_x_position + setting_icon_width &&
+        Mouse::getPosition(window).y >= setting_icon_y_position &&
+        Mouse::getPosition(window).y <= setting_icon_y_position + setting_icon_height;
 
-        if (check.is_setting_button_pressed && left_or_right_mouse_button_pressed && !check.is_audio_button_pressed &&
-            !check.is_ranking_button_pressed && !check.is_game_button_pressed && !check.is_change_snake_button_pressed) {
+    //ranking buttons
+    bool mouse_position_is_inside_exit_button_in_ranking_page =
+        Mouse::getPosition(window).x >= 825 &&
+        Mouse::getPosition(window).x <= 925 &&
+        Mouse::getPosition(window).y >= 645 &&
+        Mouse::getPosition(window).y <= 730;
 
-            if (mouse_position_is_inside_audio_button_in_setting_page) {
-                check.is_audio_button_pressed = 1;
-                check.is_setting_button_pressed = 0;
-            }
-            else if (mouse_position_is_inside_change_color_button_in_setting_page) {
-                check.is_change_snake_button_pressed = 1;
-                check.is_setting_button_pressed = 0;
-            }
-            else if (mouse_position_is_inside_exit_button_in_setting_page) {
-                check.is_setting_button_pressed = 0;
-            }
-        }
-        //audio buttons
-        bool mouse_position_is_inside_ON_Audio_in_audio_setting_page =
-            Mouse::getPosition(window).x >= 615 &&
-            Mouse::getPosition(window).x <= 683 &&
-            Mouse::getPosition(window).y >= 390 &&
-            Mouse::getPosition(window).y <= 445;
-        bool mouse_position_is_inside_OFF_Audio_in_setting_page =
-            Mouse::getPosition(window).x >= 739 &&
-            Mouse::getPosition(window).x <= 800 &&
-            Mouse::getPosition(window).y >= 390 &&
-            Mouse::getPosition(window).y <= 445;
-        bool mouse_position_is_inside_ON_Music_in_setting_page =
-            Mouse::getPosition(window).x >= 615 &&
-            Mouse::getPosition(window).x <= 683 &&
-            Mouse::getPosition(window).y >= 523 &&
-            Mouse::getPosition(window).y <= 576;
-        bool mouse_position_is_inside_OFF_Music_in_setting_page =
-            Mouse::getPosition(window).x >= 739 &&
-            Mouse::getPosition(window).x <= 800 &&
-            Mouse::getPosition(window).y >= 523 &&
-            Mouse::getPosition(window).y <= 576;
-        bool mouse_position_is_inside_exit_button_in_music_setting_page =
-            Mouse::getPosition(window).x >= 845 &&
-            Mouse::getPosition(window).x <= 925 &&
-            Mouse::getPosition(window).y >= 255 &&
-            Mouse::getPosition(window).y <= 330;
-        if (check.is_resize_button_pressed) {
-            mouse_position_is_inside_ON_Audio_in_audio_setting_page =
-                Mouse::getPosition(window).x >= 910 &&
-                Mouse::getPosition(window).x <= 1005 &&
-                Mouse::getPosition(window).y >= 530 &&
-                Mouse::getPosition(window).y <= 600;
-            mouse_position_is_inside_OFF_Audio_in_setting_page =
-                Mouse::getPosition(window).x >= 1090 &&
-                Mouse::getPosition(window).x <= 1185 &&
-                Mouse::getPosition(window).y >= 530 &&
-                Mouse::getPosition(window).y <= 600;
-            mouse_position_is_inside_ON_Music_in_setting_page =
-                Mouse::getPosition(window).x >= 910 &&
-                Mouse::getPosition(window).x <= 1005 &&
-                Mouse::getPosition(window).y >= 705 &&
-                Mouse::getPosition(window).y <= 775;
-            mouse_position_is_inside_OFF_Music_in_setting_page =
-                Mouse::getPosition(window).x >= 1085 &&
-                Mouse::getPosition(window).x <= 1180 &&
-                Mouse::getPosition(window).y >= 710 &&
-                Mouse::getPosition(window).y <= 780;
-            mouse_position_is_inside_exit_button_in_music_setting_page =
-                Mouse::getPosition(window).x >= 1195 &&
-                Mouse::getPosition(window).x <= 1305 &&
-                Mouse::getPosition(window).y >= 325 &&
-                Mouse::getPosition(window).y <= 435;
-        }
-        if (left_or_right_mouse_button_pressed && check.is_audio_button_pressed && !check.is_change_snake_button_pressed &&
-            !check.is_game_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed) {
-            if (mouse_position_is_inside_ON_Audio_in_audio_setting_page) {
-                apple_eating_sound.setVolume(100);
-                losing_sound.setVolume(100);
-                rotten_apple_eating_sound.setVolume(100);
-            }
-            else if (mouse_position_is_inside_OFF_Audio_in_setting_page) {
-                apple_eating_sound.setVolume(0);
-                losing_sound.setVolume(0);
-                rotten_apple_eating_sound.setVolume(0);
-            }
-            else if (mouse_position_is_inside_ON_Music_in_setting_page) {
-                music.setVolume(100);
-            }
-            else if (mouse_position_is_inside_OFF_Music_in_setting_page) {
-                music.setVolume(0);
-            }
-            else if (mouse_position_is_inside_exit_button_in_music_setting_page) {
-                check.is_audio_button_pressed = 0;
-                check.is_setting_button_pressed = 1;
-            }
-        }
+    //setting buttons
+    int setting_buttons_x_position = 525;
+    int setting_buttons_width = 780 - 525;
+    int setting_buttons_height = 85;
+    int setting_space_between_buttons = 15;
+    int setting_first_button = 300;
+    int setting_second_button = setting_first_button + setting_buttons_height + setting_space_between_buttons;
+    int setting_third_button = setting_second_button + setting_buttons_height + setting_space_between_buttons;
+    if (check.is_resize_button_pressed) {
+        setting_buttons_x_position = 780;
+        setting_buttons_width = 1150 - 780;
+        setting_buttons_height = 520 - 405;
+        setting_space_between_buttons = 540 - 520;
+        setting_first_button = 405;
+        setting_second_button = setting_first_button + setting_buttons_height + setting_space_between_buttons;
+        setting_third_button = setting_second_button + setting_buttons_height + setting_space_between_buttons;
+    }
+    bool mouse_position_is_inside_audio_button_in_setting_page =
+        Mouse::getPosition(window).x >= setting_buttons_x_position &&
+        Mouse::getPosition(window).x <= setting_buttons_x_position + setting_buttons_width &&
+        Mouse::getPosition(window).y >= setting_first_button &&
+        Mouse::getPosition(window).y <= setting_first_button + setting_buttons_height;
+    bool mouse_position_is_inside_change_color_button_in_setting_page =
+        Mouse::getPosition(window).x >= setting_buttons_x_position &&
+        Mouse::getPosition(window).x <= setting_buttons_x_position + setting_buttons_width &&
+        Mouse::getPosition(window).y >= setting_second_button &&
+        Mouse::getPosition(window).y <= setting_second_button + setting_buttons_height;
+    bool mouse_position_is_inside_exit_button_in_setting_page =
+        Mouse::getPosition(window).x >= setting_buttons_x_position &&
+        Mouse::getPosition(window).x <= setting_buttons_x_position + setting_buttons_width &&
+        Mouse::getPosition(window).y >= setting_third_button &&
+        Mouse::getPosition(window).y <= setting_third_button + setting_buttons_height;
+    //audio buttons
+    bool mouse_position_is_inside_ON_Audio_in_audio_setting_page =
+        Mouse::getPosition(window).x >= 615 &&
+        Mouse::getPosition(window).x <= 683 &&
+        Mouse::getPosition(window).y >= 390 &&
+        Mouse::getPosition(window).y <= 445;
+    bool mouse_position_is_inside_OFF_Audio_in_setting_page =
+        Mouse::getPosition(window).x >= 739 &&
+        Mouse::getPosition(window).x <= 800 &&
+        Mouse::getPosition(window).y >= 390 &&
+        Mouse::getPosition(window).y <= 445;
+    bool mouse_position_is_inside_ON_Music_in_setting_page =
+        Mouse::getPosition(window).x >= 615 &&
+        Mouse::getPosition(window).x <= 683 &&
+        Mouse::getPosition(window).y >= 523 &&
+        Mouse::getPosition(window).y <= 576;
+    bool mouse_position_is_inside_OFF_Music_in_setting_page =
+        Mouse::getPosition(window).x >= 739 &&
+        Mouse::getPosition(window).x <= 800 &&
+        Mouse::getPosition(window).y >= 523 &&
+        Mouse::getPosition(window).y <= 576;
+    bool mouse_position_is_inside_exit_button_in_music_setting_page =
+        Mouse::getPosition(window).x >= 845 &&
+        Mouse::getPosition(window).x <= 925 &&
+        Mouse::getPosition(window).y >= 255 &&
+        Mouse::getPosition(window).y <= 330;
 
-        bool mouse_position_is_inside_Exit_in_change_color_page =
-            Mouse::getPosition(window).x >= 556 &&
-            Mouse::getPosition(window).x <= 725 &&
-            Mouse::getPosition(window).y >= 527 &&
-            Mouse::getPosition(window).y <= 574;
-        bool mouse_position_is_inside_first_snake_in_change_color_page =
-            Mouse::getPosition(window).x >= 632 &&
-            Mouse::getPosition(window).x <= 674 &&
-            Mouse::getPosition(window).y >= 330 &&
-            Mouse::getPosition(window).y <= 373;
-        bool mouse_position_is_inside_second_snake_in_change_color_page =
-            Mouse::getPosition(window).x >= 439 &&
-            Mouse::getPosition(window).x <= 483 &&
-            Mouse::getPosition(window).y >= 330 &&
-            Mouse::getPosition(window).y <= 373;
-        bool mouse_position_is_inside_third_snake_in_change_color_page =
-            Mouse::getPosition(window).x >= 823 &&
-            Mouse::getPosition(window).x <= 867 &&
-            Mouse::getPosition(window).y >= 330 &&
-            Mouse::getPosition(window).y <= 373;
-        bool mouse_position_is_inside_forth_snake_in_change_color_page =
-            Mouse::getPosition(window).x >= 535 &&
-            Mouse::getPosition(window).x <= 578 &&
-            Mouse::getPosition(window).y >= 330 &&
-            Mouse::getPosition(window).y <= 373;
-        bool mouse_position_is_inside_first_color_option_in_change_color_page =
-            Mouse::getPosition(window).x >= 523 &&
-            Mouse::getPosition(window).x <= 567 &&
-            Mouse::getPosition(window).y >= 496 &&
-            Mouse::getPosition(window).y <= 539;
-        bool mouse_position_is_inside_second_color_option_in_change_color_page =
-            Mouse::getPosition(window).x >= 689 &&
-            Mouse::getPosition(window).x <= 733 &&
-            Mouse::getPosition(window).y >= 496 &&
-            Mouse::getPosition(window).y <= 539;
-        if (check.is_resize_button_pressed) {
-            mouse_position_is_inside_Exit_in_change_color_page =
-                Mouse::getPosition(window).x >= 810 &&
-                Mouse::getPosition(window).x <= 1075 &&
-                Mouse::getPosition(window).y >= 710 &&
-                Mouse::getPosition(window).y <= 775;
-            mouse_position_is_inside_first_snake_in_change_color_page =
-                Mouse::getPosition(window).x >= 685 &&
-                Mouse::getPosition(window).x <= 760 &&
-                Mouse::getPosition(window).y >= 420 &&
-                Mouse::getPosition(window).y <= 490;
-            mouse_position_is_inside_second_snake_in_change_color_page =
-                Mouse::getPosition(window).x >= 760 + (925 - 760) &&
-                Mouse::getPosition(window).x <= 760 + (925 - 760) + (760 - 685) &&
-                Mouse::getPosition(window).y >= 420 &&
-                Mouse::getPosition(window).y <= 490;
-            mouse_position_is_inside_third_snake_in_change_color_page =
-                Mouse::getPosition(window).x >= 760 + (925 - 760) * 2 + (760 - 685) &&
-                Mouse::getPosition(window).x <= 760 + (925 - 760) * 2 + (760 - 685) * 2 &&
-                Mouse::getPosition(window).y >= 420 &&
-                Mouse::getPosition(window).y <= 490;
-            mouse_position_is_inside_first_color_option_in_change_color_page =
-                Mouse::getPosition(window).x >= 770 &&
-                Mouse::getPosition(window).x <= 845 &&
-                Mouse::getPosition(window).y >= 600 &&
-                Mouse::getPosition(window).y <= 640;
-            mouse_position_is_inside_second_color_option_in_change_color_page =
-                Mouse::getPosition(window).x >= 845 + (1055 - 845) &&
-                Mouse::getPosition(window).x <= 845 + (1055 - 845) + (845 - 770) &&
-                Mouse::getPosition(window).y >= 600 &&
-                Mouse::getPosition(window).y <= 640;
+    if (check.is_resize_button_pressed) {
+        mouse_position_is_inside_exit_button_in_ranking_page =
+            Mouse::getPosition(window).x >= 1220 &&
+            Mouse::getPosition(window).x <= 1365 &&
+            Mouse::getPosition(window).y >= 870 &&
+            Mouse::getPosition(window).y <= 990;
+    }
+
+    bool mouse_position_is_inside_Exit_in_change_color_page =
+        Mouse::getPosition(window).x >= 25*screen_factor_x &&
+        Mouse::getPosition(window).x <= 120 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 690 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 785 * screen_factor_y;
+    bool mouse_position_is_inside_first_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 632 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 674 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 330 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 373 * screen_factor_y;
+    bool mouse_position_is_inside_second_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 439 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 483 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 330 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 373 * screen_factor_y;
+    bool mouse_position_is_inside_third_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 823 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 867 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 330 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 373 * screen_factor_y;
+    bool mouse_position_is_inside_forth_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 535 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 578 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 330 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 373 * screen_factor_y;
+    bool mouse_position_is_inside_first_color_option_in_change_color_page =
+        Mouse::getPosition(window).x >= 523 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 567 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 496 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 539 * screen_factor_y;
+    bool mouse_position_is_inside_second_color_option_in_change_color_page =
+        Mouse::getPosition(window).x >= 689 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 733 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 496 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 539 * screen_factor_y;
+
+    if (check.is_resize_button_pressed) {
+        mouse_position_is_inside_ON_Audio_in_audio_setting_page =
+            Mouse::getPosition(window).x >= 910 &&
+            Mouse::getPosition(window).x <= 1005 &&
+            Mouse::getPosition(window).y >= 530 &&
+            Mouse::getPosition(window).y <= 600;
+        mouse_position_is_inside_OFF_Audio_in_setting_page =
+            Mouse::getPosition(window).x >= 1090 &&
+            Mouse::getPosition(window).x <= 1185 &&
+            Mouse::getPosition(window).y >= 530 &&
+            Mouse::getPosition(window).y <= 600;
+        mouse_position_is_inside_ON_Music_in_setting_page =
+            Mouse::getPosition(window).x >= 910 &&
+            Mouse::getPosition(window).x <= 1005 &&
+            Mouse::getPosition(window).y >= 705 &&
+            Mouse::getPosition(window).y <= 775;
+        mouse_position_is_inside_OFF_Music_in_setting_page =
+            Mouse::getPosition(window).x >= 1085 &&
+            Mouse::getPosition(window).x <= 1180 &&
+            Mouse::getPosition(window).y >= 710 &&
+            Mouse::getPosition(window).y <= 780;
+        mouse_position_is_inside_exit_button_in_music_setting_page =
+            Mouse::getPosition(window).x >= 1195 &&
+            Mouse::getPosition(window).x <= 1305 &&
+            Mouse::getPosition(window).y >= 325 &&
+            Mouse::getPosition(window).y <= 435;
+    }
+    bool mouse_position_is_inside_story_button =
+        Mouse::getPosition(window).x >= 520 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 795 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 320 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 410 * screen_factor_y;
+    bool mouse_position_is_inside_survival_button =
+        Mouse::getPosition(window).x >= 520 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 795 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 470 * screen_factor_y &&
+        Mouse::getPosition(window).y <= (470 + (410 - 320)) * screen_factor_y;
+    bool mouse_position_is_inside_exit_button_in_game_modes_page= 
+        Mouse::getPosition(window).x >= 5 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 115 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 700 * screen_factor_y &&
+        Mouse::getPosition(window).y <= (790) * screen_factor_y;;
+    if (Mouse::isButtonPressed(Mouse::Right)) {
+        cout << Mouse::getPosition(window).x << ' ' << Mouse::getPosition(window).y << endl;
+    }
+    if (left_or_right_mouse_button_pressed && !check.is_start_button_pressed && !check.is_ranking_button_pressed
+        && !check.is_setting_button_pressed && !check.is_audio_button_pressed && check.is_change_snake_button_pressed == 0 &&
+        !check.is_story_mode_pressed && !check.is_survive_mode_pressed && check.is_main_menu_open) {
+        if ((mouse_position_is_inside_start_button_in_main_menu))
+        {
+            // "Start" button pressed
+            check.is_start_button_pressed = 1;
+            check.is_main_menu_open = 0;
+            cout << 2 << ' ' << collision_counter << endl;
+            // start the game
         }
-        if (left_or_right_mouse_button_pressed && check.is_change_snake_button_pressed && !check.is_audio_button_pressed &&
-            !check.is_game_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed) {
-            if (mouse_position_is_inside_Exit_in_change_color_page)
-            {
-                check.is_setting_button_pressed = 1;
-                check.is_change_snake_button_pressed = 0;
-            }
-            if (mouse_position_is_inside_first_snake_in_change_color_page)
-            {
-                check.is_snake_1_being_used = 1;
-                check.is_snake_2_being_used = 0;
-                check.is_snake_3_being_used = 0;
-                check.is_snake_4_being_used = 0;
-            }
-            else if (mouse_position_is_inside_second_snake_in_change_color_page)
-            {
-                check.is_snake_1_being_used = 0;
-                check.is_snake_2_being_used = 1;
-                check.is_snake_3_being_used = 0;
-                check.is_snake_4_being_used = 0;
-            }
-            else if (mouse_position_is_inside_third_snake_in_change_color_page)
-            {
-                check.is_snake_1_being_used = 0;
-                check.is_snake_2_being_used = 0;
-                check.is_snake_3_being_used = 1;
-                check.is_snake_4_being_used = 0;
-            }
-            else if (mouse_position_is_inside_forth_snake_in_change_color_page)
-            {
-                check.is_snake_1_being_used = 0;
-                check.is_snake_2_being_used = 0;
-                check.is_snake_3_being_used = 0;
-                check.is_snake_4_being_used = 1;
-            }
-            if (mouse_position_is_inside_first_color_option_in_change_color_page)
-            {
-                check.is_snake_changing_colors = 1;
-            }
-            else if (mouse_position_is_inside_second_color_option_in_change_color_page)
-            {
-                check.is_snake_changing_colors = 0;
-            }
+        else if ((mouse_position_is_inside_view_high_score_button_in_main_menu))
+        {
+            check.is_ranking_button_pressed = 1;
+            check.is_main_menu_open = 0;
+            // "View High Score" button pressed
+            // show the high scores
+        }
+        else if ((mouse_position_is_inside_setting_button_in_main_menu))
+        {
+            // "Settings" button pressed
+            check.is_setting_button_pressed = 1;
+            check.is_main_menu_open = 0;
+        }
+        else if ((mouse_position_is_inside_exit_button_in_main_menu))
+        {
+            // "Exit" button pressed
+            window.close();
+        }
+    }
+
+
+    else if (left_or_right_mouse_button_pressed && mouse_position_is_inside_exit_button_in_ranking_page &&
+        check.is_ranking_button_pressed && !check.is_main_menu_open &&
+        !check.is_start_button_pressed && !check.is_setting_button_pressed && check.is_audio_button_pressed == 0 &&
+        check.is_change_snake_button_pressed == 0 && !check.is_story_mode_pressed && !check.is_survive_mode_pressed) {
+
+        check.is_ranking_button_pressed = 0;
+
+    }
+
+
+    else if (check.is_setting_button_pressed && left_or_right_mouse_button_pressed && !check.is_audio_button_pressed &&
+        !check.is_ranking_button_pressed && !check.is_start_button_pressed && !check.is_change_snake_button_pressed &&
+        !check.is_story_mode_pressed && !check.is_survive_mode_pressed) {
+
+        if (mouse_position_is_inside_audio_button_in_setting_page) {
+            check.is_audio_button_pressed = 1;
+            check.is_setting_button_pressed = 0;
+        }
+        else if (mouse_position_is_inside_change_color_button_in_setting_page) {
+            check.is_change_snake_button_pressed = 1;
+            check.is_setting_button_pressed = 0;
+        }
+        else if (mouse_position_is_inside_exit_button_in_setting_page) {
+            check.is_setting_button_pressed = 0;
+        }
+    }
+
+
+    else if (left_or_right_mouse_button_pressed && check.is_audio_button_pressed && !check.is_change_snake_button_pressed &&
+        !check.is_start_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed &&
+        !check.is_story_mode_pressed && !check.is_survive_mode_pressed) {
+        if (mouse_position_is_inside_ON_Audio_in_audio_setting_page) {
+            apple_eating_sound.setVolume(100);
+            losing_sound.setVolume(100);
+            rotten_apple_eating_sound.setVolume(100);
+        }
+        else if (mouse_position_is_inside_OFF_Audio_in_setting_page) {
+            apple_eating_sound.setVolume(0);
+            losing_sound.setVolume(0);
+            rotten_apple_eating_sound.setVolume(0);
+        }
+        else if (mouse_position_is_inside_ON_Music_in_setting_page) {
+            music.setVolume(100);
+        }
+        else if (mouse_position_is_inside_OFF_Music_in_setting_page) {
+            music.setVolume(0);
+        }
+        else if (mouse_position_is_inside_exit_button_in_music_setting_page) {
+            check.is_audio_button_pressed = 0;
+            check.is_setting_button_pressed = 1;
+        }
+    }
+
+
+    else if (left_or_right_mouse_button_pressed && check.is_change_snake_button_pressed && !check.is_audio_button_pressed &&
+        !check.is_start_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed) {
+        if (mouse_position_is_inside_Exit_in_change_color_page)
+        {
+            check.is_setting_button_pressed = 1;
+            check.is_change_snake_button_pressed = 0;
+        }
+        if (mouse_position_is_inside_first_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 1;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 0;
+        }
+        else if (mouse_position_is_inside_second_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 1;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 0;
+        }
+        else if (mouse_position_is_inside_third_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 1;
+            check.is_snake_4_being_used = 0;
+        }
+        else if (mouse_position_is_inside_forth_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 1;
+        }
+        if (mouse_position_is_inside_first_color_option_in_change_color_page)
+        {
+            check.is_snake_changing_colors = 1;
+        }
+        else if (mouse_position_is_inside_second_color_option_in_change_color_page)
+        {
+            check.is_snake_changing_colors = 0;
+        }
+    }
+    else if (left_or_right_mouse_button_pressed && check.is_start_button_pressed && !check.is_change_snake_button_pressed &&
+        !check.is_audio_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed &&
+        !check.is_story_mode_pressed && !check.is_survive_mode_pressed && !check.is_main_menu_open) {
+        if (mouse_position_is_inside_story_button) {
+            check.is_story_mode_pressed = 1;
+            check.is_start_button_pressed = 0;
+        }
+        else if (mouse_position_is_inside_survival_button) {
+            check.is_survive_mode_pressed = 1;
+            check.is_start_button_pressed = 0;
+        }
+        else if (mouse_position_is_inside_exit_button_in_game_modes_page) {
+            check.is_start_button_pressed = 0;
 
         }
     }
+
     collision_counter++;
 }
+
 
 void update_game(shape& shapes, int& game_counter, Check& check, int number_of_eaten_apples) {
     //the time it will take the snake to change positions which will make it move faster
     int speedtimer = snake_size_and_speed * 0.2;
     if (check.is_resize_button_pressed) {
-        speedtimer *= 1.2;
+        speedtimer *= 1.25;
     }
     //the time it will take the apple to change positions
     int apple_timer = 6 * 50;
@@ -1605,24 +1627,16 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
 void draw_resume_icon(shape shapes, Check check) {
     shapes.resume_icon.setFillColor(Color::White);
     shapes.resume_icon.setSize(Vector2f(250, 200));
-    shapes.resume_icon.setPosition(550, 200);
-    if (check.is_resize_button_pressed) {
-        shapes.resume_icon.setPosition(550*screen_factor_x, 300*screen_factor_y);
-    }
+    shapes.resume_icon.setPosition(550 * screen_factor_x,200 * screen_factor_y);
+    
     window.draw(shapes.resume_icon);
 }
 
 void draw_restart_icon(shape shapes, Check check) {
     if (check.is_the_snake_alive == 0)
-        if (check.is_resize_button_pressed)
-            shapes.restart_icon.setPosition(600, 400);
-        else
-            shapes.restart_icon.setPosition(400, 300);
+            shapes.restart_icon.setPosition(400*screen_factor_x, 300*screen_factor_y);
     else
-        if (check.is_resize_button_pressed)
-            shapes.restart_icon.setPosition(800, 400);
-        else
-            shapes.restart_icon.setPosition(550, 300);
+            shapes.restart_icon.setPosition(550*screen_factor_x, 300*screen_factor_y);
     shapes.restart_icon.setSize(Vector2f(250, 200));
     shapes.restart_icon.setFillColor(Color::White);
     window.draw(shapes.restart_icon);
@@ -1630,15 +1644,9 @@ void draw_restart_icon(shape shapes, Check check) {
 
 void draw_exit_icon(shape shapes, Check check) {
     if (check.is_the_snake_alive == 0)
-        if (check.is_resize_button_pressed)
-            shapes.exit_icon.setPosition(1000, 400);
-        else
-            shapes.exit_icon.setPosition(630, 300);
+        shapes.exit_icon.setPosition(630 * screen_factor_x, 300 * screen_factor_y);
     else
-        if (check.is_resize_button_pressed)
-            shapes.exit_icon.setPosition(800, 500);
-        else
-            shapes.exit_icon.setPosition(550, 400);
+        shapes.exit_icon.setPosition(550 * screen_factor_x, 400 * screen_factor_y);
     shapes.exit_icon.setSize(Vector2f(250, 200));
     shapes.exit_icon.setFillColor(Color::White);
     window.draw(shapes.exit_icon);
@@ -1678,14 +1686,6 @@ void drawMainMenu(Font& font, shape shapes, Check check)
         exitButton.setCharacterSize(32);
         exitButton.setPosition(Vector2f((int)(625*screen_factor_x), (int)(650*screen_factor_y)));
 
-        cout << startButton.getPosition().x << endl;
-        cout << startButton.getPosition().y << endl;
-        cout << highScoreButton.getPosition().x << endl;
-        cout << highScoreButton.getPosition().y << endl;
-        cout << exitButton.getPosition().x << endl;
-        cout << exitButton.getPosition().y << endl;
-        cout << screen_factor_x << endl;
-        cout << screen_factor_y << endl;
     window.draw(startButton);
     window.draw(highScoreButton);
     window.draw(exitButton);
