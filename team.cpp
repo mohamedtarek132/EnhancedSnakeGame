@@ -40,6 +40,8 @@ struct Check {
 
     bool is_snake_4_being_used;
 
+    bool is_snake_5_being_used;
+
     bool is_snake_changing_colors;
 
     bool is_resize_button_pressed;
@@ -168,17 +170,94 @@ Texture tail___up1;
 Texture* tail_up_texture1 = &tail___up1;
 
 
-Texture body___topright2;
-Texture* body_topright_texture2 = &body___topright2;
+Texture body___topleft2;
+Texture* body_topleft_texture2 = &body___topleft2;
+
+Texture body___bottomright2;
+Texture* body_bottomright_texture2 = &body___bottomright2;
+
+Texture body___bottomleft2;
+Texture* body_bottomleft_texture2 = &body___bottomleft2;
 
 Texture body___horizontal2;
 Texture* body_horizontal_texture2 = &body___horizontal2;
 
+Texture body___topright2;
+Texture* body_topright_texture2 = &body___topright2;
+
+Texture body___vertical2;
+Texture* body_vertical_texture2 = &body___vertical2;
+
+Texture head___down2;
+Texture* head_down_texture2 = &head___down2;
+
+Texture head___left2;
+Texture* head_left_texture2 = &head___left2;
+
 Texture head___right2;
 Texture* head_right_texture2 = &head___right2;
 
+Texture head___up2;
+Texture* head_up_texture2 = &head___up2;
+
+Texture tail___down2;
+Texture* tail_down_texture2 = &tail___down2;
+
 Texture tail___left2;
 Texture* tail_left_texture2 = &tail___left2;
+
+Texture tail___right2;
+Texture* tail_right_texture2 = &tail___right2;
+
+Texture tail___up2;
+Texture* tail_up_texture2 = &tail___up2;
+
+
+
+
+Texture body___topleft3;
+Texture* body_topleft_texture3 = &body___topleft3;
+
+Texture body___bottomright3;
+Texture* body_bottomright_texture3 = &body___bottomright3;
+
+Texture body___bottomleft3;
+Texture* body_bottomleft_texture3 = &body___bottomleft3;
+
+Texture body___horizontal3;
+Texture* body_horizontal_texture3 = &body___horizontal3;
+
+Texture body___topright3;
+Texture* body_topright_texture3 = &body___topright3;
+
+Texture body___vertical3;
+Texture* body_vertical_texture3 = &body___vertical3;
+
+Texture head___down3;
+Texture* head_down_texture3 = &head___down3;
+
+Texture head___left3;
+Texture* head_left_texture3 = &head___left3;
+
+Texture head___right3;
+Texture* head_right_texture3 = &head___right3;
+
+Texture head___up3;
+Texture* head_up_texture3 = &head___up3;
+
+Texture tail___down3;
+Texture* tail_down_texture3 = &tail___down3;
+
+Texture tail___left3;
+Texture* tail_left_texture3 = &tail___left3;
+
+Texture tail___right3;
+Texture* tail_right_texture3 = &tail___right3;
+
+Texture tail___up3;
+Texture* tail_up_texture3 = &tail___up3;
+
+
 
 
 
@@ -362,13 +441,68 @@ int main() {
     tail___up1.loadFromFile("tail_up.png");
 
 
-    body___topright2.loadFromFile("body top right.png");
+    body___topleft2.loadFromFile("body top left.png");
+
+    body___bottomright2.loadFromFile("body bottom right.png");
+
+    body___bottomleft2.loadFromFile("body bottom left.png");
 
     body___horizontal2.loadFromFile("body horizontal.png");
 
+    body___topright2.loadFromFile("body top right.png");
+
+    body___vertical2.loadFromFile("body vertical.png");
+
+    head___down2.loadFromFile("head bottom.png");
+
+    head___left2.loadFromFile("head left.png");
+
     head___right2.loadFromFile("head right.png");
 
+    head___up2.loadFromFile("head top.png");
+
+    tail___down2.loadFromFile("tail bottom.png");
+
     tail___left2.loadFromFile("tail left.png");
+
+    tail___right2.loadFromFile("tail right.png");
+
+    tail___up2.loadFromFile("tail top.png");
+
+
+
+
+
+
+
+
+    body___topleft3.loadFromFile("body top left(1).png");
+
+    body___bottomright3.loadFromFile("body bottom right(1).png");
+
+    body___bottomleft3.loadFromFile("body bottom left(1).png");
+
+    body___horizontal3.loadFromFile("body horizontal(1).png");
+
+    body___topright3.loadFromFile("body top right(1).png");
+
+    body___vertical3.loadFromFile("body vertical(1).png");
+
+    head___down3.loadFromFile("head bottom(1).png");
+
+    head___left3.loadFromFile("head left(1).png");
+
+    head___right3.loadFromFile("head right(1).png");
+
+    head___up3.loadFromFile("head top(1).png");
+
+    tail___down3.loadFromFile("tail bottom(1).png");
+
+    tail___left3.loadFromFile("tail left(1).png");
+
+    tail___right3.loadFromFile("tail right(1).png");
+
+    tail___up3.loadFromFile("tail top(1).png");
 
 
 
@@ -437,7 +571,7 @@ int main() {
                 window.create(VideoMode(1300, 800), "Snake game", Style::Fullscreen);
                 check.is_resize_button_pressed = 1;
                 change_size(shapes);
-                snake_size_and_speed =(int)( snake_size_and_speed*screen_factor_x);
+                snake_size_and_speed = (int)(snake_size_and_speed * screen_factor_x);
             }
         }
 
@@ -542,7 +676,7 @@ void sizenposition() {
     for (int i = 0; i < MAX_NUMBER_OF_SQUARES; i++) {
         snake[i].setSize(Vector2f(snake_size_and_speed, snake_size_and_speed));
         snake[i].setOrigin(snake_size_and_speed / 2, snake_size_and_speed / 2);
-        snake[i].setPosition(Vector2f((int)(670*screen_factor_x) + snake_size_and_speed * (2 - i), (386*screen_factor_y)));
+        snake[i].setPosition(Vector2f((int)(670 * screen_factor_x) + snake_size_and_speed * (2 - i), (386 * screen_factor_y)));
         speed[i][0] = snake_size_and_speed;
         speed[i][1] = 0;
     }
@@ -564,12 +698,12 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             break;
         }
     }
-    bool did_snake_hit_right_side_of_the_box = ((int)snake[0].getGlobalBounds().left + (int)snake[0].getGlobalBounds().width) >= 
-        (int)(1157*screen_factor_x);
-    bool did_snake_hit_left_side_of_the_box = snake[0].getGlobalBounds().left <= (int)(145*screen_factor_x);
-    bool did_snake_hit_bottom_of_the_box =(int) (snake[0].getGlobalBounds().top + snake[0].getGlobalBounds().height)  >=
-        (int)(730*screen_factor_y);
-    bool did_snake_hit_top_of_the_box = snake[0].getGlobalBounds().top - snake_size_and_speed <= (int)(68*screen_factor_y);
+    bool did_snake_hit_right_side_of_the_box = ((int)snake[0].getGlobalBounds().left + (int)snake[0].getGlobalBounds().width) >=
+        (int)(1157 * screen_factor_x);
+    bool did_snake_hit_left_side_of_the_box = snake[0].getGlobalBounds().left <= (int)(145 * screen_factor_x);
+    bool did_snake_hit_bottom_of_the_box = (int)(snake[0].getGlobalBounds().top + snake[0].getGlobalBounds().height) >=
+        (int)(730 * screen_factor_y);
+    bool did_snake_hit_top_of_the_box = snake[0].getGlobalBounds().top - snake_size_and_speed <= (int)(68 * screen_factor_y);
 
     if ((did_snake_hit_top_of_the_box || did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
         did_snake_hit_right_side_of_the_box) && check.is_the_snake_alive == 1) {
@@ -795,6 +929,12 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).x <= 578 * screen_factor_x &&
         Mouse::getPosition(window).y >= 330 * screen_factor_y &&
         Mouse::getPosition(window).y <= 373 * screen_factor_y;
+    bool mouse_position_is_inside_fifth_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 726 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 772 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 330 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 373 * screen_factor_y;
+
     bool mouse_position_is_inside_first_color_option_in_change_color_page =
         Mouse::getPosition(window).x >= 523 * screen_factor_x &&
         Mouse::getPosition(window).x <= 567 * screen_factor_x &&
@@ -939,6 +1079,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_snake_2_being_used = 0;
             check.is_snake_3_being_used = 0;
             check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
         }
         else if (mouse_position_is_inside_second_snake_in_change_color_page)
         {
@@ -946,6 +1087,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_snake_2_being_used = 1;
             check.is_snake_3_being_used = 0;
             check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
         }
         else if (mouse_position_is_inside_third_snake_in_change_color_page)
         {
@@ -953,6 +1095,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_snake_2_being_used = 0;
             check.is_snake_3_being_used = 1;
             check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
         }
         else if (mouse_position_is_inside_forth_snake_in_change_color_page)
         {
@@ -960,6 +1103,15 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_snake_2_being_used = 0;
             check.is_snake_3_being_used = 0;
             check.is_snake_4_being_used = 1;
+            check.is_snake_5_being_used = 0;
+        }
+        else if (mouse_position_is_inside_fifth_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 1;
         }
         if (mouse_position_is_inside_first_color_option_in_change_color_page)
         {
@@ -1013,7 +1165,7 @@ void update_game(shape& shapes, int& game_counter, Check& check, int number_of_e
         speedtimer *= screen_factor_x;
     }
     //the time it will take the apple to change positions
-    int apple_timer = 6 * 50*screen_factor_x;
+    int apple_timer = 6 * 50 * screen_factor_x;
     //the time it will take the rotten apple to change positions
     int rotten_apple_timer = apple_timer * 2;
 
@@ -1235,45 +1387,39 @@ void set_texture(int number_of_eaten_apples, Check check, shapetextures& texture
             }
         }
     }
-    else if (check.is_snake_3_being_used) {
-        for (int i = 0; i < number_of_eaten_apples + 3; i++) {
-            snake[i].setTexture(NULL);
-        }
-    }
     else if (check.is_snake_4_being_used)
     {
         for (int i = 0; i < number_of_eaten_apples + 3; i++) {
             snake[i].setRotation(0);
             if (i == 0)
             {
-                snake[i].setTexture(head_right_texture2);
                 if (speed[i][0] == snake_size_and_speed) {
-
+                    snake[i].setTexture(head_right_texture2);
                 }
                 else if (speed[i][0] == -snake_size_and_speed) {
-                    snake[i].setRotation(180);
+                    snake[i].setTexture(head_left_texture2);
                 }
                 else if (speed[i][1] == snake_size_and_speed) {
-                    snake[i].setRotation(90);
+                    snake[i].setTexture(head_down_texture2);
                 }
                 else if (speed[i][1] == -snake_size_and_speed) {
-                    snake[i].setRotation(270);
+                    snake[i].setTexture(head_up_texture2);
                 }
             }
             else if (i == number_of_eaten_apples + 2)
             {
-                snake[i].setTexture(tail_left_texture2);
+
                 if (speed[i][1] == -snake_size_and_speed) {
-                    snake[i].setRotation(270);
+                    snake[i].setTexture(tail_down_texture2);
                 }
                 else if (speed[i][1] == snake_size_and_speed) {
-                    snake[i].setRotation(90);
+                    snake[i].setTexture(tail_up_texture2);
                 }
                 else if (speed[i][0] == snake_size_and_speed) {
-
+                    snake[i].setTexture(tail_left_texture2);
                 }
                 else if (speed[i][0] == -snake_size_and_speed) {
-                    snake[i].setRotation(180);
+                    snake[i].setTexture(tail_right_texture2);
                 }
 
             }
@@ -1281,25 +1427,19 @@ void set_texture(int number_of_eaten_apples, Check check, shapetextures& texture
             {
                 if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == -snake_size_and_speed) ||
                     (speed[i + 1][1] == snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
-                    snake[i].setTexture(body_topright_texture2);
-                    snake[i].setRotation(270);
-
+                    snake[i].setTexture(body_topleft_texture2);
                 }
                 else if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == snake_size_and_speed) ||
                     (speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
-                    snake[i].setTexture(body_topright_texture2);
-                    snake[i].setRotation(180);
-
+                    snake[i].setTexture(body_bottomleft_texture2);
                 }
                 else if ((speed[i + 1][1] == snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
                     (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == -snake_size_and_speed)) {
                     snake[i].setTexture(body_topright_texture2);
-
                 }
                 else if ((speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
                     (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == snake_size_and_speed)) {
-                    snake[i].setTexture(body_topright_texture2);
-                    snake[i].setRotation(90);
+                    snake[i].setTexture(body_bottomright_texture2);
                 }
 
                 else if (speed[i][0] == snake_size_and_speed) {
@@ -1309,18 +1449,91 @@ void set_texture(int number_of_eaten_apples, Check check, shapetextures& texture
                     snake[i].setTexture(body_horizontal_texture2);
                 }
                 else if (speed[i][1] == snake_size_and_speed) {
-                    snake[i].setTexture(body_horizontal_texture2);
-                    snake[i].setRotation(90);
-
+                    snake[i].setTexture(body_vertical_texture2);
                 }
                 else if (speed[i][1] == -snake_size_and_speed) {
-                    snake[i].setTexture(body_horizontal_texture2);
-                    snake[i].setRotation(90);
-
+                    snake[i].setTexture(body_vertical_texture2);
                 }
 
 
             }
+        }
+    }
+    else if (check.is_snake_5_being_used)
+    {
+        for (int i = 0; i < number_of_eaten_apples + 3; i++) {
+            snake[i].setRotation(0);
+            if (i == 0)
+            {
+                if (speed[i][0] == snake_size_and_speed) {
+                    snake[i].setTexture(head_right_texture3);
+                }
+                else if (speed[i][0] == -snake_size_and_speed) {
+                    snake[i].setTexture(head_left_texture3);
+                }
+                else if (speed[i][1] == snake_size_and_speed) {
+                    snake[i].setTexture(head_down_texture3);
+                }
+                else if (speed[i][1] == -snake_size_and_speed) {
+                    snake[i].setTexture(head_up_texture3);
+                }
+            }
+            else if (i == number_of_eaten_apples + 2)
+            {
+
+                if (speed[i][1] == -snake_size_and_speed) {
+                    snake[i].setTexture(tail_down_texture3);
+                }
+                else if (speed[i][1] == snake_size_and_speed) {
+                    snake[i].setTexture(tail_up_texture3);
+                }
+                else if (speed[i][0] == snake_size_and_speed) {
+                    snake[i].setTexture(tail_left_texture3);
+                }
+                else if (speed[i][0] == -snake_size_and_speed) {
+                    snake[i].setTexture(tail_right_texture3);
+                }
+
+            }
+            else
+            {
+                if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == -snake_size_and_speed) ||
+                    (speed[i + 1][1] == snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
+                    snake[i].setTexture(body_topleft_texture3);
+                }
+                else if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == snake_size_and_speed) ||
+                    (speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
+                    snake[i].setTexture(body_bottomleft_texture3);
+                }
+                else if ((speed[i + 1][1] == snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
+                    (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == -snake_size_and_speed)) {
+                    snake[i].setTexture(body_topright_texture3);
+                }
+                else if ((speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
+                    (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == snake_size_and_speed)) {
+                    snake[i].setTexture(body_bottomright_texture3);
+                }
+
+                else if (speed[i][0] == snake_size_and_speed) {
+                    snake[i].setTexture(body_horizontal_texture3);
+                }
+                else if (speed[i][0] == -snake_size_and_speed) {
+                    snake[i].setTexture(body_horizontal_texture3);
+                }
+                else if (speed[i][1] == snake_size_and_speed) {
+                    snake[i].setTexture(body_vertical_texture3);
+                }
+                else if (speed[i][1] == -snake_size_and_speed) {
+                    snake[i].setTexture(body_vertical_texture3);
+                }
+
+
+            }
+        }
+    }
+    else if (check.is_snake_3_being_used) {
+        for (int i = 0; i < number_of_eaten_apples + 3; i++) {
+            snake[i].setTexture(NULL);
         }
     }
 }
@@ -1523,7 +1736,7 @@ void set_rotation(int number_of_eaten_apples, int square_number) {
 void apple_counter(int number_of_eaten_apples, Check check) {
     // Display score
     text.setFillColor(sf::Color::White);
-    text.setCharacterSize(30*screen_factor_x);
+    text.setCharacterSize(30 * screen_factor_x);
     text.setPosition(70 * screen_factor_x, 20 * screen_factor_y);
     text.setString("Score: " + std::to_string(number_of_eaten_apples));
     window.draw(text);
@@ -1618,13 +1831,13 @@ void drawMainMenu(Font& font, shape shapes, Check check)
     exitButton.setString("Exit");
     exitButton.setFillColor(Color::White);
 
-    startButton.setCharacterSize(32*screen_factor_x);
+    startButton.setCharacterSize(32 * screen_factor_x);
     startButton.setPosition(Vector2f((int)(615 * screen_factor_x), (int)(450 * screen_factor_y)));
 
-    highScoreButton.setCharacterSize(29*screen_factor_x);
+    highScoreButton.setCharacterSize(29 * screen_factor_x);
     highScoreButton.setPosition(Vector2f((int)(575 * screen_factor_x), (int)(550 * screen_factor_y)));
 
-    exitButton.setCharacterSize(32*screen_factor_x);
+    exitButton.setCharacterSize(32 * screen_factor_x);
     exitButton.setPosition(Vector2f((int)(625 * screen_factor_x), (int)(650 * screen_factor_y)));
 
     window.draw(startButton);
@@ -1643,7 +1856,7 @@ void drawSettingsMenu(Font& font, shape shapes, Check check)
     audioButton.setFont(font);
     audioButton.setString("Audio");
     audioButton.setFillColor(Color::White);
-    audioButton.setCharacterSize(32 * screen_factor_x );
+    audioButton.setCharacterSize(32 * screen_factor_x);
     audioButton.setPosition(Vector2f(window.getSize().x / 2 - 40 * screen_factor_x, window.getSize().y / 2 - 75 * screen_factor_y));
 
     // create the "fullScreen" button
@@ -1651,7 +1864,7 @@ void drawSettingsMenu(Font& font, shape shapes, Check check)
     change_snake_button.setFont(font);
     change_snake_button.setString("Change snake");
     change_snake_button.setFillColor(Color::White);
-    change_snake_button.setCharacterSize(32 * screen_factor_x );
+    change_snake_button.setCharacterSize(32 * screen_factor_x);
     change_snake_button.setPosition(Vector2f(window.getSize().x / 2 - 100 * screen_factor_x, window.getSize().y / 2 + 20 * screen_factor_y));
 
 
@@ -1660,7 +1873,7 @@ void drawSettingsMenu(Font& font, shape shapes, Check check)
     backButton.setFont(font);
     backButton.setString("Back");
     backButton.setFillColor(Color::White);
-    backButton.setCharacterSize(32 * screen_factor_x );
+    backButton.setCharacterSize(32 * screen_factor_x);
     backButton.setPosition(Vector2f(window.getSize().x / 2 - 30 * screen_factor_x, window.getSize().y / 2 + 120 * screen_factor_y));
 
 
@@ -1675,7 +1888,7 @@ void draw_view_high_score_menu(shape shapes, Text text, int ranking[], Check che
     window.clear();
     window.draw(shapes.ranking_page);
     string number;
-    text.setCharacterSize(32 * screen_factor_x );
+    text.setCharacterSize(32 * screen_factor_x);
     text.setStyle(Text::Bold);
     for (int q = 0; q < 3; q++) {
         int u = 1000;
@@ -1747,6 +1960,10 @@ void draw_change_color(shape shapes, Check& check)
     else if (check.is_snake_4_being_used)
     {
         shapes.Tru_ee.setPosition(410 * screen_factor_x, 225 * screen_factor_y);
+    }
+    else if (check.is_snake_5_being_used)
+    {
+        shapes.Tru_ee.setPosition(601 * screen_factor_x, 225 * screen_factor_y);
     }
     window.draw(shapes.Tru_ee);
     if (check.is_snake_changing_colors)
