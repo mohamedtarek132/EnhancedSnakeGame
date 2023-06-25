@@ -68,6 +68,9 @@ struct Check {
 
     int is_mouse_pressed_once;
 
+    int is_space_pressed_once;
+
+    int number_of_snake_being_used;
 };
 struct shapetextures {
     Texture resumeicontexture;
@@ -169,7 +172,7 @@ struct textures_of_snake
     Texture* tail_right;
     Texture* tail_up;
 
-}snake1, snake2, snake3, snake4, snake5, snake6, snake7, snake8, snake9;
+}snake_texture[10];
 
 
 Sound apple_eating_sound, rotten_apple_eating_sound, losing_sound;
@@ -322,274 +325,273 @@ int main() {
 
 
     //load the textures of the first snake
-    snake1.body___topleft.loadFromFile("body top left(1).png");
-    snake1.body___bottomright.loadFromFile("body bottom right(1).png");
-    snake1.body___bottomleft.loadFromFile("body bottom left(1).png");
-    snake1.body___horizontal.loadFromFile("body horizontal(1).png");
-    snake1.body___topright.loadFromFile("body top right(1).png");
-    snake1.body___vertical.loadFromFile("body vertical(1).png");
-    snake1.head___down.loadFromFile("head bottom(1).png");
-    snake1.head___left.loadFromFile("head left(1).png");
-    snake1.head___right.loadFromFile("head right(1).png");
-    snake1.head___up.loadFromFile("head top(1).png");
-    snake1.tail___down.loadFromFile("tail bottom(1).png");
-    snake1.tail___left.loadFromFile("tail left(1).png");
-    snake1.tail___right.loadFromFile("tail right(1).png");
-    snake1.tail___up.loadFromFile("tail top(1).png");
-    snake1.body_top_left = &snake1.body___topleft;
-    snake1.body_bottom_right = &snake1.body___topright;
-    snake1.body_bottom_left = &snake1.body___bottomleft;
-    snake1.body_horizontal = &snake1.body___horizontal;
-    snake1.body_top_right = &snake1.body___topright;
-    snake1.body_vertical = &snake1.body___vertical;
-    snake1.head_down = &snake1.head___down;
-    snake1.head_left = &snake1.head___left;
-    snake1.head_right = &snake1.head___right;
-    snake1.head_up = &snake1.head___up;
-    snake1.tail_down = &snake1.tail___down;
-    snake1.tail_left = &snake1.tail___left;
-    snake1.tail_right = &snake1.tail___right;
-    snake1.tail_up = &snake1.tail___up;
-
+    snake_texture[0].body___topleft.loadFromFile("body top left(1).png");
+    snake_texture[0].body___bottomright.loadFromFile("body bottom right(1).png");
+    snake_texture[0].body___bottomleft.loadFromFile("body bottom left(1).png");
+    snake_texture[0].body___horizontal.loadFromFile("body horizontal(1).png");
+    snake_texture[0].body___topright.loadFromFile("body top right(1).png");
+    snake_texture[0].body___vertical.loadFromFile("body vertical(1).png");
+    snake_texture[0].head___down.loadFromFile("head bottom(1).png");
+    snake_texture[0].head___left.loadFromFile("head left(1).png");
+    snake_texture[0].head___right.loadFromFile("head right(1).png");
+    snake_texture[0].head___up.loadFromFile("head top(1).png");
+    snake_texture[0].tail___down.loadFromFile("tail bottom(1).png");
+    snake_texture[0].tail___left.loadFromFile("tail left(1).png");
+    snake_texture[0].tail___right.loadFromFile("tail right(1).png");
+    snake_texture[0].tail___up.loadFromFile("tail top(1).png");
+    snake_texture[0].body_top_left = &snake_texture[0].body___topleft;
+    snake_texture[0].body_bottom_right = &snake_texture[0].body___bottomright;
+    snake_texture[0].body_bottom_left = &snake_texture[0].body___bottomleft;
+    snake_texture[0].body_horizontal = &snake_texture[0].body___horizontal;
+    snake_texture[0].body_top_right = &snake_texture[0].body___topright;
+    snake_texture[0].body_vertical = &snake_texture[0].body___vertical;
+    snake_texture[0].head_down = &snake_texture[0].head___down;
+    snake_texture[0].head_left = &snake_texture[0].head___left;
+    snake_texture[0].head_right = &snake_texture[0].head___right;
+    snake_texture[0].head_up = &snake_texture[0].head___up;
+    snake_texture[0].tail_down = &snake_texture[0].tail___down;
+    snake_texture[0].tail_left = &snake_texture[0].tail___left;
+    snake_texture[0].tail_right = &snake_texture[0].tail___right;
+    snake_texture[0].tail_up = &snake_texture[0].tail___up;
     //load the textures of the second snake
-    snake2.body___topleft.loadFromFile("body top left(2).png");
-    snake2.body___bottomright.loadFromFile("body bottom right(2).png");
-    snake2.body___bottomleft.loadFromFile("body bottom left(2).png");
-    snake2.body___horizontal.loadFromFile("body horizontal(2).png");
-    snake2.body___topright.loadFromFile("body top right(2).png");
-    snake2.body___vertical.loadFromFile("body vertical(2).png");
-    snake2.head___down.loadFromFile("head bottom(2).png");
-    snake2.head___left.loadFromFile("head left(2).png");
-    snake2.head___right.loadFromFile("head right(2).png");
-    snake2.head___up.loadFromFile("head top(2).png");
-    snake2.tail___down.loadFromFile("tail bottom(2).png");
-    snake2.tail___left.loadFromFile("tail left(2).png");
-    snake2.tail___right.loadFromFile("tail right(2).png");
-    snake2.tail___up.loadFromFile("tail top(2).png");
-    snake2.body_top_left = &snake2.body___topleft;
-    snake2.body_bottom_right = &snake2.body___topright;
-    snake2.body_bottom_left = &snake2.body___bottomleft;
-    snake2.body_horizontal = &snake2.body___horizontal;
-    snake2.body_top_right = &snake2.body___topright;
-    snake2.body_vertical = &snake2.body___vertical;
-    snake2.head_down = &snake2.head___down;
-    snake2.head_left = &snake2.head___left;
-    snake2.head_right = &snake2.head___right;
-    snake2.head_up = &snake2.head___up;
-    snake2.tail_down = &snake2.tail___down;
-    snake2.tail_left = &snake2.tail___left;
-    snake2.tail_right = &snake2.tail___right;
-    snake2.tail_up = &snake2.tail___up;
+    snake_texture[1].body___topleft.loadFromFile("body top left(2).png");
+    snake_texture[1].body___bottomright.loadFromFile("body bottom right(2).png");
+    snake_texture[1].body___bottomleft.loadFromFile("body bottom left(2).png");
+    snake_texture[1].body___horizontal.loadFromFile("body horizontal(2).png");
+    snake_texture[1].body___topright.loadFromFile("body top right(2).png");
+    snake_texture[1].body___vertical.loadFromFile("body vertical(2).png");
+    snake_texture[1].head___down.loadFromFile("head bottom(2).png");
+    snake_texture[1].head___left.loadFromFile("head left(2).png");
+    snake_texture[1].head___right.loadFromFile("head right(2).png");
+    snake_texture[1].head___up.loadFromFile("head top(2).png");
+    snake_texture[1].tail___down.loadFromFile("tail bottom(2).png");
+    snake_texture[1].tail___left.loadFromFile("tail left(2).png");
+    snake_texture[1].tail___right.loadFromFile("tail right(2).png");
+    snake_texture[1].tail___up.loadFromFile("tail top(2).png");
+    snake_texture[1].body_top_left = &snake_texture[1].body___topleft;
+    snake_texture[1].body_bottom_right = &snake_texture[1].body___bottomright;
+    snake_texture[1].body_bottom_left = &snake_texture[1].body___bottomleft;
+    snake_texture[1].body_horizontal = &snake_texture[1].body___horizontal;
+    snake_texture[1].body_top_right = &snake_texture[1].body___topright;
+    snake_texture[1].body_vertical = &snake_texture[1].body___vertical;
+    snake_texture[1].head_down = &snake_texture[1].head___down;
+    snake_texture[1].head_left = &snake_texture[1].head___left;
+    snake_texture[1].head_right = &snake_texture[1].head___right;
+    snake_texture[1].head_up = &snake_texture[1].head___up;
+    snake_texture[1].tail_down = &snake_texture[1].tail___down;
+    snake_texture[1].tail_left = &snake_texture[1].tail___left;
+    snake_texture[1].tail_right = &snake_texture[1].tail___right;
+    snake_texture[1].tail_up = &snake_texture[1].tail___up;
 
     //load the textures of the third snake
-    snake3.body___topleft.loadFromFile("body top left(3).png");
-    snake3.body___bottomright.loadFromFile("body bottom right(3).png");
-    snake3.body___bottomleft.loadFromFile("body bottom left(3).png");
-    snake3.body___horizontal.loadFromFile("body horizontal(3).png");
-    snake3.body___topright.loadFromFile("body top right(3).png");
-    snake3.body___vertical.loadFromFile("body vertical(3).png");
-    snake3.head___down.loadFromFile("head bottom(3).png");
-    snake3.head___left.loadFromFile("head left(3).png");
-    snake3.head___right.loadFromFile("head right(3).png");
-    snake3.head___up.loadFromFile("head top(3).png");
-    snake3.tail___down.loadFromFile("tail bottom(3).png");
-    snake3.tail___left.loadFromFile("tail left(3).png");
-    snake3.tail___right.loadFromFile("tail right(3).png");
-    snake3.tail___up.loadFromFile("tail top(3).png");
-    snake3.body_top_left = &snake3.body___topleft;
-    snake3.body_bottom_right = &snake3.body___topright;
-    snake3.body_bottom_left = &snake3.body___bottomleft;
-    snake3.body_horizontal = &snake3.body___horizontal;
-    snake3.body_top_right = &snake3.body___topright;
-    snake3.body_vertical = &snake3.body___vertical;
-    snake3.head_down = &snake3.head___down;
-    snake3.head_left = &snake3.head___left;
-    snake3.head_right = &snake3.head___right;
-    snake3.head_up = &snake3.head___up;
-    snake3.tail_down = &snake3.tail___down;
-    snake3.tail_left = &snake3.tail___left;
-    snake3.tail_right = &snake3.tail___right;
-    snake3.tail_up = &snake3.tail___up;
+    snake_texture[2].body___topleft.loadFromFile("body top left(3).png");
+    snake_texture[2].body___bottomright.loadFromFile("body bottom right(3).png");
+    snake_texture[2].body___bottomleft.loadFromFile("body bottom left(3).png");
+    snake_texture[2].body___horizontal.loadFromFile("body horizontal(3).png");
+    snake_texture[2].body___topright.loadFromFile("body top right(3).png");
+    snake_texture[2].body___vertical.loadFromFile("body vertical(3).png");
+    snake_texture[2].head___down.loadFromFile("head bottom(3).png");
+    snake_texture[2].head___left.loadFromFile("head left(3).png");
+    snake_texture[2].head___right.loadFromFile("head right(3).png");
+    snake_texture[2].head___up.loadFromFile("head top(3).png");
+    snake_texture[2].tail___down.loadFromFile("tail bottom(3).png");
+    snake_texture[2].tail___left.loadFromFile("tail left(3).png");
+    snake_texture[2].tail___right.loadFromFile("tail right(3).png");
+    snake_texture[2].tail___up.loadFromFile("tail top(3).png");
+    snake_texture[2].body_top_left = &snake_texture[2].body___topleft;
+    snake_texture[2].body_bottom_right = &snake_texture[2].body___bottomright;
+    snake_texture[2].body_bottom_left = &snake_texture[2].body___bottomleft;
+    snake_texture[2].body_horizontal = &snake_texture[2].body___horizontal;
+    snake_texture[2].body_top_right = &snake_texture[2].body___topright;
+    snake_texture[2].body_vertical = &snake_texture[2].body___vertical;
+    snake_texture[2].head_down = &snake_texture[2].head___down;
+    snake_texture[2].head_left = &snake_texture[2].head___left;
+    snake_texture[2].head_right = &snake_texture[2].head___right;
+    snake_texture[2].head_up = &snake_texture[2].head___up;
+    snake_texture[2].tail_down = &snake_texture[2].tail___down;
+    snake_texture[2].tail_left = &snake_texture[2].tail___left;
+    snake_texture[2].tail_right = &snake_texture[2].tail___right;
+    snake_texture[2].tail_up = &snake_texture[2].tail___up;
 
     //load the textures of the fourth snake
-    snake4.body___topleft.loadFromFile("body top left(4).png");
-    snake4.body___bottomright.loadFromFile("body bottom right(4).png");
-    snake4.body___bottomleft.loadFromFile("body bottom left(4).png");
-    snake4.body___horizontal.loadFromFile("body horizontal(4).png");
-    snake4.body___topright.loadFromFile("body top right(4).png");
-    snake4.body___vertical.loadFromFile("body vertical(4).png");
-    snake4.head___down.loadFromFile("head bottom(4).png");
-    snake4.head___left.loadFromFile("head left(4).png");
-    snake4.head___right.loadFromFile("head right(4).png");
-    snake4.head___up.loadFromFile("head top(4).png");
-    snake4.tail___down.loadFromFile("tail bottom(4).png");
-    snake4.tail___left.loadFromFile("tail left(4).png");
-    snake4.tail___right.loadFromFile("tail right(4).png");
-    snake4.tail___up.loadFromFile("tail top(4).png");
-    snake4.body_top_left = &snake4.body___topleft;
-    snake4.body_bottom_right = &snake4.body___topright;
-    snake4.body_bottom_left = &snake4.body___bottomleft;
-    snake4.body_horizontal = &snake4.body___horizontal;
-    snake4.body_top_right = &snake4.body___topright;
-    snake4.body_vertical = &snake4.body___vertical;
-    snake4.head_down = &snake4.head___down;
-    snake4.head_left = &snake4.head___left;
-    snake4.head_right = &snake4.head___right;
-    snake4.head_up = &snake4.head___up;
-    snake4.tail_down = &snake4.tail___down;
-    snake4.tail_left = &snake4.tail___left;
-    snake4.tail_right = &snake4.tail___right;
-    snake4.tail_up = &snake4.tail___up;
-    
+    snake_texture[3].body___topleft.loadFromFile("body top left(4).png");
+    snake_texture[3].body___bottomright.loadFromFile("body bottom right(4).png");
+    snake_texture[3].body___bottomleft.loadFromFile("body bottom left(4).png");
+    snake_texture[3].body___horizontal.loadFromFile("body horizontal(4).png");
+    snake_texture[3].body___topright.loadFromFile("body top right(4).png");
+    snake_texture[3].body___vertical.loadFromFile("body vertical(4).png");
+    snake_texture[3].head___down.loadFromFile("head bottom(4).png");
+    snake_texture[3].head___left.loadFromFile("head left(4).png");
+    snake_texture[3].head___right.loadFromFile("head right(4).png");
+    snake_texture[3].head___up.loadFromFile("head top(4).png");
+    snake_texture[3].tail___down.loadFromFile("tail bottom(4).png");
+    snake_texture[3].tail___left.loadFromFile("tail left(4).png");
+    snake_texture[3].tail___right.loadFromFile("tail right(4).png");
+    snake_texture[3].tail___up.loadFromFile("tail top(4).png");
+    snake_texture[3].body_top_left = &snake_texture[3].body___topleft;
+    snake_texture[3].body_bottom_right = &snake_texture[3].body___bottomright;
+    snake_texture[3].body_bottom_left = &snake_texture[3].body___bottomleft;
+    snake_texture[3].body_horizontal = &snake_texture[3].body___horizontal;
+    snake_texture[3].body_top_right = &snake_texture[3].body___topright;
+    snake_texture[3].body_vertical = &snake_texture[3].body___vertical;
+    snake_texture[3].head_down = &snake_texture[3].head___down;
+    snake_texture[3].head_left = &snake_texture[3].head___left;
+    snake_texture[3].head_right = &snake_texture[3].head___right;
+    snake_texture[3].head_up = &snake_texture[3].head___up;
+    snake_texture[3].tail_down = &snake_texture[3].tail___down;
+    snake_texture[3].tail_left = &snake_texture[3].tail___left;
+    snake_texture[3].tail_right = &snake_texture[3].tail___right;
+    snake_texture[3].tail_up = &snake_texture[3].tail___up;
+
     //load the textures of the fifth snake
-    snake5.body___topleft.loadFromFile("body top left(5).png");
-    snake5.body___bottomright.loadFromFile("body bottom right(5).png");
-    snake5.body___bottomleft.loadFromFile("body bottom left(5).png");
-    snake5.body___horizontal.loadFromFile("body horizontal(5).png");
-    snake5.body___topright.loadFromFile("body top right(5).png");
-    snake5.body___vertical.loadFromFile("body vertical(5).png");
-    snake5.head___down.loadFromFile("head bottom(5).png");
-    snake5.head___left.loadFromFile("head left(5).png");
-    snake5.head___right.loadFromFile("head right(5).png");
-    snake5.head___up.loadFromFile("head top(5).png");
-    snake5.tail___down.loadFromFile("tail bottom(5).png");
-    snake5.tail___left.loadFromFile("tail left(5).png");
-    snake5.tail___right.loadFromFile("tail right(5).png");
-    snake5.tail___up.loadFromFile("tail top(5).png");
-    snake5.body_top_left = &snake5.body___topleft;
-    snake5.body_bottom_right = &snake5.body___topright;
-    snake5.body_bottom_left = &snake5.body___bottomleft;
-    snake5.body_horizontal = &snake5.body___horizontal;
-    snake5.body_top_right = &snake5.body___topright;
-    snake5.body_vertical = &snake5.body___vertical;
-    snake5.head_down = &snake5.head___down;
-    snake5.head_left = &snake5.head___left;
-    snake5.head_right = &snake5.head___right;
-    snake5.head_up = &snake5.head___up;
-    snake5.tail_down = &snake5.tail___down;
-    snake5.tail_left = &snake5.tail___left;
-    snake5.tail_right = &snake5.tail___right;
-    snake5.tail_up = &snake5.tail___up;
-    
+    snake_texture[4].body___topleft.loadFromFile("body top left(5).png");
+    snake_texture[4].body___bottomright.loadFromFile("body bottom right(5).png");
+    snake_texture[4].body___bottomleft.loadFromFile("body bottom left(5).png");
+    snake_texture[4].body___horizontal.loadFromFile("body horizontal(5).png");
+    snake_texture[4].body___topright.loadFromFile("body top right(5).png");
+    snake_texture[4].body___vertical.loadFromFile("body vertical(5).png");
+    snake_texture[4].head___down.loadFromFile("head bottom(5).png");
+    snake_texture[4].head___left.loadFromFile("head left(5).png");
+    snake_texture[4].head___right.loadFromFile("head right(5).png");
+    snake_texture[4].head___up.loadFromFile("head top(5).png");
+    snake_texture[4].tail___down.loadFromFile("tail bottom(5).png");
+    snake_texture[4].tail___left.loadFromFile("tail left(5).png");
+    snake_texture[4].tail___right.loadFromFile("tail right(5).png");
+    snake_texture[4].tail___up.loadFromFile("tail top(5).png");
+    snake_texture[4].body_top_left = &snake_texture[4].body___topleft;
+    snake_texture[4].body_bottom_right = &snake_texture[4].body___bottomright;
+    snake_texture[4].body_bottom_left = &snake_texture[4].body___bottomleft;
+    snake_texture[4].body_horizontal = &snake_texture[4].body___horizontal;
+    snake_texture[4].body_top_right = &snake_texture[4].body___topright;
+    snake_texture[4].body_vertical = &snake_texture[4].body___vertical;
+    snake_texture[4].head_down = &snake_texture[4].head___down;
+    snake_texture[4].head_left = &snake_texture[4].head___left;
+    snake_texture[4].head_right = &snake_texture[4].head___right;
+    snake_texture[4].head_up = &snake_texture[4].head___up;
+    snake_texture[4].tail_down = &snake_texture[4].tail___down;
+    snake_texture[4].tail_left = &snake_texture[4].tail___left;
+    snake_texture[4].tail_right = &snake_texture[4].tail___right;
+    snake_texture[4].tail_up = &snake_texture[4].tail___up;
+
     //load the textures of the sixth snake
-    snake6.body___topleft.loadFromFile("body top left(6).png");
-    snake6.body___bottomright.loadFromFile("body bottom right(6).png");
-    snake6.body___bottomleft.loadFromFile("body bottom left(6).png");
-    snake6.body___horizontal.loadFromFile("body horizontal(6).png");
-    snake6.body___topright.loadFromFile("body top right(6).png");
-    snake6.body___vertical.loadFromFile("body vertical(6).png");
-    snake6.head___down.loadFromFile("head bottom(6).png");
-    snake6.head___left.loadFromFile("head left(6).png");
-    snake6.head___right.loadFromFile("head right(6).png");
-    snake6.head___up.loadFromFile("head top(6).png");
-    snake6.tail___down.loadFromFile("tail bottom(6).png");
-    snake6.tail___left.loadFromFile("tail left(6).png");
-    snake6.tail___right.loadFromFile("tail right(6).png");
-    snake6.tail___up.loadFromFile("tail top(6).png");
-    snake6.body_top_left = &snake6.body___topleft;
-    snake6.body_bottom_right = &snake6.body___topright;
-    snake6.body_bottom_left = &snake6.body___bottomleft;
-    snake6.body_horizontal = &snake6.body___horizontal;
-    snake6.body_top_right = &snake6.body___topright;
-    snake6.body_vertical = &snake6.body___vertical;
-    snake6.head_down = &snake6.head___down;
-    snake6.head_left = &snake6.head___left;
-    snake6.head_right = &snake6.head___right;
-    snake6.head_up = &snake6.head___up;
-    snake6.tail_down = &snake6.tail___down;
-    snake6.tail_left = &snake6.tail___left;
-    snake6.tail_right = &snake6.tail___right;
-    snake6.tail_up = &snake6.tail___up;
-    
+    snake_texture[5].body___topleft.loadFromFile("body top left(6).png");
+    snake_texture[5].body___bottomright.loadFromFile("body bottom right(6).png");
+    snake_texture[5].body___bottomleft.loadFromFile("body bottom left(6).png");
+    snake_texture[5].body___horizontal.loadFromFile("body horizontal(6).png");
+    snake_texture[5].body___topright.loadFromFile("body top right(6).png");
+    snake_texture[5].body___vertical.loadFromFile("body vertical(6).png");
+    snake_texture[5].head___down.loadFromFile("head bottom(6).png");
+    snake_texture[5].head___left.loadFromFile("head left(6).png");
+    snake_texture[5].head___right.loadFromFile("head right(6).png");
+    snake_texture[5].head___up.loadFromFile("head top(6).png");
+    snake_texture[5].tail___down.loadFromFile("tail bottom(6).png");
+    snake_texture[5].tail___left.loadFromFile("tail left(6).png");
+    snake_texture[5].tail___right.loadFromFile("tail right(6).png");
+    snake_texture[5].tail___up.loadFromFile("tail top(6).png");
+    snake_texture[5].body_top_left = &snake_texture[5].body___topleft;
+    snake_texture[5].body_bottom_right = &snake_texture[5].body___bottomright;
+    snake_texture[5].body_bottom_left = &snake_texture[5].body___bottomleft;
+    snake_texture[5].body_horizontal = &snake_texture[5].body___horizontal;
+    snake_texture[5].body_top_right = &snake_texture[5].body___topright;
+    snake_texture[5].body_vertical = &snake_texture[5].body___vertical;
+    snake_texture[5].head_down = &snake_texture[5].head___down;
+    snake_texture[5].head_left = &snake_texture[5].head___left;
+    snake_texture[5].head_right = &snake_texture[5].head___right;
+    snake_texture[5].head_up = &snake_texture[5].head___up;
+    snake_texture[5].tail_down = &snake_texture[5].tail___down;
+    snake_texture[5].tail_left = &snake_texture[5].tail___left;
+    snake_texture[5].tail_right = &snake_texture[5].tail___right;
+    snake_texture[5].tail_up = &snake_texture[5].tail___up;
+
     //load the textures of the seventh snake
-    snake7.body___topleft.loadFromFile("body top left(7).png");
-    snake7.body___bottomright.loadFromFile("body bottom right(7).png");
-    snake7.body___bottomleft.loadFromFile("body bottom left(7).png");
-    snake7.body___horizontal.loadFromFile("body horizontal(7).png");
-    snake7.body___topright.loadFromFile("body top right(7).png");
-    snake7.body___vertical.loadFromFile("body vertical(7).png");
-    snake7.head___down.loadFromFile("head bottom(7).png");
-    snake7.head___left.loadFromFile("head left(7).png");
-    snake7.head___right.loadFromFile("head right(7).png");
-    snake7.head___up.loadFromFile("head top(7).png");
-    snake7.tail___down.loadFromFile("tail bottom(7).png");
-    snake7.tail___left.loadFromFile("tail left(7).png");
-    snake7.tail___right.loadFromFile("tail right(7).png");
-    snake7.tail___up.loadFromFile("tail top(7).png");
-    snake7.body_top_left = &snake7.body___topleft;
-    snake7.body_bottom_right = &snake7.body___topright;
-    snake7.body_bottom_left = &snake7.body___bottomleft;
-    snake7.body_horizontal = &snake7.body___horizontal;
-    snake7.body_top_right = &snake7.body___topright;
-    snake7.body_vertical = &snake7.body___vertical;
-    snake7.head_down = &snake7.head___down;
-    snake7.head_left = &snake7.head___left;
-    snake7.head_right = &snake7.head___right;
-    snake7.head_up = &snake7.head___up;
-    snake7.tail_down = &snake7.tail___down;
-    snake7.tail_left = &snake7.tail___left;
-    snake7.tail_right = &snake7.tail___right;
-    snake7.tail_up = &snake7.tail___up;
-    
+    snake_texture[6].body___topleft.loadFromFile("body top left(7).png");
+    snake_texture[6].body___bottomright.loadFromFile("body bottom right(7).png");
+    snake_texture[6].body___bottomleft.loadFromFile("body bottom left(7).png");
+    snake_texture[6].body___horizontal.loadFromFile("body horizontal(7).png");
+    snake_texture[6].body___topright.loadFromFile("body top right(7).png");
+    snake_texture[6].body___vertical.loadFromFile("body vertical(7).png");
+    snake_texture[6].head___down.loadFromFile("head bottom(7).png");
+    snake_texture[6].head___left.loadFromFile("head left(7).png");
+    snake_texture[6].head___right.loadFromFile("head right(7).png");
+    snake_texture[6].head___up.loadFromFile("head top(7).png");
+    snake_texture[6].tail___down.loadFromFile("tail bottom(7).png");
+    snake_texture[6].tail___left.loadFromFile("tail left(7).png");
+    snake_texture[6].tail___right.loadFromFile("tail right(7).png");
+    snake_texture[6].tail___up.loadFromFile("tail top(7).png");
+    snake_texture[6].body_top_left = &snake_texture[6].body___topleft;
+    snake_texture[6].body_bottom_right = &snake_texture[6].body___bottomright;
+    snake_texture[6].body_bottom_left = &snake_texture[6].body___bottomleft;
+    snake_texture[6].body_horizontal = &snake_texture[6].body___horizontal;
+    snake_texture[6].body_top_right = &snake_texture[6].body___topright;
+    snake_texture[6].body_vertical = &snake_texture[6].body___vertical;
+    snake_texture[6].head_down = &snake_texture[6].head___down;
+    snake_texture[6].head_left = &snake_texture[6].head___left;
+    snake_texture[6].head_right = &snake_texture[6].head___right;
+    snake_texture[6].head_up = &snake_texture[6].head___up;
+    snake_texture[6].tail_down = &snake_texture[6].tail___down;
+    snake_texture[6].tail_left = &snake_texture[6].tail___left;
+    snake_texture[6].tail_right = &snake_texture[6].tail___right;
+    snake_texture[6].tail_up = &snake_texture[6].tail___up;
+
     //load the textures of the eighth snake
-    snake8.body___topleft.loadFromFile("body top left(8).png");
-    snake8.body___bottomright.loadFromFile("body bottom right(8).png");
-    snake8.body___bottomleft.loadFromFile("body bottom left(8).png");
-    snake8.body___horizontal.loadFromFile("body horizontal(8).png");
-    snake8.body___topright.loadFromFile("body top right(8).png");
-    snake8.body___vertical.loadFromFile("body vertical(8).png");
-    snake8.head___down.loadFromFile("head bottom(8).png");
-    snake8.head___left.loadFromFile("head left(8).png");
-    snake8.head___right.loadFromFile("head right(8).png");
-    snake8.head___up.loadFromFile("head top(8).png");
-    snake8.tail___down.loadFromFile("tail bottom(8).png");
-    snake8.tail___left.loadFromFile("tail left(8).png");
-    snake8.tail___right.loadFromFile("tail right(8).png");
-    snake8.tail___up.loadFromFile("tail top(8).png");
-    snake8.body_top_left = &snake8.body___topleft;
-    snake8.body_bottom_right = &snake8.body___topright;
-    snake8.body_bottom_left = &snake8.body___bottomleft;
-    snake8.body_horizontal = &snake8.body___horizontal;
-    snake8.body_top_right = &snake8.body___topright;
-    snake8.body_vertical = &snake8.body___vertical;
-    snake8.head_down = &snake8.head___down;
-    snake8.head_left = &snake8.head___left;
-    snake8.head_right = &snake8.head___right;
-    snake8.head_up = &snake8.head___up;
-    snake8.tail_down = &snake8.tail___down;
-    snake8.tail_left = &snake8.tail___left;
-    snake8.tail_right = &snake8.tail___right;
-    snake8.tail_up = &snake8.tail___up;
+    snake_texture[7].body___topleft.loadFromFile("body top left(8).png");
+    snake_texture[7].body___bottomright.loadFromFile("body bottom right(8).png");
+    snake_texture[7].body___bottomleft.loadFromFile("body bottom left(8).png");
+    snake_texture[7].body___horizontal.loadFromFile("body horizontal(8).png");
+    snake_texture[7].body___topright.loadFromFile("body top right(8).png");
+    snake_texture[7].body___vertical.loadFromFile("body vertical(8).png");
+    snake_texture[7].head___down.loadFromFile("head bottom(8).png");
+    snake_texture[7].head___left.loadFromFile("head left(8).png");
+    snake_texture[7].head___right.loadFromFile("head right(8).png");
+    snake_texture[7].head___up.loadFromFile("head top(8).png");
+    snake_texture[7].tail___down.loadFromFile("tail bottom(8).png");
+    snake_texture[7].tail___left.loadFromFile("tail left(8).png");
+    snake_texture[7].tail___right.loadFromFile("tail right(8).png");
+    snake_texture[7].tail___up.loadFromFile("tail top(8).png");
+    snake_texture[7].body_top_left = &snake_texture[7].body___topleft;
+    snake_texture[7].body_bottom_right = &snake_texture[7].body___bottomright;
+    snake_texture[7].body_bottom_left = &snake_texture[7].body___bottomleft;
+    snake_texture[7].body_horizontal = &snake_texture[7].body___horizontal;
+    snake_texture[7].body_top_right = &snake_texture[7].body___topright;
+    snake_texture[7].body_vertical = &snake_texture[7].body___vertical;
+    snake_texture[7].head_down = &snake_texture[7].head___down;
+    snake_texture[7].head_left = &snake_texture[7].head___left;
+    snake_texture[7].head_right = &snake_texture[7].head___right;
+    snake_texture[7].head_up = &snake_texture[7].head___up;
+    snake_texture[7].tail_down = &snake_texture[7].tail___down;
+    snake_texture[7].tail_left = &snake_texture[7].tail___left;
+    snake_texture[7].tail_right = &snake_texture[7].tail___right;
+    snake_texture[7].tail_up = &snake_texture[7].tail___up;
 
     //load the textures of the ninth snake
-    snake9.body___topleft.loadFromFile("body(9).png");
-    snake9.body___bottomright.loadFromFile("body(9).png");
-    snake9.body___bottomleft.loadFromFile("body(9).png");
-    snake9.body___horizontal.loadFromFile("body(9).png");
-    snake9.body___topright.loadFromFile("body(9).png");
-    snake9.body___vertical.loadFromFile("body(9).png");
-    snake9.head___down.loadFromFile("head bottom(9).png");
-    snake9.head___left.loadFromFile("head left(9).png");
-    snake9.head___right.loadFromFile("head right(9).png");
-    snake9.head___up.loadFromFile("head top(9).png");
-    snake9.tail___down.loadFromFile("tail bottom(9).png");
-    snake9.tail___left.loadFromFile("tail left(9).png");
-    snake9.tail___right.loadFromFile("tail right(9).png");
-    snake9.tail___up.loadFromFile("tail top(9).png");
-    snake9.body_top_left = &snake9.body___topleft;
-    snake9.body_bottom_right = &snake9.body___topright;
-    snake9.body_bottom_left = &snake9.body___bottomleft;
-    snake9.body_horizontal = &snake9.body___horizontal;
-    snake9.body_top_right = &snake9.body___topright;
-    snake9.body_vertical = &snake9.body___vertical;
-    snake9.head_down = &snake9.head___down;
-    snake9.head_left = &snake9.head___left;
-    snake9.head_right = &snake9.head___right;
-    snake9.head_up = &snake9.head___up;
-    snake9.tail_down = &snake9.tail___down;
-    snake9.tail_left = &snake9.tail___left;
-    snake9.tail_right = &snake9.tail___right;
-    snake9.tail_up = &snake9.tail___up;
+    snake_texture[8].body___topleft.loadFromFile("body(9).png");
+    snake_texture[8].body___bottomright.loadFromFile("body(9).png");
+    snake_texture[8].body___bottomleft.loadFromFile("body(9).png");
+    snake_texture[8].body___horizontal.loadFromFile("body(9).png");
+    snake_texture[8].body___topright.loadFromFile("body(9).png");
+    snake_texture[8].body___vertical.loadFromFile("body(9).png");
+    snake_texture[8].head___down.loadFromFile("head bottom(9).png");
+    snake_texture[8].head___left.loadFromFile("head left(9).png");
+    snake_texture[8].head___right.loadFromFile("head right(9).png");
+    snake_texture[8].head___up.loadFromFile("head top(9).png");
+    snake_texture[8].tail___down.loadFromFile("tail bottom(9).png");
+    snake_texture[8].tail___left.loadFromFile("tail left(9).png");
+    snake_texture[8].tail___right.loadFromFile("tail right(9).png");
+    snake_texture[8].tail___up.loadFromFile("tail top(9).png");
+    snake_texture[8].body_top_left = &snake_texture[8].body___topleft;
+    snake_texture[8].body_bottom_right = &snake_texture[8].body___bottomright;
+    snake_texture[8].body_bottom_left = &snake_texture[8].body___bottomleft;
+    snake_texture[8].body_horizontal = &snake_texture[8].body___horizontal;
+    snake_texture[8].body_top_right = &snake_texture[8].body___topright;
+    snake_texture[8].body_vertical = &snake_texture[8].body___vertical;
+    snake_texture[8].head_down = &snake_texture[8].head___down;
+    snake_texture[8].head_left = &snake_texture[8].head___left;
+    snake_texture[8].head_right = &snake_texture[8].head___right;
+    snake_texture[8].head_up = &snake_texture[8].head___up;
+    snake_texture[8].tail_down = &snake_texture[8].tail___down;
+    snake_texture[8].tail_left = &snake_texture[8].tail___left;
+    snake_texture[8].tail_right = &snake_texture[8].tail___right;
+    snake_texture[8].tail_up = &snake_texture[8].tail___up;
 
 
     /*loading texture for the opening*/
@@ -829,71 +831,6 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).y >= 5 * screen_factor_y &&
         Mouse::getPosition(window).y <= 75 * screen_factor_y;
 
-    if (left_or_right_mouse_button_pressed)
-        check.is_mouse_pressed_once++;
-    else
-        check.is_mouse_pressed_once = 0;
-    if (check.is_mouse_pressed_once > 1)
-        left_or_right_mouse_button_pressed = 0;
-
-    if (check.is_the_snake_alive) {
-        mouse_position_is_inside_resume_icon_box_in_game =
-            Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
-            Mouse::getPosition(window).x <= (in_game_buttons_x_position + icon_width) * screen_factor_x &&
-            Mouse::getPosition(window).y >= in_game_first_button * screen_factor_y &&
-            Mouse::getPosition(window).y <= (in_game_first_button + icon_height) * screen_factor_y;
-
-        mouse_position_is_inside_restart_icon_box_in_game =
-            Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
-            Mouse::getPosition(window).x <= (in_game_buttons_x_position + icon_width) * screen_factor_x &&
-            Mouse::getPosition(window).y >= in_game_second_button * screen_factor_y &&
-            Mouse::getPosition(window).y <= (in_game_second_button + icon_height) * screen_factor_y;
-
-        mouse_position_is_inside_exit_icon_box_in_game =
-            Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
-            Mouse::getPosition(window).x <= (in_game_buttons_x_position + icon_width) * screen_factor_x &&
-            Mouse::getPosition(window).y >= in_game_third_button * screen_factor_y &&
-            Mouse::getPosition(window).y <= (in_game_third_button + icon_height) * screen_factor_y;
-
-    }
-    else {
-        mouse_position_is_inside_restart_icon_box_in_game =
-            Mouse::getPosition(window).x >= 430 * screen_factor_x &&
-            Mouse::getPosition(window).x <= (430 + icon_width) * screen_factor_x &&
-            Mouse::getPosition(window).y >= 325 * screen_factor_y &&
-            Mouse::getPosition(window).y <= (325 + icon_height) * screen_factor_y;
-
-        mouse_position_is_inside_exit_icon_box_in_game =
-            Mouse::getPosition(window).x >= 660 * screen_factor_x &&
-            Mouse::getPosition(window).x <= (660 + icon_width) * screen_factor_x &&
-            Mouse::getPosition(window).y >= 325 * screen_factor_y &&
-            Mouse::getPosition(window).y <= (325 + icon_height) * screen_factor_y;
-
-    }
-
-    if (!check.is_the_setting_in_game_button_pressed && ((left_or_right_mouse_button_pressed &&
-        mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed)) {
-        check.is_the_setting_in_game_button_pressed = 1;
-    }
-    else if (check.is_survive_mode_pressed && !check.is_ranking_button_pressed
-        && !check.is_setting_button_pressed && !check.is_audio_button_pressed && !check.is_change_snake_button_pressed) {
-
-        if ((mouse_position_is_inside_resume_icon_box_in_game && left_or_right_mouse_button_pressed) ||
-            space_button_is_pressed && check.is_the_setting_in_game_button_pressed) {
-            check.is_the_setting_in_game_button_pressed = 0;
-        }
-
-        else if (mouse_position_is_inside_restart_icon_box_in_game && (check.is_the_snake_alive == 0 ||
-            check.is_the_setting_in_game_button_pressed) && left_or_right_mouse_button_pressed) {
-            check.is_the_restart_button_pressed = 1;
-        }
-
-        else if (mouse_position_is_inside_exit_icon_box_in_game && (check.is_the_snake_alive == 0
-            || check.is_the_setting_in_game_button_pressed) && left_or_right_mouse_button_pressed) {
-            check.is_survive_mode_pressed = 0;
-        }
-    }
-
     //main menu buttons
 
     int left_x_position_of_the_main_menu_buttons = 560;
@@ -1091,6 +1028,78 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
 
     if (Mouse::isButtonPressed(Mouse::Right)) {
         cout << Mouse::getPosition(window).x << ' ' << Mouse::getPosition(window).y << endl;
+
+    }
+    if (left_or_right_mouse_button_pressed)
+        check.is_mouse_pressed_once++;
+    else
+        check.is_mouse_pressed_once = 0;
+    if (check.is_mouse_pressed_once > 1)
+        left_or_right_mouse_button_pressed = 0;
+
+    if (left_or_right_mouse_button_pressed)
+        check.is_space_pressed_once++;
+    else
+        check.is_space_pressed_once = 0;
+    if (check.is_space_pressed_once > 1)
+        space_button_is_pressed = 0;
+
+    if (check.is_the_snake_alive) {
+        mouse_position_is_inside_resume_icon_box_in_game =
+            Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
+            Mouse::getPosition(window).x <= (in_game_buttons_x_position + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= in_game_first_button * screen_factor_y &&
+            Mouse::getPosition(window).y <= (in_game_first_button + icon_height) * screen_factor_y;
+
+        mouse_position_is_inside_restart_icon_box_in_game =
+            Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
+            Mouse::getPosition(window).x <= (in_game_buttons_x_position + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= in_game_second_button * screen_factor_y &&
+            Mouse::getPosition(window).y <= (in_game_second_button + icon_height) * screen_factor_y;
+
+        mouse_position_is_inside_exit_icon_box_in_game =
+            Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
+            Mouse::getPosition(window).x <= (in_game_buttons_x_position + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= in_game_third_button * screen_factor_y &&
+            Mouse::getPosition(window).y <= (in_game_third_button + icon_height) * screen_factor_y;
+
+    }
+    else {
+        mouse_position_is_inside_restart_icon_box_in_game =
+            Mouse::getPosition(window).x >= 430 * screen_factor_x &&
+            Mouse::getPosition(window).x <= (430 + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= 325 * screen_factor_y &&
+            Mouse::getPosition(window).y <= (325 + icon_height) * screen_factor_y;
+
+        mouse_position_is_inside_exit_icon_box_in_game =
+            Mouse::getPosition(window).x >= 660 * screen_factor_x &&
+            Mouse::getPosition(window).x <= (660 + icon_width) * screen_factor_x &&
+            Mouse::getPosition(window).y >= 325 * screen_factor_y &&
+            Mouse::getPosition(window).y <= (325 + icon_height) * screen_factor_y;
+
+    }
+
+    if (!check.is_the_setting_in_game_button_pressed && ((left_or_right_mouse_button_pressed &&
+        mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed)) {
+        check.is_the_setting_in_game_button_pressed = 1;
+    }
+    else if (check.is_survive_mode_pressed && !check.is_ranking_button_pressed
+        && !check.is_setting_button_pressed && !check.is_audio_button_pressed && !check.is_change_snake_button_pressed) {
+
+        if ((mouse_position_is_inside_resume_icon_box_in_game && left_or_right_mouse_button_pressed) ||
+            space_button_is_pressed && check.is_the_setting_in_game_button_pressed) {
+            check.is_the_setting_in_game_button_pressed = 0;
+        }
+
+        else if (mouse_position_is_inside_restart_icon_box_in_game && (check.is_the_snake_alive == 0 ||
+            check.is_the_setting_in_game_button_pressed) && left_or_right_mouse_button_pressed) {
+            check.is_the_restart_button_pressed = 1;
+        }
+
+        else if (mouse_position_is_inside_exit_icon_box_in_game && (check.is_the_snake_alive == 0
+            || check.is_the_setting_in_game_button_pressed) && left_or_right_mouse_button_pressed) {
+            check.is_survive_mode_pressed = 0;
+        }
     }
     if (left_or_right_mouse_button_pressed && !check.is_start_button_pressed && !check.is_ranking_button_pressed
         && !check.is_setting_button_pressed && !check.is_audio_button_pressed && check.is_change_snake_button_pressed == 0 &&
@@ -1494,324 +1503,58 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font fo
 
 void set_texture(int number_of_eaten_apples, Check check, shapetextures& textures) {
 
-    if (check.is_snake_10_being_used) {
+    if (check.number_of_snake_being_used==9){
         for (int i = 0; i < number_of_eaten_apples + 3; i++) {
             snake[i].setTexture(NULL);
         }
     }
     else
     {
-        
+
         for (int i = 0; i < number_of_eaten_apples + 3; i++) {
             if (i == 0)
             {
                 if (speed[i][0] == snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.head_right);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.head_right);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.head_right);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.head_right);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.head_right);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.head_right);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.head_right);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.head_right);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.head_right);
-                    }
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].head_right);
+
                 }
                 else if (speed[i][0] == -snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.head_left);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.head_left);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.head_left);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.head_left);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.head_left);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.head_left);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.head_left);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.head_left);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.head_left);
-                    }
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].head_left);
+
                 }
                 else if (speed[i][1] == snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.head_down);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.head_down);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.head_down);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.head_down);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.head_down);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.head_down);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.head_down);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.head_down);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.head_down);
-                    }
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].head_down);
                 }
                 else if (speed[i][1] == -snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.head_up);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.head_up);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.head_up);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.head_up);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.head_up);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.head_up);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.head_up);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.head_up);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.head_up);
-                    }
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].head_up);
+
                 }
             }
             else if (i == number_of_eaten_apples + 2)
             {
 
                 if (speed[i][1] == -snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.tail_down);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.tail_down);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.tail_down);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.tail_down);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.tail_down);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.tail_down);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.tail_down);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.tail_down);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.tail_down);
-                    }
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_down);
+
                 }
                 else if (speed[i][1] == snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.tail_up);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.tail_up);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.tail_up);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.tail_up);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.tail_up);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.tail_up);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.tail_up);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.tail_up);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.tail_up);
-                    }
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_up);
+
                 }
                 else if (speed[i][0] == snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.tail_left);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.tail_left);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.tail_left);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.tail_left);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.tail_left);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.tail_left);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.tail_left);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.tail_left);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.tail_left);
-                    }
+
+                    snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_left);
                 }
                 else if (speed[i][0] == -snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.tail_right);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.tail_right);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.tail_right);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.tail_right);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.tail_right);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.tail_right);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.tail_right);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.tail_right);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.tail_right);
-                    }
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_right);
+
                 }
 
             }
@@ -1819,313 +1562,37 @@ void set_texture(int number_of_eaten_apples, Check check, shapetextures& texture
             {
                 if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == -snake_size_and_speed) ||
                     (speed[i + 1][1] == snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.body_top_left);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.body_top_left);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.body_top_left);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.body_top_left);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.body_top_left);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.body_top_left);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.body_top_left);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.body_top_left);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.body_top_left);
-                    }
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_top_left);
+
                 }
                 else if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == snake_size_and_speed) ||
                     (speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.body_bottom_left);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.body_bottom_left);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.body_bottom_left);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.body_bottom_left);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.body_bottom_left);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.body_bottom_left);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.body_bottom_left);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.body_bottom_left);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.body_bottom_left);
-                    }
+                  
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_bottom_left);
+                 
                 }
                 else if ((speed[i + 1][1] == snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
                     (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == -snake_size_and_speed)) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.body_top_right);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.body_top_right);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.body_top_right);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.body_top_right);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.body_top_right);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.body_top_right);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.body_top_right);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.body_top_right);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.body_top_right);
-                    }
+                     snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_top_right);
+                    
                 }
                 else if ((speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
                     (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == snake_size_and_speed)) {
-                        if (check.is_snake_1_being_used)
-                        {
-                            snake[i].setTexture(snake1.body_bottom_right);
-                        }
-                        else if (check.is_snake_2_being_used)
-                        {
-                            snake[i].setTexture(snake2.body_bottom_right);
-                        }
-                        else if (check.is_snake_3_being_used)
-                        {
-                            snake[i].setTexture(snake3.body_bottom_right);
-                        }
-                        else if (check.is_snake_4_being_used)
-                        {
-                            snake[i].setTexture(snake4.body_bottom_right);
-                        }
-                        else if (check.is_snake_5_being_used)
-                        {
-                            snake[i].setTexture(snake5.body_bottom_right);
-                        }
-                        else if (check.is_snake_6_being_used)
-                        {
-                            snake[i].setTexture(snake6.body_bottom_right);
-                        }
-                        else if (check.is_snake_7_being_used)
-                        {
-                            snake[i].setTexture(snake7.body_bottom_right);
-                        }
-                        else if (check.is_snake_8_being_used)
-                        {
-                            snake[i].setTexture(snake8.body_bottom_right);
-                        }
-                        else if (check.is_snake_9_being_used)
-                        {
-                            snake[i].setTexture(snake9.body_bottom_right);
-                        }
+                  
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_bottom_right);
+        
                 }
 
-                else if (speed[i][0] == snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.body_horizontal);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.body_horizontal);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.body_horizontal);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.body_horizontal);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.body_horizontal);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.body_horizontal);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.body_horizontal);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.body_horizontal);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.body_horizontal);
-                    }
+                else if (speed[i][0] == snake_size_and_speed|| speed[i][0] == -snake_size_and_speed) {
+                  
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_horizontal);
+      
                 }
-                else if (speed[i][0] == -snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.body_horizontal);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.body_horizontal);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.body_horizontal);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.body_horizontal);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.body_horizontal);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.body_horizontal);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.body_horizontal);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.body_horizontal);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.body_horizontal);
-                    }
+                else if (speed[i][1] == snake_size_and_speed|| speed[i][1] == -snake_size_and_speed) {
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_vertical);
                 }
-                else if (speed[i][1] == snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.body_vertical);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.body_vertical);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.body_vertical);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.body_vertical);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.body_vertical);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.body_vertical);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.body_vertical);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.body_vertical);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.body_vertical);
-                    }
-                }
-                else if (speed[i][1] == -snake_size_and_speed) {
-                    if (check.is_snake_1_being_used)
-                    {
-                        snake[i].setTexture(snake1.body_vertical);
-                    }
-                    else if (check.is_snake_2_being_used)
-                    {
-                        snake[i].setTexture(snake2.body_vertical);
-                    }
-                    else if (check.is_snake_3_being_used)
-                    {
-                        snake[i].setTexture(snake3.body_vertical);
-                    }
-                    else if (check.is_snake_4_being_used)
-                    {
-                        snake[i].setTexture(snake4.body_vertical);
-                    }
-                    else if (check.is_snake_5_being_used)
-                    {
-                        snake[i].setTexture(snake5.body_vertical);
-                    }
-                    else if (check.is_snake_6_being_used)
-                    {
-                        snake[i].setTexture(snake6.body_vertical);
-                    }
-                    else if (check.is_snake_7_being_used)
-                    {
-                        snake[i].setTexture(snake7.body_vertical);
-                    }
-                    else if (check.is_snake_8_being_used)
-                    {
-                        snake[i].setTexture(snake8.body_vertical);
-                    }
-                    else if (check.is_snake_9_being_used)
-                    {
-                        snake[i].setTexture(snake9.body_vertical);
-                    }
-                }
+                
             }
         }
     }
@@ -2474,42 +1941,61 @@ void draw_change_color(shape shapes, Check& check)
     if (check.is_snake_1_being_used)
     {
         shapes.Tru_ee.setPosition(182 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 0;
     }
     else if (check.is_snake_2_being_used)
     {
         shapes.Tru_ee.setPosition(260 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 1;
+
     }
     else if (check.is_snake_3_being_used)
     {
         shapes.Tru_ee.setPosition(337 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 2;
+
     }
     else if (check.is_snake_4_being_used)
     {
         shapes.Tru_ee.setPosition(413 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 3;
+
     }
     else if (check.is_snake_5_being_used)
     {
         shapes.Tru_ee.setPosition(488 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 4;
+
     }
     else if (check.is_snake_6_being_used)
     {
         shapes.Tru_ee.setPosition(562 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 5;
+
     }
     else if (check.is_snake_7_being_used)
     {
         shapes.Tru_ee.setPosition(635 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 6;
+
     }
     else if (check.is_snake_8_being_used)
     {
         shapes.Tru_ee.setPosition(707 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 7;
+
     }
     else if (check.is_snake_9_being_used)
     {
         shapes.Tru_ee.setPosition(778 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 8;
+
     }
     else if (check.is_snake_10_being_used)
     {
         shapes.Tru_ee.setPosition(838 * screen_factor_x, 199 * screen_factor_y);
+        check.number_of_snake_being_used = 9;
+
     }
     window.draw(shapes.Tru_ee);
     if (check.is_snake_changing_colors)
