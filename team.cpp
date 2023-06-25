@@ -802,7 +802,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
     bool space_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Space);
     bool escape_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Escape);
 
-    for (int i = 3; i < number_of_eaten_apples + 2; i++) {
+    for (int i = 1; i < number_of_eaten_apples + 2; i++) {
         if (snake[0].getGlobalBounds().intersects(snake[i].getGlobalBounds()) && check.is_the_snake_alive == 1) {
             check.is_the_snake_alive = 0;
             losing_sound.play();
@@ -1067,7 +1067,6 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         check.is_space_pressed_once = 0;
     if (check.is_space_pressed_once > 1)
         space_button_is_pressed = 0;
-    cout << check.is_space_pressed_once << endl;
     if (check.is_the_snake_alive) {
         mouse_position_is_inside_resume_icon_box_in_game =
             Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
@@ -1556,6 +1555,7 @@ void set_texture(int number_of_eaten_apples, Check check, shapetextures& texture
                 else if (speed[i][1] == snake_size_and_speed) {
 
                         snake[i].setTexture(snake_texture[check.number_of_snake_being_used].head_down);
+                        cout<<snake[i].getTexture()<<endl;
                 }
                 else if (speed[i][1] == -snake_size_and_speed) {
 
