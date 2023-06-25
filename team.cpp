@@ -802,7 +802,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
     bool space_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Space);
     bool escape_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Escape);
 
-    for (int i = 1; i < number_of_eaten_apples + 2; i++) {
+    for (int i = 1; i < number_of_eaten_apples + 3; i++) {
         if (snake[0].getGlobalBounds().intersects(snake[i].getGlobalBounds()) && check.is_the_snake_alive == 1) {
             check.is_the_snake_alive = 0;
             losing_sound.play();
