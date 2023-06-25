@@ -71,7 +71,10 @@ struct Check {
     int is_space_pressed_once;
 
     int number_of_snake_being_used;
+
+    int number_of_levels_done;
 };
+
 struct shapetextures {
     Texture resumeicontexture;
     Texture restarticontexture;
@@ -681,9 +684,30 @@ int main() {
             window.display();
         }
         else if (check.is_story_mode_pressed) {
-            window.clear();
-            window.draw(shapes.story_mode_page);
-            window.display();
+            if (!check.is_continue_story_mode_pressed && !check.is_new_story_mode_pressed) {
+                window.clear();
+                window.draw(shapes.story_mode_page);
+                window.display();
+            }
+            else {
+                if (check.number_of_levels_done == 0) {
+                    if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed)
+                        update_game(shapes, game_counter, check, number_of_eaten_apples);
+
+                    else if (check.is_the_restart_button_pressed) {
+                        number_of_eaten_apples = 0;
+                        sizenposition();
+                        check.is_the_snake_alive = 1;
+                        check.if_the_player_started_playing = 0;
+                        check.is_the_restart_button_pressed = 0;
+                        check.is_the_setting_in_game_button_pressed = 0;
+                    }
+                    draw_game(shapes, number_of_eaten_apples, check, font, textures);
+                }
+                else if (check.number_of_levels_done == 1) {
+
+                }
+            }
         }
         else if (check.is_survive_mode_pressed) {
             if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed)
@@ -1011,15 +1035,15 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).y <= (790) * screen_factor_y;
 
     bool mouse_position_is_inside_continue_button_in_story_mode_page =
-        Mouse::getPosition(window).x >= 770 * screen_factor_x &&
-        Mouse::getPosition(window).x <= 1175 * screen_factor_x &&
-        Mouse::getPosition(window).y >= 430 * screen_factor_y &&
-        Mouse::getPosition(window).y <= (550) * screen_factor_y;
+        Mouse::getPosition(window).x >= 520 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 795 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 320 * screen_factor_y &&
+        Mouse::getPosition(window).y <= (410) * screen_factor_y;
     bool mouse_position_is_inside_new_game_button_in_story_mode_page =
-        Mouse::getPosition(window).x >= 770 * screen_factor_x &&
-        Mouse::getPosition(window).x <= 1175 * screen_factor_x &&
-        Mouse::getPosition(window).y >= 635 * screen_factor_y &&
-        Mouse::getPosition(window).y <= (635 + 120) * screen_factor_y;
+        Mouse::getPosition(window).x >= 520 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 795 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 470 * screen_factor_y &&
+        Mouse::getPosition(window).y <= (565) * screen_factor_y;
     bool mouse_position_is_inside_exit_button_in_story_mode_page =
         Mouse::getPosition(window).x >= 5 * screen_factor_x &&
         Mouse::getPosition(window).x <= 115 * screen_factor_x &&
@@ -1037,13 +1061,13 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
     if (check.is_mouse_pressed_once > 1)
         left_or_right_mouse_button_pressed = 0;
 
-    if (left_or_right_mouse_button_pressed)
+    if (space_button_is_pressed)
         check.is_space_pressed_once++;
     else
         check.is_space_pressed_once = 0;
     if (check.is_space_pressed_once > 1)
         space_button_is_pressed = 0;
-
+    cout << check.is_space_pressed_once << endl;
     if (check.is_the_snake_alive) {
         mouse_position_is_inside_resume_icon_box_in_game =
             Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
@@ -1083,7 +1107,8 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed)) {
         check.is_the_setting_in_game_button_pressed = 1;
     }
-    else if (check.is_survive_mode_pressed && !check.is_ranking_button_pressed
+    else if ((check.is_survive_mode_pressed||check.is_new_story_mode_pressed||check.is_continue_story_mode_pressed) 
+        && !check.is_ranking_button_pressed
         && !check.is_setting_button_pressed && !check.is_audio_button_pressed && !check.is_change_snake_button_pressed) {
 
         if ((mouse_position_is_inside_resume_icon_box_in_game && left_or_right_mouse_button_pressed) ||
@@ -1099,6 +1124,9 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         else if (mouse_position_is_inside_exit_icon_box_in_game && (check.is_the_snake_alive == 0
             || check.is_the_setting_in_game_button_pressed) && left_or_right_mouse_button_pressed) {
             check.is_survive_mode_pressed = 0;
+            check.is_story_mode_pressed = 0;
+            check.is_continue_story_mode_pressed = 0;
+            check.is_new_story_mode_pressed = 0;
         }
     }
     if (left_or_right_mouse_button_pressed && !check.is_start_button_pressed && !check.is_ranking_button_pressed
@@ -1354,10 +1382,11 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         !check.is_survive_mode_pressed && !check.is_main_menu_open) {
 
         if (mouse_position_is_inside_new_game_button_in_story_mode_page) {
-
+            check.is_new_story_mode_pressed = 1;
+            check.number_of_levels_done = 0;
         }
         else if (mouse_position_is_inside_continue_button_in_story_mode_page) {
-
+            check.is_continue_story_mode_pressed = 1;
         }
         else if (mouse_position_is_inside_exit_button_in_game_modes_page) {
             check.is_story_mode_pressed = 0;
@@ -1371,12 +1400,12 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
 
 void update_game(shape& shapes, int& game_counter, Check& check, int number_of_eaten_apples) {
     //the time it will take the snake to change positions which will make it move faster
-    int speedtimer = snake_size_and_speed * 0.25;
-    if (check.is_resize_button_pressed) {
-        speedtimer *= screen_factor_x;
-    }
+    int speedtimer = snake_size_and_speed * 0.25* screen_factor_x;
     //the time it will take the apple to change positions
     int apple_timer = 6 * 50 * screen_factor_x;
+    if (check.is_story_mode_pressed) {
+        apple_timer = apple_timer * 3;
+    }
     //the time it will take the rotten apple to change positions
     int rotten_apple_timer = apple_timer * 2;
 
@@ -1399,7 +1428,7 @@ void update_game(shape& shapes, int& game_counter, Check& check, int number_of_e
 
     if (game_counter % speedtimer == 0)
         snake_movement(check);
-    if (game_counter % apple_timer == 0)
+    if (game_counter % apple_timer == 0||check.is_the_apple_eaten)
         randapple(shapes, check, number_of_eaten_apples);
     if ((game_counter % rotten_apple_timer == 0))
         randrottenapple(shapes, check, number_of_eaten_apples);
@@ -1534,63 +1563,67 @@ void set_texture(int number_of_eaten_apples, Check check, shapetextures& texture
 
                 }
             }
-            else if (i == number_of_eaten_apples + 2)
-            {
-
-                if (speed[i][1] == -snake_size_and_speed) {
-
-                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_down);
-
-                }
-                else if (speed[i][1] == snake_size_and_speed) {
-
-                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_up);
-
-                }
-                else if (speed[i][0] == snake_size_and_speed) {
-
-                    snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_left);
-                }
-                else if (speed[i][0] == -snake_size_and_speed) {
-
-                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_right);
-
-                }
-
-            }
-            else
+            else if (speed[i + 1][0] != speed[i][0]|| speed[i + 1][1] != speed[i][1])
             {
                 if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == -snake_size_and_speed) ||
                     (speed[i + 1][1] == snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
 
-                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_top_left);
+                    snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_top_left);
 
                 }
                 else if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == snake_size_and_speed) ||
                     (speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
-                  
-                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_bottom_left);
-                 
+
+                    snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_bottom_left);
+
                 }
                 else if ((speed[i + 1][1] == snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
                     (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == -snake_size_and_speed)) {
-                     snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_top_right);
-                    
+                    snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_top_right);
+
                 }
                 else if ((speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
                     (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == snake_size_and_speed)) {
-                  
-                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_bottom_right);
-        
+
+                    snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_bottom_right);
+
                 }
 
-                else if (speed[i][0] == snake_size_and_speed|| speed[i][0] == -snake_size_and_speed) {
-                  
-                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_horizontal);
-      
+
+            }
+            else
+            {
+               
+                if (i == number_of_eaten_apples + 2) {
+                    if (speed[i][1] == -snake_size_and_speed) {
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_down);
+
+                    }
+                    else if (speed[i][1] == snake_size_and_speed) {
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_up);
+
+                    }
+                    else if (speed[i][0] == snake_size_and_speed) {
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_left);
+                    }
+                    else if (speed[i][0] == -snake_size_and_speed) {
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].tail_right);
+
+                    }
                 }
-                else if (speed[i][1] == snake_size_and_speed|| speed[i][1] == -snake_size_and_speed) {
+                else {
+                    if (speed[i][0] == snake_size_and_speed || speed[i][0] == -snake_size_and_speed) {
+
+                        snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_horizontal);
+
+                    }
+                    else if (speed[i][1] == snake_size_and_speed || speed[i][1] == -snake_size_and_speed) {
                         snake[i].setTexture(snake_texture[check.number_of_snake_being_used].body_vertical);
+                    }
                 }
                 
             }
@@ -1731,7 +1764,13 @@ void apple_counter(int number_of_eaten_apples, Check check) {
     text.setFillColor(sf::Color::White);
     text.setCharacterSize(30 * screen_factor_x);
     text.setPosition(70 * screen_factor_x, 20 * screen_factor_y);
-    text.setString("Score: " + std::to_string(number_of_eaten_apples));
+    if (check.is_story_mode_pressed) {
+        text.setString( std::to_string(number_of_eaten_apples)+" /80");
+
+    }
+    else {
+        text.setString("Score: " + std::to_string(number_of_eaten_apples));
+    }
     window.draw(text);
 }
 
@@ -1942,24 +1981,24 @@ void draw_change_color(shape shapes, Check& check)
     {
         shapes.Tru_ee.setPosition(182 * screen_factor_x, 199 * screen_factor_y);
         check.number_of_snake_being_used = 0;
+        
     }
     else if (check.is_snake_2_being_used)
     {
         shapes.Tru_ee.setPosition(260 * screen_factor_x, 199 * screen_factor_y);
         check.number_of_snake_being_used = 1;
-
+        
     }
     else if (check.is_snake_3_being_used)
     {
         shapes.Tru_ee.setPosition(337 * screen_factor_x, 199 * screen_factor_y);
         check.number_of_snake_being_used = 2;
-
     }
     else if (check.is_snake_4_being_used)
     {
         shapes.Tru_ee.setPosition(413 * screen_factor_x, 199 * screen_factor_y);
         check.number_of_snake_being_used = 3;
-
+        
     }
     else if (check.is_snake_5_being_used)
     {
@@ -1989,13 +2028,13 @@ void draw_change_color(shape shapes, Check& check)
     {
         shapes.Tru_ee.setPosition(778 * screen_factor_x, 199 * screen_factor_y);
         check.number_of_snake_being_used = 8;
-
+   
     }
     else if (check.is_snake_10_being_used)
     {
         shapes.Tru_ee.setPosition(838 * screen_factor_x, 199 * screen_factor_y);
         check.number_of_snake_being_used = 9;
-
+ 
     }
     window.draw(shapes.Tru_ee);
     if (check.is_snake_changing_colors)
