@@ -40,6 +40,18 @@ struct Check {
 
     bool is_snake_4_being_used;
 
+    bool is_snake_5_being_used;
+
+    bool is_snake_6_being_used;
+
+    bool is_snake_7_being_used;
+
+    bool is_snake_8_being_used;
+
+    bool is_snake_9_being_used;
+
+    bool is_snake_10_being_used;
+
     bool is_snake_changing_colors;
 
     bool is_resize_button_pressed;
@@ -59,13 +71,13 @@ struct Check {
 };
 struct shapetextures {
     Texture resumeicontexture;
-    Texture    restarticontexture;
-    Texture   snakeheadtexture;
-    Texture  rottenappletexture;
+    Texture restarticontexture;
+    Texture snakeheadtexture;
+    Texture rottenappletexture;
     Texture appletexture;
     Texture snaketurntexture;
     Texture snakebodytexture;
-    Texture  snaketailtexture;
+    Texture snaketailtexture;
     Texture exiticontexture;
     Texture opening_texture;
     Texture main_menu_page_texture;
@@ -125,61 +137,39 @@ float snake_size_and_speed = 30;
 
 Text text;
 
-Texture body___topleft1;
-Texture* body_topleft_texture1 = &body___topleft1;
+struct textures_of_snake
+{
+    Texture body___topleft;
+    Texture body___bottomright;
+    Texture body___bottomleft;
+    Texture body___horizontal;
+    Texture body___topright;
+    Texture body___vertical;
+    Texture head___down;
+    Texture head___left;
+    Texture head___right;
+    Texture head___up;
+    Texture tail___down;
+    Texture tail___left;
+    Texture tail___right;
+    Texture tail___up;
 
-Texture body___bottomright1;
-Texture* body_bottomright_texture1 = &body___bottomright1;
+    Texture* body_top_left;
+    Texture* body_bottom_right;
+    Texture* body_bottom_left;
+    Texture* body_horizontal;
+    Texture* body_top_right;
+    Texture* body_vertical;
+    Texture* head_down;
+    Texture* head_left;
+    Texture* head_right;
+    Texture* head_up;
+    Texture* tail_down;
+    Texture* tail_left;
+    Texture* tail_right;
+    Texture* tail_up;
 
-Texture body___bottomleft1;
-Texture* body_bottomleft_texture1 = &body___bottomleft1;
-
-Texture body___horizontal1;
-Texture* body_horizontal_texture1 = &body___horizontal1;
-
-Texture body___topright1;
-Texture* body_topright_texture1 = &body___topright1;
-
-Texture body___vertical1;
-Texture* body_vertical_texture1 = &body___vertical1;
-
-Texture head___down1;
-Texture* head_down_texture1 = &head___down1;
-
-Texture head___left1;
-Texture* head_left_texture1 = &head___left1;
-
-Texture head___right1;
-Texture* head_right_texture1 = &head___right1;
-
-Texture head___up1;
-Texture* head_up_texture1 = &head___up1;
-
-Texture tail___down1;
-Texture* tail_down_texture1 = &tail___down1;
-
-Texture tail___left1;
-Texture* tail_left_texture1 = &tail___left1;
-
-Texture tail___right1;
-Texture* tail_right_texture1 = &tail___right1;
-
-Texture tail___up1;
-Texture* tail_up_texture1 = &tail___up1;
-
-
-Texture body___topright2;
-Texture* body_topright_texture2 = &body___topright2;
-
-Texture body___horizontal2;
-Texture* body_horizontal_texture2 = &body___horizontal2;
-
-Texture head___right2;
-Texture* head_right_texture2 = &head___right2;
-
-Texture tail___left2;
-Texture* tail_left_texture2 = &tail___left2;
-
+}snake1, snake2, snake3, snake4, snake5, snake6, snake7, snake8, snake9;
 
 
 Sound apple_eating_sound, rotten_apple_eating_sound, losing_sound;
@@ -205,8 +195,6 @@ void snake_movement(Check& check);
 void changexny();
 
 void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font font, shapetextures texture);
-
-void set_rotation(int number_of_eaten_apples, int square_number);
 
 void set_color(int square_number, int number_of_eaten_apples, Check check);
 
@@ -333,43 +321,275 @@ int main() {
     textures.snaketailtexture.setSmooth(1);
 
 
-    body___topleft1.loadFromFile("body_topleft.png");
+    //load the textures of the first snake
+    snake1.body___topleft.loadFromFile("body top left(1).png");
+    snake1.body___bottomright.loadFromFile("body bottom right(1).png");
+    snake1.body___bottomleft.loadFromFile("body bottom left(1).png");
+    snake1.body___horizontal.loadFromFile("body horizontal(1).png");
+    snake1.body___topright.loadFromFile("body top right(1).png");
+    snake1.body___vertical.loadFromFile("body vertical(1).png");
+    snake1.head___down.loadFromFile("head bottom(1).png");
+    snake1.head___left.loadFromFile("head left(1).png");
+    snake1.head___right.loadFromFile("head right(1).png");
+    snake1.head___up.loadFromFile("head top(1).png");
+    snake1.tail___down.loadFromFile("tail bottom(1).png");
+    snake1.tail___left.loadFromFile("tail left(1).png");
+    snake1.tail___right.loadFromFile("tail right(1).png");
+    snake1.tail___up.loadFromFile("tail top(1).png");
+    snake1.body_top_left = &snake1.body___topleft;
+    snake1.body_bottom_right = &snake1.body___topright;
+    snake1.body_bottom_left = &snake1.body___bottomleft;
+    snake1.body_horizontal = &snake1.body___horizontal;
+    snake1.body_top_right = &snake1.body___topright;
+    snake1.body_vertical = &snake1.body___vertical;
+    snake1.head_down = &snake1.head___down;
+    snake1.head_left = &snake1.head___left;
+    snake1.head_right = &snake1.head___right;
+    snake1.head_up = &snake1.head___up;
+    snake1.tail_down = &snake1.tail___down;
+    snake1.tail_left = &snake1.tail___left;
+    snake1.tail_right = &snake1.tail___right;
+    snake1.tail_up = &snake1.tail___up;
 
-    body___bottomright1.loadFromFile("body_bottomright.png");
+    //load the textures of the second snake
+    snake2.body___topleft.loadFromFile("body top left(2).png");
+    snake2.body___bottomright.loadFromFile("body bottom right(2).png");
+    snake2.body___bottomleft.loadFromFile("body bottom left(2).png");
+    snake2.body___horizontal.loadFromFile("body horizontal(2).png");
+    snake2.body___topright.loadFromFile("body top right(2).png");
+    snake2.body___vertical.loadFromFile("body vertical(2).png");
+    snake2.head___down.loadFromFile("head bottom(2).png");
+    snake2.head___left.loadFromFile("head left(2).png");
+    snake2.head___right.loadFromFile("head right(2).png");
+    snake2.head___up.loadFromFile("head top(2).png");
+    snake2.tail___down.loadFromFile("tail bottom(2).png");
+    snake2.tail___left.loadFromFile("tail left(2).png");
+    snake2.tail___right.loadFromFile("tail right(2).png");
+    snake2.tail___up.loadFromFile("tail top(2).png");
+    snake2.body_top_left = &snake2.body___topleft;
+    snake2.body_bottom_right = &snake2.body___topright;
+    snake2.body_bottom_left = &snake2.body___bottomleft;
+    snake2.body_horizontal = &snake2.body___horizontal;
+    snake2.body_top_right = &snake2.body___topright;
+    snake2.body_vertical = &snake2.body___vertical;
+    snake2.head_down = &snake2.head___down;
+    snake2.head_left = &snake2.head___left;
+    snake2.head_right = &snake2.head___right;
+    snake2.head_up = &snake2.head___up;
+    snake2.tail_down = &snake2.tail___down;
+    snake2.tail_left = &snake2.tail___left;
+    snake2.tail_right = &snake2.tail___right;
+    snake2.tail_up = &snake2.tail___up;
 
-    body___bottomleft1.loadFromFile("body_bottomleft.png");
+    //load the textures of the third snake
+    snake3.body___topleft.loadFromFile("body top left(3).png");
+    snake3.body___bottomright.loadFromFile("body bottom right(3).png");
+    snake3.body___bottomleft.loadFromFile("body bottom left(3).png");
+    snake3.body___horizontal.loadFromFile("body horizontal(3).png");
+    snake3.body___topright.loadFromFile("body top right(3).png");
+    snake3.body___vertical.loadFromFile("body vertical(3).png");
+    snake3.head___down.loadFromFile("head bottom(3).png");
+    snake3.head___left.loadFromFile("head left(3).png");
+    snake3.head___right.loadFromFile("head right(3).png");
+    snake3.head___up.loadFromFile("head top(3).png");
+    snake3.tail___down.loadFromFile("tail bottom(3).png");
+    snake3.tail___left.loadFromFile("tail left(3).png");
+    snake3.tail___right.loadFromFile("tail right(3).png");
+    snake3.tail___up.loadFromFile("tail top(3).png");
+    snake3.body_top_left = &snake3.body___topleft;
+    snake3.body_bottom_right = &snake3.body___topright;
+    snake3.body_bottom_left = &snake3.body___bottomleft;
+    snake3.body_horizontal = &snake3.body___horizontal;
+    snake3.body_top_right = &snake3.body___topright;
+    snake3.body_vertical = &snake3.body___vertical;
+    snake3.head_down = &snake3.head___down;
+    snake3.head_left = &snake3.head___left;
+    snake3.head_right = &snake3.head___right;
+    snake3.head_up = &snake3.head___up;
+    snake3.tail_down = &snake3.tail___down;
+    snake3.tail_left = &snake3.tail___left;
+    snake3.tail_right = &snake3.tail___right;
+    snake3.tail_up = &snake3.tail___up;
 
-    body___horizontal1.loadFromFile("body_horizontal.png");
+    //load the textures of the fourth snake
+    snake4.body___topleft.loadFromFile("body top left(4).png");
+    snake4.body___bottomright.loadFromFile("body bottom right(4).png");
+    snake4.body___bottomleft.loadFromFile("body bottom left(4).png");
+    snake4.body___horizontal.loadFromFile("body horizontal(4).png");
+    snake4.body___topright.loadFromFile("body top right(4).png");
+    snake4.body___vertical.loadFromFile("body vertical(4).png");
+    snake4.head___down.loadFromFile("head bottom(4).png");
+    snake4.head___left.loadFromFile("head left(4).png");
+    snake4.head___right.loadFromFile("head right(4).png");
+    snake4.head___up.loadFromFile("head top(4).png");
+    snake4.tail___down.loadFromFile("tail bottom(4).png");
+    snake4.tail___left.loadFromFile("tail left(4).png");
+    snake4.tail___right.loadFromFile("tail right(4).png");
+    snake4.tail___up.loadFromFile("tail top(4).png");
+    snake4.body_top_left = &snake4.body___topleft;
+    snake4.body_bottom_right = &snake4.body___topright;
+    snake4.body_bottom_left = &snake4.body___bottomleft;
+    snake4.body_horizontal = &snake4.body___horizontal;
+    snake4.body_top_right = &snake4.body___topright;
+    snake4.body_vertical = &snake4.body___vertical;
+    snake4.head_down = &snake4.head___down;
+    snake4.head_left = &snake4.head___left;
+    snake4.head_right = &snake4.head___right;
+    snake4.head_up = &snake4.head___up;
+    snake4.tail_down = &snake4.tail___down;
+    snake4.tail_left = &snake4.tail___left;
+    snake4.tail_right = &snake4.tail___right;
+    snake4.tail_up = &snake4.tail___up;
+    
+    //load the textures of the fifth snake
+    snake5.body___topleft.loadFromFile("body top left(5).png");
+    snake5.body___bottomright.loadFromFile("body bottom right(5).png");
+    snake5.body___bottomleft.loadFromFile("body bottom left(5).png");
+    snake5.body___horizontal.loadFromFile("body horizontal(5).png");
+    snake5.body___topright.loadFromFile("body top right(5).png");
+    snake5.body___vertical.loadFromFile("body vertical(5).png");
+    snake5.head___down.loadFromFile("head bottom(5).png");
+    snake5.head___left.loadFromFile("head left(5).png");
+    snake5.head___right.loadFromFile("head right(5).png");
+    snake5.head___up.loadFromFile("head top(5).png");
+    snake5.tail___down.loadFromFile("tail bottom(5).png");
+    snake5.tail___left.loadFromFile("tail left(5).png");
+    snake5.tail___right.loadFromFile("tail right(5).png");
+    snake5.tail___up.loadFromFile("tail top(5).png");
+    snake5.body_top_left = &snake5.body___topleft;
+    snake5.body_bottom_right = &snake5.body___topright;
+    snake5.body_bottom_left = &snake5.body___bottomleft;
+    snake5.body_horizontal = &snake5.body___horizontal;
+    snake5.body_top_right = &snake5.body___topright;
+    snake5.body_vertical = &snake5.body___vertical;
+    snake5.head_down = &snake5.head___down;
+    snake5.head_left = &snake5.head___left;
+    snake5.head_right = &snake5.head___right;
+    snake5.head_up = &snake5.head___up;
+    snake5.tail_down = &snake5.tail___down;
+    snake5.tail_left = &snake5.tail___left;
+    snake5.tail_right = &snake5.tail___right;
+    snake5.tail_up = &snake5.tail___up;
+    
+    //load the textures of the sixth snake
+    snake6.body___topleft.loadFromFile("body top left(6).png");
+    snake6.body___bottomright.loadFromFile("body bottom right(6).png");
+    snake6.body___bottomleft.loadFromFile("body bottom left(6).png");
+    snake6.body___horizontal.loadFromFile("body horizontal(6).png");
+    snake6.body___topright.loadFromFile("body top right(6).png");
+    snake6.body___vertical.loadFromFile("body vertical(6).png");
+    snake6.head___down.loadFromFile("head bottom(6).png");
+    snake6.head___left.loadFromFile("head left(6).png");
+    snake6.head___right.loadFromFile("head right(6).png");
+    snake6.head___up.loadFromFile("head top(6).png");
+    snake6.tail___down.loadFromFile("tail bottom(6).png");
+    snake6.tail___left.loadFromFile("tail left(6).png");
+    snake6.tail___right.loadFromFile("tail right(6).png");
+    snake6.tail___up.loadFromFile("tail top(6).png");
+    snake6.body_top_left = &snake6.body___topleft;
+    snake6.body_bottom_right = &snake6.body___topright;
+    snake6.body_bottom_left = &snake6.body___bottomleft;
+    snake6.body_horizontal = &snake6.body___horizontal;
+    snake6.body_top_right = &snake6.body___topright;
+    snake6.body_vertical = &snake6.body___vertical;
+    snake6.head_down = &snake6.head___down;
+    snake6.head_left = &snake6.head___left;
+    snake6.head_right = &snake6.head___right;
+    snake6.head_up = &snake6.head___up;
+    snake6.tail_down = &snake6.tail___down;
+    snake6.tail_left = &snake6.tail___left;
+    snake6.tail_right = &snake6.tail___right;
+    snake6.tail_up = &snake6.tail___up;
+    
+    //load the textures of the seventh snake
+    snake7.body___topleft.loadFromFile("body top left(7).png");
+    snake7.body___bottomright.loadFromFile("body bottom right(7).png");
+    snake7.body___bottomleft.loadFromFile("body bottom left(7).png");
+    snake7.body___horizontal.loadFromFile("body horizontal(7).png");
+    snake7.body___topright.loadFromFile("body top right(7).png");
+    snake7.body___vertical.loadFromFile("body vertical(7).png");
+    snake7.head___down.loadFromFile("head bottom(7).png");
+    snake7.head___left.loadFromFile("head left(7).png");
+    snake7.head___right.loadFromFile("head right(7).png");
+    snake7.head___up.loadFromFile("head top(7).png");
+    snake7.tail___down.loadFromFile("tail bottom(7).png");
+    snake7.tail___left.loadFromFile("tail left(7).png");
+    snake7.tail___right.loadFromFile("tail right(7).png");
+    snake7.tail___up.loadFromFile("tail top(7).png");
+    snake7.body_top_left = &snake7.body___topleft;
+    snake7.body_bottom_right = &snake7.body___topright;
+    snake7.body_bottom_left = &snake7.body___bottomleft;
+    snake7.body_horizontal = &snake7.body___horizontal;
+    snake7.body_top_right = &snake7.body___topright;
+    snake7.body_vertical = &snake7.body___vertical;
+    snake7.head_down = &snake7.head___down;
+    snake7.head_left = &snake7.head___left;
+    snake7.head_right = &snake7.head___right;
+    snake7.head_up = &snake7.head___up;
+    snake7.tail_down = &snake7.tail___down;
+    snake7.tail_left = &snake7.tail___left;
+    snake7.tail_right = &snake7.tail___right;
+    snake7.tail_up = &snake7.tail___up;
+    
+    //load the textures of the eighth snake
+    snake8.body___topleft.loadFromFile("body top left(8).png");
+    snake8.body___bottomright.loadFromFile("body bottom right(8).png");
+    snake8.body___bottomleft.loadFromFile("body bottom left(8).png");
+    snake8.body___horizontal.loadFromFile("body horizontal(8).png");
+    snake8.body___topright.loadFromFile("body top right(8).png");
+    snake8.body___vertical.loadFromFile("body vertical(8).png");
+    snake8.head___down.loadFromFile("head bottom(8).png");
+    snake8.head___left.loadFromFile("head left(8).png");
+    snake8.head___right.loadFromFile("head right(8).png");
+    snake8.head___up.loadFromFile("head top(8).png");
+    snake8.tail___down.loadFromFile("tail bottom(8).png");
+    snake8.tail___left.loadFromFile("tail left(8).png");
+    snake8.tail___right.loadFromFile("tail right(8).png");
+    snake8.tail___up.loadFromFile("tail top(8).png");
+    snake8.body_top_left = &snake8.body___topleft;
+    snake8.body_bottom_right = &snake8.body___topright;
+    snake8.body_bottom_left = &snake8.body___bottomleft;
+    snake8.body_horizontal = &snake8.body___horizontal;
+    snake8.body_top_right = &snake8.body___topright;
+    snake8.body_vertical = &snake8.body___vertical;
+    snake8.head_down = &snake8.head___down;
+    snake8.head_left = &snake8.head___left;
+    snake8.head_right = &snake8.head___right;
+    snake8.head_up = &snake8.head___up;
+    snake8.tail_down = &snake8.tail___down;
+    snake8.tail_left = &snake8.tail___left;
+    snake8.tail_right = &snake8.tail___right;
+    snake8.tail_up = &snake8.tail___up;
 
-    body___topright1.loadFromFile("body_topright.png");
-
-    body___vertical1.loadFromFile("body_vertical.png");
-
-    head___down1.loadFromFile("head_down.png");
-
-    head___left1.loadFromFile("head_left.png");
-
-    head___right1.loadFromFile("head_right.png");
-
-    head___up1.loadFromFile("head_up.png");
-
-    tail___down1.loadFromFile("tail_down.png");
-
-    tail___left1.loadFromFile("tail_left.png");
-
-    tail___right1.loadFromFile("tail_right.png");
-
-    tail___up1.loadFromFile("tail_up.png");
-
-
-    body___topright2.loadFromFile("body top right.png");
-
-    body___horizontal2.loadFromFile("body horizontal.png");
-
-    head___right2.loadFromFile("head right.png");
-
-    tail___left2.loadFromFile("tail left.png");
-
+    //load the textures of the ninth snake
+    snake9.body___topleft.loadFromFile("body(9).png");
+    snake9.body___bottomright.loadFromFile("body(9).png");
+    snake9.body___bottomleft.loadFromFile("body(9).png");
+    snake9.body___horizontal.loadFromFile("body(9).png");
+    snake9.body___topright.loadFromFile("body(9).png");
+    snake9.body___vertical.loadFromFile("body(9).png");
+    snake9.head___down.loadFromFile("head bottom(9).png");
+    snake9.head___left.loadFromFile("head left(9).png");
+    snake9.head___right.loadFromFile("head right(9).png");
+    snake9.head___up.loadFromFile("head top(9).png");
+    snake9.tail___down.loadFromFile("tail bottom(9).png");
+    snake9.tail___left.loadFromFile("tail left(9).png");
+    snake9.tail___right.loadFromFile("tail right(9).png");
+    snake9.tail___up.loadFromFile("tail top(9).png");
+    snake9.body_top_left = &snake9.body___topleft;
+    snake9.body_bottom_right = &snake9.body___topright;
+    snake9.body_bottom_left = &snake9.body___bottomleft;
+    snake9.body_horizontal = &snake9.body___horizontal;
+    snake9.body_top_right = &snake9.body___topright;
+    snake9.body_vertical = &snake9.body___vertical;
+    snake9.head_down = &snake9.head___down;
+    snake9.head_left = &snake9.head___left;
+    snake9.head_right = &snake9.head___right;
+    snake9.head_up = &snake9.head___up;
+    snake9.tail_down = &snake9.tail___down;
+    snake9.tail_left = &snake9.tail___left;
+    snake9.tail_right = &snake9.tail___right;
+    snake9.tail_up = &snake9.tail___up;
 
 
     /*loading texture for the opening*/
@@ -437,7 +657,7 @@ int main() {
                 window.create(VideoMode(1300, 800), "Snake game", Style::Fullscreen);
                 check.is_resize_button_pressed = 1;
                 change_size(shapes);
-                snake_size_and_speed =(int)( snake_size_and_speed*screen_factor_x);
+                snake_size_and_speed = (int)(snake_size_and_speed * screen_factor_x);
             }
         }
 
@@ -542,7 +762,7 @@ void sizenposition() {
     for (int i = 0; i < MAX_NUMBER_OF_SQUARES; i++) {
         snake[i].setSize(Vector2f(snake_size_and_speed, snake_size_and_speed));
         snake[i].setOrigin(snake_size_and_speed / 2, snake_size_and_speed / 2);
-        snake[i].setPosition(Vector2f((int)(670*screen_factor_x) + snake_size_and_speed * (2 - i), (386*screen_factor_y)));
+        snake[i].setPosition(Vector2f((int)(670 * screen_factor_x) + snake_size_and_speed * (2 - i), (386 * screen_factor_y)));
         speed[i][0] = snake_size_and_speed;
         speed[i][1] = 0;
     }
@@ -564,12 +784,12 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             break;
         }
     }
-    bool did_snake_hit_right_side_of_the_box = ((int)snake[0].getGlobalBounds().left + (int)snake[0].getGlobalBounds().width) >= 
-        (int)(1157*screen_factor_x);
-    bool did_snake_hit_left_side_of_the_box = snake[0].getGlobalBounds().left <= (int)(145*screen_factor_x);
-    bool did_snake_hit_bottom_of_the_box =(int) (snake[0].getGlobalBounds().top + snake[0].getGlobalBounds().height)  >=
-        (int)(730*screen_factor_y);
-    bool did_snake_hit_top_of_the_box = snake[0].getGlobalBounds().top - snake_size_and_speed <= (int)(68*screen_factor_y);
+    bool did_snake_hit_right_side_of_the_box = ((int)snake[0].getGlobalBounds().left + (int)snake[0].getGlobalBounds().width) >=
+        (int)(1157 * screen_factor_x);
+    bool did_snake_hit_left_side_of_the_box = snake[0].getGlobalBounds().left <= (int)(145 * screen_factor_x);
+    bool did_snake_hit_bottom_of_the_box = (int)(snake[0].getGlobalBounds().top + snake[0].getGlobalBounds().height) >=
+        (int)(730 * screen_factor_y);
+    bool did_snake_hit_top_of_the_box = snake[0].getGlobalBounds().top - snake_size_and_speed <= (int)(68 * screen_factor_y);
 
     if ((did_snake_hit_top_of_the_box || did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
         did_snake_hit_right_side_of_the_box) && check.is_the_snake_alive == 1) {
@@ -776,35 +996,66 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).y >= 690 * screen_factor_y &&
         Mouse::getPosition(window).y <= 785 * screen_factor_y;
     bool mouse_position_is_inside_first_snake_in_change_color_page =
-        Mouse::getPosition(window).x >= 632 * screen_factor_x &&
-        Mouse::getPosition(window).x <= 674 * screen_factor_x &&
-        Mouse::getPosition(window).y >= 330 * screen_factor_y &&
-        Mouse::getPosition(window).y <= 373 * screen_factor_y;
+        Mouse::getPosition(window).x >= 308 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 346 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
     bool mouse_position_is_inside_second_snake_in_change_color_page =
-        Mouse::getPosition(window).x >= 439 * screen_factor_x &&
-        Mouse::getPosition(window).x <= 483 * screen_factor_x &&
-        Mouse::getPosition(window).y >= 330 * screen_factor_y &&
-        Mouse::getPosition(window).y <= 373 * screen_factor_y;
+        Mouse::getPosition(window).x >= 387 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 423 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
     bool mouse_position_is_inside_third_snake_in_change_color_page =
-        Mouse::getPosition(window).x >= 823 * screen_factor_x &&
-        Mouse::getPosition(window).x <= 867 * screen_factor_x &&
-        Mouse::getPosition(window).y >= 330 * screen_factor_y &&
-        Mouse::getPosition(window).y <= 373 * screen_factor_y;
+        Mouse::getPosition(window).x >= 462 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 500 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
     bool mouse_position_is_inside_forth_snake_in_change_color_page =
-        Mouse::getPosition(window).x >= 535 * screen_factor_x &&
+        Mouse::getPosition(window).x >= 540 * screen_factor_x &&
         Mouse::getPosition(window).x <= 578 * screen_factor_x &&
-        Mouse::getPosition(window).y >= 330 * screen_factor_y &&
-        Mouse::getPosition(window).y <= 373 * screen_factor_y;
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
+    bool mouse_position_is_inside_fifth_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 616 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 654 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
+    bool mouse_position_is_inside_sixth_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 692 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 730 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
+    bool mouse_position_is_inside_seventh_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 765 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 804 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
+    bool mouse_position_is_inside_eigth_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 837 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 874 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
+    bool mouse_position_is_inside_ninth_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 905 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 944 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
+    bool mouse_position_is_inside_tenth_snake_in_change_color_page =
+        Mouse::getPosition(window).x >= 964 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 1002 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 310 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 347 * screen_factor_y;
+
     bool mouse_position_is_inside_first_color_option_in_change_color_page =
-        Mouse::getPosition(window).x >= 523 * screen_factor_x &&
-        Mouse::getPosition(window).x <= 567 * screen_factor_x &&
-        Mouse::getPosition(window).y >= 496 * screen_factor_y &&
-        Mouse::getPosition(window).y <= 539 * screen_factor_y;
+        Mouse::getPosition(window).x >= 591 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 630 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 453 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 489 * screen_factor_y;
     bool mouse_position_is_inside_second_color_option_in_change_color_page =
-        Mouse::getPosition(window).x >= 689 * screen_factor_x &&
-        Mouse::getPosition(window).x <= 733 * screen_factor_x &&
-        Mouse::getPosition(window).y >= 496 * screen_factor_y &&
-        Mouse::getPosition(window).y <= 539 * screen_factor_y;
+        Mouse::getPosition(window).x >= 736 * screen_factor_x &&
+        Mouse::getPosition(window).x <= 775 * screen_factor_x &&
+        Mouse::getPosition(window).y >= 452 * screen_factor_y &&
+        Mouse::getPosition(window).y <= 491 * screen_factor_y;
 
     bool mouse_position_is_inside_story_button =
         Mouse::getPosition(window).x >= 520 * screen_factor_x &&
@@ -939,6 +1190,12 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_snake_2_being_used = 0;
             check.is_snake_3_being_used = 0;
             check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
+            check.is_snake_6_being_used = 0;
+            check.is_snake_7_being_used = 0;
+            check.is_snake_8_being_used = 0;
+            check.is_snake_9_being_used = 0;
+            check.is_snake_10_being_used = 0;
         }
         else if (mouse_position_is_inside_second_snake_in_change_color_page)
         {
@@ -946,6 +1203,12 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_snake_2_being_used = 1;
             check.is_snake_3_being_used = 0;
             check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
+            check.is_snake_6_being_used = 0;
+            check.is_snake_7_being_used = 0;
+            check.is_snake_8_being_used = 0;
+            check.is_snake_9_being_used = 0;
+            check.is_snake_10_being_used = 0;
         }
         else if (mouse_position_is_inside_third_snake_in_change_color_page)
         {
@@ -953,6 +1216,12 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_snake_2_being_used = 0;
             check.is_snake_3_being_used = 1;
             check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
+            check.is_snake_6_being_used = 0;
+            check.is_snake_7_being_used = 0;
+            check.is_snake_8_being_used = 0;
+            check.is_snake_9_being_used = 0;
+            check.is_snake_10_being_used = 0;
         }
         else if (mouse_position_is_inside_forth_snake_in_change_color_page)
         {
@@ -960,6 +1229,91 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_snake_2_being_used = 0;
             check.is_snake_3_being_used = 0;
             check.is_snake_4_being_used = 1;
+            check.is_snake_5_being_used = 0;
+            check.is_snake_6_being_used = 0;
+            check.is_snake_7_being_used = 0;
+            check.is_snake_8_being_used = 0;
+            check.is_snake_9_being_used = 0;
+            check.is_snake_10_being_used = 0;
+        }
+        else if (mouse_position_is_inside_fifth_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 1;
+            check.is_snake_6_being_used = 0;
+            check.is_snake_7_being_used = 0;
+            check.is_snake_8_being_used = 0;
+            check.is_snake_9_being_used = 0;
+            check.is_snake_10_being_used = 0;
+        }
+        else if (mouse_position_is_inside_sixth_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
+            check.is_snake_6_being_used = 1;
+            check.is_snake_7_being_used = 0;
+            check.is_snake_8_being_used = 0;
+            check.is_snake_9_being_used = 0;
+            check.is_snake_10_being_used = 0;
+        }
+        else if (mouse_position_is_inside_seventh_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
+            check.is_snake_6_being_used = 0;
+            check.is_snake_7_being_used = 1;
+            check.is_snake_8_being_used = 0;
+            check.is_snake_9_being_used = 0;
+            check.is_snake_10_being_used = 0;
+        }
+        else if (mouse_position_is_inside_eigth_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
+            check.is_snake_6_being_used = 0;
+            check.is_snake_7_being_used = 0;
+            check.is_snake_8_being_used = 1;
+            check.is_snake_9_being_used = 0;
+            check.is_snake_10_being_used = 0;
+        }
+        else if (mouse_position_is_inside_ninth_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
+            check.is_snake_6_being_used = 0;
+            check.is_snake_7_being_used = 0;
+            check.is_snake_8_being_used = 0;
+            check.is_snake_9_being_used = 1;
+            check.is_snake_10_being_used = 0;
+        }
+        else if (mouse_position_is_inside_tenth_snake_in_change_color_page)
+        {
+            check.is_snake_1_being_used = 0;
+            check.is_snake_2_being_used = 0;
+            check.is_snake_3_being_used = 0;
+            check.is_snake_4_being_used = 0;
+            check.is_snake_5_being_used = 0;
+            check.is_snake_6_being_used = 0;
+            check.is_snake_7_being_used = 0;
+            check.is_snake_8_being_used = 0;
+            check.is_snake_9_being_used = 0;
+            check.is_snake_10_being_used = 1;
+
         }
         if (mouse_position_is_inside_first_color_option_in_change_color_page)
         {
@@ -1013,7 +1367,7 @@ void update_game(shape& shapes, int& game_counter, Check& check, int number_of_e
         speedtimer *= screen_factor_x;
     }
     //the time it will take the apple to change positions
-    int apple_timer = 6 * 50*screen_factor_x;
+    int apple_timer = 6 * 50 * screen_factor_x;
     //the time it will take the rotten apple to change positions
     int rotten_apple_timer = apple_timer * 2;
 
@@ -1118,9 +1472,6 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font fo
     set_texture(number_of_eaten_apples, check, textures);
     for (int square_number = 0; square_number < number_of_eaten_apples + 3; square_number++) {
         set_color(square_number, number_of_eaten_apples, check);
-        if (check.is_snake_1_being_used)
-            set_rotation(number_of_eaten_apples, square_number);
-
         window.draw(snake[square_number]);
 
     }
@@ -1143,137 +1494,324 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font fo
 
 void set_texture(int number_of_eaten_apples, Check check, shapetextures& textures) {
 
-    textures.snake_turn_texture = &textures.snaketurntexture;
-    textures.snake_body_texture = &textures.snakebodytexture;
-    textures.snake_tail_texture = &textures.snaketailtexture;
-    textures.snake_head_texture = &textures.snakeheadtexture;
-    if (check.is_snake_1_being_used) {
-
-        for (int i = 0; i < number_of_eaten_apples + 3; i++) {
-            bool is_snake_turn = speed[i][0] == speed[i + 1][1] || speed[i][0] == -speed[i + 1]
-                [1] || speed[i][1] == speed[i + 1][0] || speed[i][1] == -speed[i + 1][0];
-            if (i == 0)
-                snake[i].setTexture(textures.snake_head_texture);
-            else if (is_snake_turn)
-                snake[i].setTexture(textures.snake_turn_texture);
-            else if (i == number_of_eaten_apples + 2) {
-                snake[i].setTexture(textures.snake_tail_texture);
-            }
-            else {
-                snake[i].setTexture(textures.snake_body_texture);
-            }
-        }
-    }
-    else if (check.is_snake_2_being_used) {
-        for (int i = 0; i < number_of_eaten_apples + 3; i++) {
-            snake[i].setRotation(0);
-            if (i == 0)
-            {
-                if (speed[i][0] == snake_size_and_speed) {
-                    snake[i].setTexture(head_right_texture1);
-                }
-                else if (speed[i][0] == -snake_size_and_speed) {
-                    snake[i].setTexture(head_left_texture1);
-                }
-                else if (speed[i][1] == snake_size_and_speed) {
-                    snake[i].setTexture(head_down_texture1);
-                }
-                else if (speed[i][1] == -snake_size_and_speed) {
-                    snake[i].setTexture(head_up_texture1);
-                }
-            }
-            else if (i == number_of_eaten_apples + 2)
-            {
-
-                if (speed[i][1] == -snake_size_and_speed) {
-                    snake[i].setTexture(tail_down_texture1);
-                }
-                else if (speed[i][1] == snake_size_and_speed) {
-                    snake[i].setTexture(tail_up_texture1);
-                }
-                else if (speed[i][0] == snake_size_and_speed) {
-                    snake[i].setTexture(tail_left_texture1);
-                }
-                else if (speed[i][0] == -snake_size_and_speed) {
-                    snake[i].setTexture(tail_right_texture1);
-                }
-
-            }
-            else
-            {
-                if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == -snake_size_and_speed) ||
-                    (speed[i + 1][1] == snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
-                    snake[i].setTexture(body_topleft_texture1);
-                }
-                else if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == snake_size_and_speed) ||
-                    (speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
-                    snake[i].setTexture(body_bottomleft_texture1);
-                }
-                else if ((speed[i + 1][1] == snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
-                    (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == -snake_size_and_speed)) {
-                    snake[i].setTexture(body_topright_texture1);
-                }
-                else if ((speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
-                    (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == snake_size_and_speed)) {
-                    snake[i].setTexture(body_bottomright_texture1);
-                }
-
-                else if (speed[i][0] == snake_size_and_speed) {
-                    snake[i].setTexture(body_horizontal_texture1);
-                }
-                else if (speed[i][0] == -snake_size_and_speed) {
-                    snake[i].setTexture(body_horizontal_texture1);
-                }
-                else if (speed[i][1] == snake_size_and_speed) {
-                    snake[i].setTexture(body_vertical_texture1);
-                }
-                else if (speed[i][1] == -snake_size_and_speed) {
-                    snake[i].setTexture(body_vertical_texture1);
-                }
-
-
-            }
-        }
-    }
-    else if (check.is_snake_3_being_used) {
+    if (check.is_snake_10_being_used) {
         for (int i = 0; i < number_of_eaten_apples + 3; i++) {
             snake[i].setTexture(NULL);
         }
     }
-    else if (check.is_snake_4_being_used)
+    else
     {
+        
         for (int i = 0; i < number_of_eaten_apples + 3; i++) {
-            snake[i].setRotation(0);
             if (i == 0)
             {
-                snake[i].setTexture(head_right_texture2);
                 if (speed[i][0] == snake_size_and_speed) {
-
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.head_right);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.head_right);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.head_right);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.head_right);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.head_right);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.head_right);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.head_right);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.head_right);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.head_right);
+                    }
                 }
                 else if (speed[i][0] == -snake_size_and_speed) {
-                    snake[i].setRotation(180);
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.head_left);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.head_left);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.head_left);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.head_left);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.head_left);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.head_left);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.head_left);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.head_left);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.head_left);
+                    }
                 }
                 else if (speed[i][1] == snake_size_and_speed) {
-                    snake[i].setRotation(90);
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.head_down);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.head_down);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.head_down);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.head_down);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.head_down);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.head_down);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.head_down);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.head_down);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.head_down);
+                    }
                 }
                 else if (speed[i][1] == -snake_size_and_speed) {
-                    snake[i].setRotation(270);
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.head_up);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.head_up);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.head_up);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.head_up);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.head_up);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.head_up);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.head_up);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.head_up);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.head_up);
+                    }
                 }
             }
             else if (i == number_of_eaten_apples + 2)
             {
-                snake[i].setTexture(tail_left_texture2);
+
                 if (speed[i][1] == -snake_size_and_speed) {
-                    snake[i].setRotation(270);
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.tail_down);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.tail_down);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.tail_down);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.tail_down);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.tail_down);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.tail_down);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.tail_down);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.tail_down);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.tail_down);
+                    }
                 }
                 else if (speed[i][1] == snake_size_and_speed) {
-                    snake[i].setRotation(90);
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.tail_up);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.tail_up);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.tail_up);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.tail_up);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.tail_up);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.tail_up);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.tail_up);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.tail_up);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.tail_up);
+                    }
                 }
                 else if (speed[i][0] == snake_size_and_speed) {
-
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.tail_left);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.tail_left);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.tail_left);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.tail_left);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.tail_left);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.tail_left);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.tail_left);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.tail_left);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.tail_left);
+                    }
                 }
                 else if (speed[i][0] == -snake_size_and_speed) {
-                    snake[i].setRotation(180);
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.tail_right);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.tail_right);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.tail_right);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.tail_right);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.tail_right);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.tail_right);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.tail_right);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.tail_right);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.tail_right);
+                    }
                 }
 
             }
@@ -1281,45 +1819,313 @@ void set_texture(int number_of_eaten_apples, Check check, shapetextures& texture
             {
                 if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == -snake_size_and_speed) ||
                     (speed[i + 1][1] == snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
-                    snake[i].setTexture(body_topright_texture2);
-                    snake[i].setRotation(270);
-
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.body_top_left);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.body_top_left);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.body_top_left);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.body_top_left);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.body_top_left);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.body_top_left);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.body_top_left);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.body_top_left);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.body_top_left);
+                    }
                 }
                 else if ((speed[i + 1][0] == snake_size_and_speed && speed[i][1] == snake_size_and_speed) ||
                     (speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == -snake_size_and_speed)) {
-                    snake[i].setTexture(body_topright_texture2);
-                    snake[i].setRotation(180);
-
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.body_bottom_left);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.body_bottom_left);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.body_bottom_left);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.body_bottom_left);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.body_bottom_left);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.body_bottom_left);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.body_bottom_left);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.body_bottom_left);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.body_bottom_left);
+                    }
                 }
                 else if ((speed[i + 1][1] == snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
                     (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == -snake_size_and_speed)) {
-                    snake[i].setTexture(body_topright_texture2);
-
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.body_top_right);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.body_top_right);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.body_top_right);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.body_top_right);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.body_top_right);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.body_top_right);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.body_top_right);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.body_top_right);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.body_top_right);
+                    }
                 }
                 else if ((speed[i + 1][1] == -snake_size_and_speed && speed[i][0] == snake_size_and_speed) ||
                     (speed[i + 1][0] == -snake_size_and_speed && speed[i][1] == snake_size_and_speed)) {
-                    snake[i].setTexture(body_topright_texture2);
-                    snake[i].setRotation(90);
+                        if (check.is_snake_1_being_used)
+                        {
+                            snake[i].setTexture(snake1.body_bottom_right);
+                        }
+                        else if (check.is_snake_2_being_used)
+                        {
+                            snake[i].setTexture(snake2.body_bottom_right);
+                        }
+                        else if (check.is_snake_3_being_used)
+                        {
+                            snake[i].setTexture(snake3.body_bottom_right);
+                        }
+                        else if (check.is_snake_4_being_used)
+                        {
+                            snake[i].setTexture(snake4.body_bottom_right);
+                        }
+                        else if (check.is_snake_5_being_used)
+                        {
+                            snake[i].setTexture(snake5.body_bottom_right);
+                        }
+                        else if (check.is_snake_6_being_used)
+                        {
+                            snake[i].setTexture(snake6.body_bottom_right);
+                        }
+                        else if (check.is_snake_7_being_used)
+                        {
+                            snake[i].setTexture(snake7.body_bottom_right);
+                        }
+                        else if (check.is_snake_8_being_used)
+                        {
+                            snake[i].setTexture(snake8.body_bottom_right);
+                        }
+                        else if (check.is_snake_9_being_used)
+                        {
+                            snake[i].setTexture(snake9.body_bottom_right);
+                        }
                 }
 
                 else if (speed[i][0] == snake_size_and_speed) {
-                    snake[i].setTexture(body_horizontal_texture2);
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.body_horizontal);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.body_horizontal);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.body_horizontal);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.body_horizontal);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.body_horizontal);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.body_horizontal);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.body_horizontal);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.body_horizontal);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.body_horizontal);
+                    }
                 }
                 else if (speed[i][0] == -snake_size_and_speed) {
-                    snake[i].setTexture(body_horizontal_texture2);
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.body_horizontal);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.body_horizontal);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.body_horizontal);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.body_horizontal);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.body_horizontal);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.body_horizontal);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.body_horizontal);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.body_horizontal);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.body_horizontal);
+                    }
                 }
                 else if (speed[i][1] == snake_size_and_speed) {
-                    snake[i].setTexture(body_horizontal_texture2);
-                    snake[i].setRotation(90);
-
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.body_vertical);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.body_vertical);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.body_vertical);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.body_vertical);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.body_vertical);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.body_vertical);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.body_vertical);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.body_vertical);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.body_vertical);
+                    }
                 }
                 else if (speed[i][1] == -snake_size_and_speed) {
-                    snake[i].setTexture(body_horizontal_texture2);
-                    snake[i].setRotation(90);
-
+                    if (check.is_snake_1_being_used)
+                    {
+                        snake[i].setTexture(snake1.body_vertical);
+                    }
+                    else if (check.is_snake_2_being_used)
+                    {
+                        snake[i].setTexture(snake2.body_vertical);
+                    }
+                    else if (check.is_snake_3_being_used)
+                    {
+                        snake[i].setTexture(snake3.body_vertical);
+                    }
+                    else if (check.is_snake_4_being_used)
+                    {
+                        snake[i].setTexture(snake4.body_vertical);
+                    }
+                    else if (check.is_snake_5_being_used)
+                    {
+                        snake[i].setTexture(snake5.body_vertical);
+                    }
+                    else if (check.is_snake_6_being_used)
+                    {
+                        snake[i].setTexture(snake6.body_vertical);
+                    }
+                    else if (check.is_snake_7_being_used)
+                    {
+                        snake[i].setTexture(snake7.body_vertical);
+                    }
+                    else if (check.is_snake_8_being_used)
+                    {
+                        snake[i].setTexture(snake8.body_vertical);
+                    }
+                    else if (check.is_snake_9_being_used)
+                    {
+                        snake[i].setTexture(snake9.body_vertical);
+                    }
                 }
-
-
             }
         }
     }
@@ -1452,78 +2258,11 @@ void set_color(int square_number, int number_of_eaten_apples, Check check) {
     }
 }
 
-void set_rotation(int number_of_eaten_apples, int square_number) {
-
-    bool is_snake_turn = (speed[square_number][0] == speed[square_number + 1][1] || speed[square_number][0] == -speed[square_number + 1][1] ||
-        speed[square_number][1] == speed[square_number + 1][0] || speed[square_number][1] == -speed[square_number + 1][0]);
-
-    bool is_this_square_going_right = speed[square_number][0] == snake_size_and_speed;
-    bool is_this_square_going_left = speed[square_number][0] == -snake_size_and_speed;
-    bool is_this_square_going_upward = speed[square_number][1] == -snake_size_and_speed;
-    bool is_this_square_going_downward = speed[square_number][1] == snake_size_and_speed;
-
-    bool is_the_next_square_going_right = speed[square_number + 1][0] == snake_size_and_speed;
-    bool is_the_next_square_going_left = speed[square_number + 1][0] == -snake_size_and_speed;
-    bool is_the_next_square_going_upward = speed[square_number + 1][1] == -snake_size_and_speed;
-    bool is_the_next_square_going_downward = speed[square_number + 1][1] == snake_size_and_speed;
-
-    if (square_number != (number_of_eaten_apples + 2) || is_snake_turn) {
-        if (is_snake_turn && square_number != 0) {
-
-            if ((is_the_next_square_going_right && is_this_square_going_upward) ||
-                (is_the_next_square_going_downward && is_this_square_going_left)) {
-                snake[square_number].setRotation(180);
-            }
-
-            else if ((is_the_next_square_going_right && is_this_square_going_downward) ||
-                (is_the_next_square_going_upward && is_this_square_going_left)) {
-
-                snake[square_number].setRotation(90);
-            }
-
-            else if ((is_the_next_square_going_downward && is_this_square_going_right) ||
-                (is_the_next_square_going_left && is_this_square_going_upward)) {
-
-                snake[square_number].setRotation(270);
-            }
-
-            else if ((is_the_next_square_going_upward && is_this_square_going_right) ||
-                (is_the_next_square_going_left && is_this_square_going_downward)) {
-
-                snake[square_number].setRotation(0);
-            }
-        }
-        else {
-            if (is_this_square_going_right) {
-                snake[square_number].setRotation(270);
-            }
-            else if (is_this_square_going_left) {
-                snake[square_number].setRotation(90);
-            }
-            else if (is_this_square_going_downward)
-                snake[square_number].setRotation(0);
-            else if (is_this_square_going_upward)
-                snake[square_number].setRotation(180);
-        }
-    }
-    else {
-        if (is_this_square_going_right)
-            snake[square_number].setRotation(90);
-        else if (is_this_square_going_left)
-            snake[square_number].setRotation(270);
-        else if (is_this_square_going_downward)
-            snake[square_number].setRotation(180);
-        else if (is_this_square_going_upward)
-            snake[square_number].setRotation(0);
-    }
-
-}
-
 //to create score counter
 void apple_counter(int number_of_eaten_apples, Check check) {
     // Display score
     text.setFillColor(sf::Color::White);
-    text.setCharacterSize(30*screen_factor_x);
+    text.setCharacterSize(30 * screen_factor_x);
     text.setPosition(70 * screen_factor_x, 20 * screen_factor_y);
     text.setString("Score: " + std::to_string(number_of_eaten_apples));
     window.draw(text);
@@ -1618,13 +2357,13 @@ void drawMainMenu(Font& font, shape shapes, Check check)
     exitButton.setString("Exit");
     exitButton.setFillColor(Color::White);
 
-    startButton.setCharacterSize(32*screen_factor_x);
+    startButton.setCharacterSize(32 * screen_factor_x);
     startButton.setPosition(Vector2f((int)(615 * screen_factor_x), (int)(450 * screen_factor_y)));
 
-    highScoreButton.setCharacterSize(29*screen_factor_x);
+    highScoreButton.setCharacterSize(29 * screen_factor_x);
     highScoreButton.setPosition(Vector2f((int)(575 * screen_factor_x), (int)(550 * screen_factor_y)));
 
-    exitButton.setCharacterSize(32*screen_factor_x);
+    exitButton.setCharacterSize(32 * screen_factor_x);
     exitButton.setPosition(Vector2f((int)(625 * screen_factor_x), (int)(650 * screen_factor_y)));
 
     window.draw(startButton);
@@ -1643,7 +2382,7 @@ void drawSettingsMenu(Font& font, shape shapes, Check check)
     audioButton.setFont(font);
     audioButton.setString("Audio");
     audioButton.setFillColor(Color::White);
-    audioButton.setCharacterSize(32 * screen_factor_x );
+    audioButton.setCharacterSize(32 * screen_factor_x);
     audioButton.setPosition(Vector2f(window.getSize().x / 2 - 40 * screen_factor_x, window.getSize().y / 2 - 75 * screen_factor_y));
 
     // create the "fullScreen" button
@@ -1651,7 +2390,7 @@ void drawSettingsMenu(Font& font, shape shapes, Check check)
     change_snake_button.setFont(font);
     change_snake_button.setString("Change snake");
     change_snake_button.setFillColor(Color::White);
-    change_snake_button.setCharacterSize(32 * screen_factor_x );
+    change_snake_button.setCharacterSize(32 * screen_factor_x);
     change_snake_button.setPosition(Vector2f(window.getSize().x / 2 - 100 * screen_factor_x, window.getSize().y / 2 + 20 * screen_factor_y));
 
 
@@ -1660,7 +2399,7 @@ void drawSettingsMenu(Font& font, shape shapes, Check check)
     backButton.setFont(font);
     backButton.setString("Back");
     backButton.setFillColor(Color::White);
-    backButton.setCharacterSize(32 * screen_factor_x );
+    backButton.setCharacterSize(32 * screen_factor_x);
     backButton.setPosition(Vector2f(window.getSize().x / 2 - 30 * screen_factor_x, window.getSize().y / 2 + 120 * screen_factor_y));
 
 
@@ -1675,7 +2414,7 @@ void draw_view_high_score_menu(shape shapes, Text text, int ranking[], Check che
     window.clear();
     window.draw(shapes.ranking_page);
     string number;
-    text.setCharacterSize(32 * screen_factor_x );
+    text.setCharacterSize(32 * screen_factor_x);
     text.setStyle(Text::Bold);
     for (int q = 0; q < 3; q++) {
         int u = 1000;
@@ -1734,29 +2473,53 @@ void draw_change_color(shape shapes, Check& check)
 
     if (check.is_snake_1_being_used)
     {
-        shapes.Tru_ee.setPosition(505 * screen_factor_x, 225 * screen_factor_y);
+        shapes.Tru_ee.setPosition(182 * screen_factor_x, 199 * screen_factor_y);
     }
     else if (check.is_snake_2_being_used)
     {
-        shapes.Tru_ee.setPosition(315 * screen_factor_x, 225 * screen_factor_y);
+        shapes.Tru_ee.setPosition(260 * screen_factor_x, 199 * screen_factor_y);
     }
     else if (check.is_snake_3_being_used)
     {
-        shapes.Tru_ee.setPosition(700 * screen_factor_x, 225 * screen_factor_y);
+        shapes.Tru_ee.setPosition(337 * screen_factor_x, 199 * screen_factor_y);
     }
     else if (check.is_snake_4_being_used)
     {
-        shapes.Tru_ee.setPosition(410 * screen_factor_x, 225 * screen_factor_y);
+        shapes.Tru_ee.setPosition(413 * screen_factor_x, 199 * screen_factor_y);
+    }
+    else if (check.is_snake_5_being_used)
+    {
+        shapes.Tru_ee.setPosition(488 * screen_factor_x, 199 * screen_factor_y);
+    }
+    else if (check.is_snake_6_being_used)
+    {
+        shapes.Tru_ee.setPosition(562 * screen_factor_x, 199 * screen_factor_y);
+    }
+    else if (check.is_snake_7_being_used)
+    {
+        shapes.Tru_ee.setPosition(635 * screen_factor_x, 199 * screen_factor_y);
+    }
+    else if (check.is_snake_8_being_used)
+    {
+        shapes.Tru_ee.setPosition(707 * screen_factor_x, 199 * screen_factor_y);
+    }
+    else if (check.is_snake_9_being_used)
+    {
+        shapes.Tru_ee.setPosition(778 * screen_factor_x, 199 * screen_factor_y);
+    }
+    else if (check.is_snake_10_being_used)
+    {
+        shapes.Tru_ee.setPosition(838 * screen_factor_x, 199 * screen_factor_y);
     }
     window.draw(shapes.Tru_ee);
     if (check.is_snake_changing_colors)
     {
-        shapes.Tru_ee.setPosition(400 * screen_factor_x, 390 * screen_factor_y);
+        shapes.Tru_ee.setPosition(464 * screen_factor_x, 341 * screen_factor_y);
 
     }
     else
     {
-        shapes.Tru_ee.setPosition((int)(565 * screen_factor_x), (int)(390 * screen_factor_y));
+        shapes.Tru_ee.setPosition((int)(610 * screen_factor_x), (int)(341 * screen_factor_y));
 
     }
     window.draw(shapes.Tru_ee);
