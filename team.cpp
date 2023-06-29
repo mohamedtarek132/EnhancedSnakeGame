@@ -883,7 +883,6 @@ void sizenposition() {
 //to know whether the snake collided or not with the boundries,itself,apple,or rotten apple and to check that you pressed on 
 //any button in the game
 void collision(shape shapes, int& number_of_eaten_apples, Check& check, int ranking[], int& collision_counter) {
-
     bool left_or_right_mouse_button_pressed = Mouse::isButtonPressed(Mouse::Left);
     bool space_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Space);
     bool escape_button_is_pressed = Keyboard::isKeyPressed(Keyboard::Escape);
@@ -960,7 +959,6 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).y <= 75 * screen_factor_y;
 
     //main menu buttons
-
     int left_x_position_of_the_main_menu_buttons = 560;
     int width_of_main_menu_buttons = 190;
     int height_of_main_menu_buttons = 50;
@@ -1027,6 +1025,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).x <= (setting_buttons_x_position + setting_buttons_width) * screen_factor_x &&
         Mouse::getPosition(window).y >= setting_third_button * screen_factor_y &&
         Mouse::getPosition(window).y <= (setting_third_button + setting_buttons_height) * screen_factor_y;
+
     //audio buttons
     bool mouse_position_is_inside_ON_Audio_in_audio_setting_page =
         Mouse::getPosition(window).x >= 615 * screen_factor_x &&
@@ -1054,7 +1053,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).y >= 255 * screen_factor_y &&
         Mouse::getPosition(window).y <= 330 * screen_factor_y;
 
-
+    //change color buttons
     bool mouse_position_is_inside_Exit_in_change_color_page =
         Mouse::getPosition(window).x >= 25 * screen_factor_x &&
         Mouse::getPosition(window).x <= 120 * screen_factor_x &&
@@ -1110,7 +1109,6 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).x <= 1002 * screen_factor_x &&
         Mouse::getPosition(window).y >= 310 * screen_factor_y &&
         Mouse::getPosition(window).y <= 347 * screen_factor_y;
-
     bool mouse_position_is_inside_first_color_option_in_change_color_page =
         Mouse::getPosition(window).x >= 591 * screen_factor_x &&
         Mouse::getPosition(window).x <= 630 * screen_factor_x &&
@@ -1122,6 +1120,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).y >= 452 * screen_factor_y &&
         Mouse::getPosition(window).y <= 491 * screen_factor_y;
 
+    //game modes buttons
     bool mouse_position_is_inside_story_button =
         Mouse::getPosition(window).x >= 520 * screen_factor_x &&
         Mouse::getPosition(window).x <= 795 * screen_factor_x &&
@@ -1138,6 +1137,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         Mouse::getPosition(window).y >= 700 * screen_factor_y &&
         Mouse::getPosition(window).y <= (790) * screen_factor_y;
 
+    //story mode buttons
     bool mouse_position_is_inside_continue_button_in_story_mode_page =
         Mouse::getPosition(window).x >= 520 * screen_factor_x &&
         Mouse::getPosition(window).x <= 795 * screen_factor_x &&
@@ -1206,6 +1206,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
 
     }
 
+    //in game buttons 
     if (!check.is_the_setting_in_game_button_pressed && ((left_or_right_mouse_button_pressed &&
         mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed)) {
         check.is_the_setting_in_game_button_pressed = 1;
@@ -1232,6 +1233,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_new_story_mode_pressed = 0;
         }
     }
+    //main menu buttons
     if (left_or_right_mouse_button_pressed && !check.is_start_button_pressed && !check.is_ranking_button_pressed
         && !check.is_setting_button_pressed && !check.is_audio_button_pressed && check.is_change_snake_button_pressed == 0 &&
         !check.is_story_mode_pressed && !check.is_survive_mode_pressed && check.is_main_menu_open) {
@@ -1262,7 +1264,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         }
     }
 
-
+    //ranking buttons
     else if (left_or_right_mouse_button_pressed && mouse_position_is_inside_exit_button_in_ranking_page &&
         check.is_ranking_button_pressed && !check.is_main_menu_open &&
         !check.is_start_button_pressed && !check.is_setting_button_pressed && check.is_audio_button_pressed == 0 &&
@@ -1272,7 +1274,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
 
     }
 
-
+    //setting buttons
     else if (check.is_setting_button_pressed && left_or_right_mouse_button_pressed && !check.is_audio_button_pressed &&
         !check.is_ranking_button_pressed && !check.is_start_button_pressed && !check.is_change_snake_button_pressed &&
         !check.is_story_mode_pressed && !check.is_survive_mode_pressed) {
@@ -1290,7 +1292,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
         }
     }
 
-
+    //audio buttons
     else if (left_or_right_mouse_button_pressed && check.is_audio_button_pressed && !check.is_change_snake_button_pressed &&
         !check.is_start_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed &&
         !check.is_story_mode_pressed && !check.is_survive_mode_pressed) {
@@ -1315,8 +1317,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_setting_button_pressed = 1;
         }
     }
-
-
+    //change snake buttons
     else if (left_or_right_mouse_button_pressed && check.is_change_snake_button_pressed && !check.is_audio_button_pressed &&
         !check.is_start_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed) {
         if (mouse_position_is_inside_Exit_in_change_color_page)
@@ -1464,6 +1465,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
             check.is_snake_changing_colors = 0;
         }
     }
+    //game mode buttons
     else if (left_or_right_mouse_button_pressed && check.is_start_button_pressed && !check.is_change_snake_button_pressed &&
         !check.is_audio_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed &&
         !check.is_story_mode_pressed && !check.is_survive_mode_pressed && !check.is_main_menu_open) {
@@ -1480,6 +1482,7 @@ void collision(shape shapes, int& number_of_eaten_apples, Check& check, int rank
 
         }
     }
+    //story mode buttons
     else if (left_or_right_mouse_button_pressed && check.is_story_mode_pressed && !check.is_start_button_pressed && !check.is_change_snake_button_pressed &&
         !check.is_audio_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed &&
         !check.is_survive_mode_pressed && !check.is_main_menu_open) {
@@ -1556,7 +1559,6 @@ void snake_movement(Check& check) {
     bool snake_isnt_going_right = speed[0][0] != snake_size_and_speed;
     bool snake_isnt_going_up = speed[0][1] != -1 * snake_size_and_speed;
     bool snake_isnt_going_down = speed[0][1] != snake_size_and_speed;
-
 
     if (is_d_or_right_key_pressed && snake_isnt_going_left) {
             speed[0][0] = snake_size_and_speed; speed[0][1] = 0;
