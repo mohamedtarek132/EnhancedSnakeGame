@@ -742,8 +742,8 @@ int main() {
 
     textures.stoneblocktexture.loadFromFile("stone block.png");
     textures.stone_block_texture = &textures.stoneblocktexture;
-    for (int i=0;i<4;i++)
-    shapes.stone_block[i].setTexture(textures.stone_block_texture);
+    for (int i = 0; i < 4; i++)
+        shapes.stone_block[i].setTexture(textures.stone_block_texture);
 
     textures.story_mode_backgrounds_textures[0].loadFromFile("Background.png");
     shapes.story_mode_backgrounds[0].setTexture(textures.story_mode_backgrounds_textures[0]);
@@ -797,10 +797,10 @@ int main() {
             if ((event.type == Event::Closed) || Keyboard::isKeyPressed(Keyboard::Escape))
                 window.close();
             if (event.type == Event::Resized) {
-                
+
                 check.is_fullscreen_button_pressed = 1;
                 change_size(shapes);
-                snake_size_and_speed = (int)(snake_size_and_speed * screen_factor_x);
+                snake_size_and_speed = (snake_size_and_speed * screen_factor_x);
             }
         }
 
@@ -915,7 +915,7 @@ int main() {
 }
 
 void change_size(shape& shapes) {
-    
+
     shapes.main_menu_page.setScale(VideoMode::getDesktopMode().width / 1800.0, VideoMode::getDesktopMode().height / 1300.0);
     shapes.ranking_page.setScale(VideoMode::getDesktopMode().width / 1800.0, VideoMode::getDesktopMode().height / 1300.0);
     shapes.setting_page.setScale(VideoMode::getDesktopMode().width / 1800.0, VideoMode::getDesktopMode().height / 1300.0);
@@ -936,6 +936,9 @@ void change_size(shape& shapes) {
     for (int i = 0; i < 10; i++) {
         shapes.story_mode_backgrounds[i].setScale(VideoMode::getDesktopMode().width / 1800.0, VideoMode::getDesktopMode().height / 1300.0);
     }
+  /*  for (int i = 0; i < 2; i++) {
+        shapes.stone_block[i].setScale(VideoMode::getDesktopMode().width / 1800.0, VideoMode::getDesktopMode().height / 1300.0);
+    }*/
 }
 
 //to make all of the squares to have the same size, origin,and initial speed (+ve x direction) 
@@ -964,35 +967,30 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         (int)(730 * screen_factor_y);
     bool did_snake_hit_top_of_the_box = snake[0].getGlobalBounds().top - snake_size_and_speed <= (int)(68 * screen_factor_y);
 
-    bool hit_right_side_of_stone_in_level_2[5];
     bool first_stone_bottom[2];
     for (int i = 0; i < 2; i++) {
         first_stone_bottom[i] =
-            (snake[0].getGlobalBounds().top == shapes.stone_block[i].getGlobalBounds().height + shapes.stone_block[i].getGlobalBounds().top
-                && snake[0].getGlobalBounds().left > shapes.stone_block[i].getGlobalBounds().left && snake[0].getGlobalBounds().left <
-                shapes.stone_block[i].getGlobalBounds().left + shapes.stone_block[0].getGlobalBounds().width && speed[0][1] < 0) ||
+            ((snake[0].getGlobalBounds().top == shapes.stone_block[i].getGlobalBounds().height + shapes.stone_block[i].getGlobalBounds().top||
+                snake[0].getGlobalBounds().top == shapes.stone_block[i].getGlobalBounds().height + shapes.stone_block[i].
+                getGlobalBounds().top-snake_size_and_speed) &&
+                snake[0].getGlobalBounds().left > shapes.stone_block[i]. getGlobalBounds().left && 
+                snake[0].getGlobalBounds().left <shapes.stone_block[i].getGlobalBounds().left + shapes.stone_block[0].getGlobalBounds().width && 
+                speed[0][1] < 0) ||
 
-            (snake[0].getGlobalBounds().top == shapes.stone_block[i].getGlobalBounds().top - snake_size_and_speed &&
-                snake[0].getGlobalBounds().left > shapes.stone_block[i].getGlobalBounds().left && snake[0].getGlobalBounds().left <
-                shapes.stone_block[i].getGlobalBounds().left + shapes.stone_block[i].getGlobalBounds().width && speed[0][1] > 0) ||
+            ((snake[0].getGlobalBounds().top == shapes.stone_block[i].getGlobalBounds().top - snake_size_and_speed|| snake[0]
+                .getGlobalBounds().top == shapes.stone_block[i].getGlobalBounds().top) &&snake[0].getGlobalBounds().left > shapes.
+                stone_block[i].getGlobalBounds().left && snake[0].getGlobalBounds().left <shapes.stone_block[i].getGlobalBounds().left
+                + shapes.stone_block[i].getGlobalBounds().width && speed[0][1] > 0) ||
 
-            (snake[0].getGlobalBounds().top < shapes.stone_block[i].getGlobalBounds().height + shapes.stone_block[i].getGlobalBounds().top
-                && snake[0].getGlobalBounds().top >= shapes.stone_block[i].getGlobalBounds().top && snake[0].getGlobalBounds().left ==
-                shapes.stone_block[i].getGlobalBounds().left - snake_size_and_speed && speed[0][0] > 0) ||
+            ((snake[0].getGlobalBounds().left == shapes.stone_block[i].getGlobalBounds().left - snake_size_and_speed || snake[0].
+                getGlobalBounds().left == shapes.stone_block[i].getGlobalBounds().left)&& snake[0].getGlobalBounds().top < shapes.
+                stone_block[i].getGlobalBounds().height + shapes.stone_block[i].getGlobalBounds().top
+                && snake[0].getGlobalBounds().top >= shapes.stone_block[i].getGlobalBounds().top &&  speed[0][0] > 0) ||
 
-            (snake[0].getGlobalBounds().top < shapes.stone_block[i].getGlobalBounds().height + shapes.stone_block[i].getGlobalBounds().top
-                && snake[0].getGlobalBounds().top >= shapes.stone_block[i].getGlobalBounds().top && snake[0].getGlobalBounds().left ==
-                shapes.stone_block[0].getGlobalBounds().left + shapes.stone_block[i].getGlobalBounds().width && speed[0][0] < 0);
-    }
-
-    int right_side_of_stone_in_level_2[5] = { 312,438,593,899,1019 };
-    int top_side_of_stone_in_level_2[5] = { 137,181,385,492,483 };
-    int left_side_of_stone_in_level_2[5];
-    int bottom_side_of_stone_in_level_2[5];
-    for (int i = 0; i < 5; i++) {
-        if (snake[0].getGlobalBounds().left <= (int)(right_side_of_stone_in_level_2[i] * screen_factor_x) &&
-            speed[0][0] == snake_size_and_speed)
-            check.did_snake_hit_something = 1;
+            ((snake[0].getGlobalBounds().left == shapes.stone_block[i].getGlobalBounds().left + shapes.stone_block[i].getGlobalBounds().
+                width|| snake[0].getGlobalBounds().left == shapes.stone_block[i].getGlobalBounds().left + shapes.stone_block[i].getGlobalBounds().
+                width-snake_size_and_speed) && snake[0].getGlobalBounds().top < shapes.stone_block[i].getGlobalBounds().height + shapes.stone_block[i].
+                getGlobalBounds().top && snake[0].getGlobalBounds().top >= shapes.stone_block[i].getGlobalBounds().top   && speed[0][0] < 0);
     }
 
     for (int i = 1; i < number_of_eaten_apples + 3; i++) {
@@ -1012,7 +1010,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
                 losing_sound.play();
             }
         }
-        
+
     }
     else {
         if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
@@ -1121,7 +1119,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         Mouse::getPosition(window).x <= (setting_buttons_x_position + setting_buttons_width) * screen_factor_x &&
         Mouse::getPosition(window).y >= setting_third_button * screen_factor_y &&
         Mouse::getPosition(window).y <= (setting_third_button + setting_buttons_height) * screen_factor_y;
-    bool mouse_position_is_inside_exit_button_in_setting_page=
+    bool mouse_position_is_inside_exit_button_in_setting_page =
         Mouse::getPosition(window).x >= 17 * screen_factor_x &&
         Mouse::getPosition(window).x <= (125) * screen_factor_x &&
         Mouse::getPosition(window).y >= 692 * screen_factor_y &&
@@ -1592,7 +1590,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
     //story mode buttons
     else if (left_or_right_mouse_button_pressed && check.is_story_mode_pressed && !check.is_start_button_pressed && !check.is_change_snake_button_pressed &&
         !check.is_audio_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed &&
-        !check.is_survive_mode_pressed && !check.is_main_menu_open) {
+        !check.is_survive_mode_pressed && !check.is_main_menu_open&&!check.is_new_story_mode_pressed&&!check.is_continue_story_mode_pressed) {
 
         if (mouse_position_is_inside_new_game_button_in_story_mode_page) {
             check.is_new_story_mode_pressed = 1;
@@ -1617,7 +1615,7 @@ void update_game(shape& shapes, int& game_counter, Check& check, int number_of_e
     //the time it will take the apple to change positions
     int apple_timer = 6 * 50 * screen_factor_x;
     if (check.is_story_mode_pressed) {
-        apple_timer = apple_timer * 3;
+        apple_timer = apple_timer * 0.5;
     }
     //the time it will take the rotten apple to change positions
     int rotten_apple_timer = apple_timer * 2;
@@ -1723,16 +1721,16 @@ void changexny(Check check) {
 //to draw everything in the game
 void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font font, shapetextures textures) {
 
-    window.clear(Color(0, 29, 0, 233));
+    window.clear();
     //Background
     if (check.is_story_mode_pressed) {
         window.draw(shapes.story_mode_backgrounds[check.number_of_levels_done]);
         if (check.number_of_levels_done == 1) {
-            shapes.stone_block[0].setSize(Vector2f(30 * 8, 30 * 2));
-            shapes.stone_block[0].setPosition(325 + 30 * 17, 461 + 60);
+            shapes.stone_block[0].setSize(Vector2f(snake_size_and_speed * 8, snake_size_and_speed * 2));
+            shapes.stone_block[0].setPosition((325 * screen_factor_x + snake_size_and_speed * 17),( 461*screen_factor_y + snake_size_and_speed*2));
             window.draw(shapes.stone_block[0]);
-            shapes.stone_block[1].setSize(Vector2f(30 * 8, 30 * 2));
-            shapes.stone_block[1].setPosition(325 + 30 * -2, 461 + 30*-9);
+            shapes.stone_block[1].setSize(Vector2f(snake_size_and_speed * 8, snake_size_and_speed * 2));
+            shapes.stone_block[1].setPosition((325 * screen_factor_x + snake_size_and_speed * -2), (461 * screen_factor_y + snake_size_and_speed * -9));
             window.draw(shapes.stone_block[1]);
         }
     }
@@ -2063,12 +2061,42 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
         rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
 
     //to make sure that the apple do not appear on the snake body
-    for (int i = 0; i < number_of_eaten_apples + 2; i++) {
-        if (snake[i].getGlobalBounds().intersects(shapes.apple_icon.getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
-            intersects(shapes.apple_icon.getGlobalBounds())) {
-            shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
-                145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-            i = 0;
+    if (check.number_of_levels_done == 1) {
+        for (int j = 0; j < 2; j++) {
+            if (shapes.apple_icon.getGlobalBounds().left > shapes.stone_block[j].getGlobalBounds().left - shapes.apple_icon.getGlobalBounds().width
+                && shapes.apple_icon.getGlobalBounds().top < shapes.stone_block[j].getGlobalBounds().height + shapes.stone_block[j].getGlobalBounds().top
+                && snake[0].getGlobalBounds().top > shapes.stone_block[j].getGlobalBounds().top - shapes.apple_icon.getGlobalBounds().height) {
+                shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
+                    145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                j = 0;
+            }
+        }
+        for (int i = 0; i < number_of_eaten_apples + 2; i++) {
+            if (snake[i].getGlobalBounds().intersects(shapes.apple_icon.getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
+                intersects(shapes.apple_icon.getGlobalBounds())) {
+                shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
+                    145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                i = 0;
+                for (int j = 0; j < 2; j++) {
+                    if (shapes.apple_icon.getGlobalBounds().left > shapes.stone_block[j].getGlobalBounds().left - snake_size_and_speed
+                        && shapes.apple_icon.getGlobalBounds().top < shapes.stone_block[j].getGlobalBounds().height + shapes.stone_block[j].getGlobalBounds().top
+                        && snake[0].getGlobalBounds().top > shapes.stone_block[j].getGlobalBounds().top - snake_size_and_speed) {
+                        shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
+                            145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                        j = 0;
+                    }
+                }
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < number_of_eaten_apples + 2; i++) {
+            if (snake[i].getGlobalBounds().intersects(shapes.apple_icon.getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
+                intersects(shapes.apple_icon.getGlobalBounds())) {
+                shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
+                    145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                i = 0;
+            }
         }
     }
     shapes.apple_icon.setRadius(snake_size_and_speed * 0.5);
@@ -2080,12 +2108,33 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
     shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
         rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
     //to make sure that the rotten apple do not appear on the snake body
-    for (int i = 0; i < number_of_eaten_apples + 2; i++) {
-        if (snake[i].getGlobalBounds().intersects(shapes.rotten_apple_icon.getGlobalBounds())||shapes.rotten_apple_icon.getGlobalBounds().
-            intersects(shapes.apple_icon.getGlobalBounds())) {
-            shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
-                rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-            i = 0;
+    if (check.number_of_levels_done == 1) {
+     
+        for (int i = 0; i < number_of_eaten_apples + 2; i++) {
+            if (snake[i].getGlobalBounds().intersects(shapes.rotten_apple_icon.getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
+                intersects(shapes.apple_icon.getGlobalBounds())) {
+                shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
+                    rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                i = 0;
+                for (int j = 0; i < 2; j++) {
+                    if (shapes.rotten_apple_icon.getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
+                        shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
+                            rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                        j = 0;
+                    }
+                }
+            }
+
+        }
+    }
+    else {
+        for (int i = 0; i < number_of_eaten_apples + 2; i++) {
+            if (snake[i].getGlobalBounds().intersects(shapes.rotten_apple_icon.getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
+                intersects(shapes.apple_icon.getGlobalBounds())) {
+                shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
+                    rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                i = 0;
+            }
         }
     }
 
@@ -2190,7 +2239,7 @@ void drawSettingsMenu(Font& font, shape shapes, Check check)
     backButton.setString("Full Screen");
     backButton.setFillColor(Color::White);
     backButton.setCharacterSize(32 * screen_factor_x);
-    backButton.setPosition(Vector2f(window.getSize().x / 2-75  * screen_factor_x, window.getSize().y / 2 + 120 * screen_factor_y));
+    backButton.setPosition(Vector2f(window.getSize().x / 2 - 75 * screen_factor_x, window.getSize().y / 2 + 120 * screen_factor_y));
 
 
     window.draw(audioButton);
@@ -2323,12 +2372,12 @@ void draw_change_color(shape shapes, Check& check)
     window.draw(shapes.Tru_ee);
     if (check.is_snake_changing_colors)
     {
-        shapes.Tru_ee.setPosition(464 * screen_factor_x, 341 * screen_factor_y);
+        shapes.Tru_ee.setPosition((int)(610 * screen_factor_x), (int)(341 * screen_factor_y));
 
     }
     else
     {
-        shapes.Tru_ee.setPosition((int)(610 * screen_factor_x), (int)(341 * screen_factor_y));
+        shapes.Tru_ee.setPosition(464 * screen_factor_x, 341 * screen_factor_y);
 
     }
     window.draw(shapes.Tru_ee);
