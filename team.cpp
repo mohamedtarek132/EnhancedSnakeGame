@@ -116,9 +116,12 @@ struct shapetextures {
     Texture stoneblocktexture;
     Texture* stone_block_texture;
     Texture story_mode_backgrounds_textures[10];
+    Texture bombicontexture;
+    Texture* bomb_icon_texture;
 };
 struct shape {
     CircleShape apple_icon;
+    CircleShape bomb_icon;
     CircleShape rotten_apple_icon;
 
     Sprite opening;
@@ -753,25 +756,25 @@ int main() {
     shapes.story_mode_backgrounds[1].setTexture(textures.story_mode_backgrounds_textures[1]);
     shapes.story_mode_backgrounds[1].setScale((1300.0 / 1800), (800.0 / 1300));
 
-    //textures.story_mode_backgrounds_textures[2].loadFromFile(".png");
-    //shapes.story_mode_backgrounds[2].setTexture(textures.story_mode_backgrounds_textures[2]);
-    //shapes.story_mode_backgrounds[2].setScale((1300.0 / 1800), (800.0 / 1300));
+    textures.story_mode_backgrounds_textures[2].loadFromFile("level 3.png");
+    shapes.story_mode_backgrounds[2].setTexture(textures.story_mode_backgrounds_textures[2]);
+    shapes.story_mode_backgrounds[2].setScale((1300.0 / 1800), (800.0 / 1300));
 
-    //textures.story_mode_backgrounds_textures[3].loadFromFile(".png");
-    //shapes.story_mode_backgrounds[3].setTexture(textures.story_mode_backgrounds_textures[3]);
-    //shapes.story_mode_backgrounds[3].setScale((1300.0 / 1800), (800.0 / 1300));
+    textures.story_mode_backgrounds_textures[3].loadFromFile("level 4.png");
+    shapes.story_mode_backgrounds[3].setTexture(textures.story_mode_backgrounds_textures[3]);
+    shapes.story_mode_backgrounds[3].setScale((1300.0 / 1800), (800.0 / 1300));
 
-    //textures.story_mode_backgrounds_textures[4].loadFromFile(".png");
-    //shapes.story_mode_backgrounds[4].setTexture(textures.story_mode_backgrounds_textures[4]);
-    //shapes.story_mode_backgrounds[4].setScale((1300.0 / 1800), (800.0 / 1300));
+    textures.story_mode_backgrounds_textures[4].loadFromFile("level 5.png");
+    shapes.story_mode_backgrounds[4].setTexture(textures.story_mode_backgrounds_textures[4]);
+    shapes.story_mode_backgrounds[4].setScale((1300.0 / 1800), (800.0 / 1300));
 
-    //textures.story_mode_backgrounds_textures[5].loadFromFile(".png");
-    //shapes.story_mode_backgrounds[5].setTexture(textures.story_mode_backgrounds_textures[5]);
-    //shapes.story_mode_backgrounds[5].setScale((1300.0 / 1800), (800.0 / 1300));
+    textures.story_mode_backgrounds_textures[5].loadFromFile("level 6.png");
+    shapes.story_mode_backgrounds[5].setTexture(textures.story_mode_backgrounds_textures[5]);
+    shapes.story_mode_backgrounds[5].setScale((1300.0 / 1800), (800.0 / 1300));
 
-    //textures.story_mode_backgrounds_textures[6].loadFromFile(".png");
-    //shapes.story_mode_backgrounds[6].setTexture(textures.story_mode_backgrounds_textures[6]);
-    //shapes.story_mode_backgrounds[6].setScale((1300.0 / 1800), (800.0 / 1300));
+    textures.story_mode_backgrounds_textures[6].loadFromFile("level 7.png");
+    shapes.story_mode_backgrounds[6].setTexture(textures.story_mode_backgrounds_textures[6]);
+    shapes.story_mode_backgrounds[6].setScale((1300.0 / 1800), (800.0 / 1300));
 
     //textures.story_mode_backgrounds_textures[7].loadFromFile(".png");
     //shapes.story_mode_backgrounds[7].setTexture(textures.story_mode_backgrounds_textures[7]);
@@ -784,6 +787,10 @@ int main() {
     //textures.story_mode_backgrounds_textures[9].loadFromFile(".png");
     //shapes.story_mode_backgrounds[9].setTexture(textures.story_mode_backgrounds_textures[9]);
     //shapes.story_mode_backgrounds[9].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.bombicontexture.loadFromFile("bomb1.png");
+    textures.bomb_icon_texture =& textures.bombicontexture;
+    shapes.bomb_icon.setTexture(textures.bomb_icon_texture);
 
     window.setFramerateLimit(70);
 
