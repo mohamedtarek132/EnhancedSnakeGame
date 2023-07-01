@@ -739,7 +739,11 @@ int main() {
     shapes.winter_game_background.setTexture(textures.winter_game_background_texture);
     shapes.winter_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
 
-    textures.summer_game_background_texture.loadFromFile("summer game background.png");
+    textures.spring_game_background_texture.loadFromFile("spring game background.png");
+    shapes.spring_game_background.setTexture(textures.spring_game_background_texture);
+    shapes.spring_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.summer_game_background_texture.loadFromFile("Background.png");
     shapes.summer_game_background.setTexture(textures.summer_game_background_texture);
     shapes.summer_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
 
