@@ -83,6 +83,7 @@ struct Check {
     bool did_cut_scene_start;
     
     int number_of_monolge_being_played;
+
 };
 
 struct shapetextures {
@@ -128,6 +129,8 @@ struct shapetextures {
     Texture bombexplosiontexture;
     Texture* bomb_explosion_texture;
     Texture story_mode_cut_scene_backgrounds_textures[8];
+    Texture textboxtexture;
+    Texture* text_box_texture;
 };
 struct shape {
     CircleShape apple_icon;
@@ -159,6 +162,7 @@ struct shape {
     RectangleShape restart_icon;
     RectangleShape exit_icon;
     RectangleShape stone_block[4];
+    RectangleShape text_box;
 };
 
 
@@ -302,6 +306,8 @@ int main() {
 
     shapetextures textures;
 
+    Text text_box_text;
+
     shape shapes;
 
     SoundBuffer apple_eating_sound_buffer, rotten_apple_eating_sound_buffer, losing_sound_buffer,explosion_sound_buffer;
@@ -324,7 +330,10 @@ int main() {
     //loading fong and setting the font of the text
     font.loadFromFile("font file 2.ttf");
     text.setFont(font);
-
+    
+    text_box_text.setFont(font);
+    text_box_text.setCharacterSize(25);
+    //text_box_text.setColor(Color::White);
     //loading sound of the apple being eaten
     apple_eating_sound_buffer.loadFromFile("apple_crunch.wav");
     apple_eating_sound.setBuffer(apple_eating_sound_buffer);
@@ -854,6 +863,10 @@ int main() {
     textures.bomb_explosion_texture = &textures.bombexplosiontexture;
     shapes.bomb_explosion.setTexture(textures.bomb_explosion_texture);
 
+    textures.textboxtexture.loadFromFile("text box.png");
+    textures.text_box_texture = &textures.textboxtexture;
+    shapes.text_box.setTexture(textures.text_box_texture);
+
     window.setFramerateLimit(70);
 
     sizenposition();
@@ -910,6 +923,7 @@ int main() {
                         randapple(shapes, check, number_of_eaten_apples);
                         randrottenapple(shapes, check, number_of_eaten_apples);
                         check.did_cut_scene_start = 1;
+                        check.number_of_monolge_being_played = 0;
                     
                 }
                 if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed&&!check.did_cut_scene_start) {
@@ -933,6 +947,61 @@ int main() {
                 else if (check.did_cut_scene_start) {
                     window.clear();
                     window.draw(shapes.story_mode_cut_scene_backgrounds[check.number_of_levels_done]);
+                    shapes.text_box.setSize(Vector2f(1100, 100));
+                    shapes.text_box.setPosition(Vector2f(100, 650));
+                    window.draw(shapes.text_box);
+                    if (check.number_of_levels_done == 0) {
+                        text_box_text.setString("The Wicked Sorceress: Be careful of the rotten apple, It will decrease \n your score");
+                        text_box_text.setPosition(Vector2f(200, 660));
+                        window.draw(text_box_text);
+                    }
+                    else if (check.number_of_levels_done == 1) {
+                        text_box_text.setString("The Wicked Sorceress: Was that easy? Welcome to the desert now,\n your speed will be faster.");
+                        text_box_text.setPosition(Vector2f(200, 660));
+                        window.draw(text_box_text);
+                    }
+                    else if (check.number_of_levels_done == 2 ) {
+                        if (check.number_of_monolge_being_played == 0) {
+                            text_box_text.setString("The Wicked Sorceress: Well done, you cunning snake.");
+                        }
+                        else if (check.number_of_monolge_being_played == 1) {
+                            text_box_text.setString("The Snake: What now?");
+                        }  
+                        else if (check.number_of_monolge_being_played == 2) {
+                            text_box_text.setString("The Wicked Sorceress: I told you it wouldn't be easy. Be cautious now \n of those walls.");
+                        }
+                        text_box_text.setPosition(Vector2f(200, 660));
+                        window.draw(text_box_text);
+                    }
+                    else if (check.number_of_levels_done == 3) {
+                        text_box_text.setString("The Wicked Sorceress: Oh, my! You are truly skilled. Show me how \n you will overcome them now.");
+                        text_box_text.setPosition(Vector2f(200, 660));
+                        window.draw(text_box_text);
+                    }
+                    else if (check.number_of_levels_done == 4) {
+                        text_box_text.setString("The Wicked Sorceress: Welcome to the video games now. Remember, \n you are betting your life. The bomb kills instantly, there is no second\n option, hope you enjoy.");
+                        text_box_text.setPosition(Vector2f(200, 660));
+                        text_box_text.setCharacterSize(22);
+                        window.draw(text_box_text);
+                    }  
+                    else if (check.number_of_levels_done == 5) {
+                        text_box_text.setString("The Wicked Sorceress: You are quite clever! What if your speed were greater?\n Would you be able to keep up with the challenge? Not only that, the number \n of bombs will increase. I believe it won't be pleasant.");
+                        text_box_text.setPosition(Vector2f(200, 660));
+                        text_box_text.setCharacterSize(22);
+                        window.draw(text_box_text);
+                    }
+                    else if (check.number_of_levels_done == 6) {
+                        text_box_text.setString("The Wicked Sorceress: Oh, you're getting closer! Enjoy these risks \nbecause you will truly experience hell in the next level.");
+                        text_box_text.setPosition(Vector2f(200, 660));
+                        text_box_text.setCharacterSize(25);
+                        window.draw(text_box_text);
+                    }
+                    else if (check.number_of_levels_done == 7) {
+                        text_box_text.setString("The Wicked Sorceress: Welcome to my home! Now I can tell you that you\n have truly entered hell, and you won't be able to keep up with it at all! \nIt's either me or you who will remain alive! You will die now, without a doubt.");
+                        text_box_text.setPosition(Vector2f(200, 660));
+                        text_box_text.setCharacterSize(22);
+                        window.draw(text_box_text);
+                    }
                     window.display();
                 }
                 if (!check.did_cut_scene_start) {
@@ -1449,9 +1518,6 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
     if (check.is_space_pressed_once > 1)
         space_button_is_pressed = 0;
 
-    if (check.did_cut_scene_start&&space_button_is_pressed) {
-        check.did_cut_scene_start = 0;
-    }
     if (check.is_the_snake_alive) {
         mouse_position_is_inside_resume_icon_box_in_game =
             Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
@@ -1488,7 +1554,16 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
     }
 
     //in game buttons 
-    if (!check.is_the_setting_in_game_button_pressed && !check.did_cut_scene_start&&((left_or_right_mouse_button_pressed &&
+    if (check.did_cut_scene_start&&space_button_is_pressed) {
+        if ((check.number_of_levels_done!=2)&& check.number_of_monolge_being_played == 0) {
+            check.did_cut_scene_start = 0;
+        }
+        else if (check.number_of_levels_done == 2 && check.number_of_monolge_being_played == 2) {
+            check.did_cut_scene_start = 0;
+        }
+        check.number_of_monolge_being_played++;
+    }
+    else if (!check.is_the_setting_in_game_button_pressed && !check.did_cut_scene_start&&((left_or_right_mouse_button_pressed &&
         mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed)) {
         check.is_the_setting_in_game_button_pressed = 1;
     }
@@ -1825,8 +1900,11 @@ void update_game(shape& shapes, int& game_counter, Check& check, int number_of_e
         if (check.number_of_levels_done == 0) {
             speedtimer = snake_size_and_speed * 0.4 * screen_factor_x;
         }
-        else {
+        else if (check.number_of_levels_done < 5) {
             speedtimer = snake_size_and_speed * 0.25 * screen_factor_x;
+        }
+        else{
+            speedtimer = snake_size_and_speed * 0.25*0.75 * screen_factor_x;
         }
     }
     if (game_counter % speedtimer == 0)
