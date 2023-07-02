@@ -80,13 +80,9 @@ struct Check {
 
     bool did_snake_texture_change;
 
-    int is_d_or_right_key_pressed_once;
-
-    int is_a_or_left_key_pressed_once;
-
-    int is_s_or_down_key_pressed_once;
-
-    int is_w_or_up_key_pressed_once;
+    bool did_cut_scene_start;
+    
+    int number_of_monolge_being_played;
 };
 
 struct shapetextures {
@@ -131,6 +127,7 @@ struct shapetextures {
     Texture* bomb_icon_texture;
     Texture bombexplosiontexture;
     Texture* bomb_explosion_texture;
+    Texture story_mode_cut_scene_backgrounds_textures[8];
 };
 struct shape {
     CircleShape apple_icon;
@@ -154,7 +151,8 @@ struct shape {
     Sprite winter_game_background;
     Sprite fall_game_background;
     Sprite summer_game_background;
-    Sprite story_mode_backgrounds[10];
+    Sprite story_mode_backgrounds[8];
+    Sprite story_mode_cut_scene_backgrounds[8];
 
     RectangleShape pause_icon;
     RectangleShape resume_icon;
@@ -300,6 +298,7 @@ int main() {
     Check check = {};
     check.is_the_snake_alive = 1;
     check.is_snake_1_being_used = 1;
+    check.did_cut_scene_start = 1;
 
     shapetextures textures;
 
@@ -806,6 +805,38 @@ int main() {
     shapes.story_mode_backgrounds[7].setTexture(textures.story_mode_backgrounds_textures[7]);
     shapes.story_mode_backgrounds[7].setScale((1300.0 / 1800), (800.0 / 1300));
 
+    textures.story_mode_cut_scene_backgrounds_textures[0].loadFromFile("cut scene.png");
+    shapes.story_mode_cut_scene_backgrounds[0].setTexture(textures.story_mode_cut_scene_backgrounds_textures[0]);
+    shapes.story_mode_cut_scene_backgrounds[0].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_cut_scene_backgrounds_textures[1].loadFromFile("cut scene 2.png");
+    shapes.story_mode_cut_scene_backgrounds[1].setTexture(textures.story_mode_cut_scene_backgrounds_textures[1]);
+    shapes.story_mode_cut_scene_backgrounds[1].setScale((1300.0 / 3840), (800.0 / 2160));
+
+    textures.story_mode_cut_scene_backgrounds_textures[2].loadFromFile("cut scene 3.png");
+    shapes.story_mode_cut_scene_backgrounds[2].setTexture(textures.story_mode_cut_scene_backgrounds_textures[2]);
+    shapes.story_mode_cut_scene_backgrounds[2].setScale((1300.0 / 1920), (800.0 / 1080));
+
+    textures.story_mode_cut_scene_backgrounds_textures[3].loadFromFile("cut scene 4.jpg");
+    shapes.story_mode_cut_scene_backgrounds[3].setTexture(textures.story_mode_cut_scene_backgrounds_textures[3]);
+    shapes.story_mode_cut_scene_backgrounds[3].setScale((1300.0 / 1280), (800.0 / 720));
+
+    textures.story_mode_cut_scene_backgrounds_textures[4].loadFromFile("cut scene 5.png");
+    shapes.story_mode_cut_scene_backgrounds[4].setTexture(textures.story_mode_cut_scene_backgrounds_textures[4]);
+    shapes.story_mode_cut_scene_backgrounds[4].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_cut_scene_backgrounds_textures[5].loadFromFile("cut scene 6.jpg");
+    shapes.story_mode_cut_scene_backgrounds[5].setTexture(textures.story_mode_cut_scene_backgrounds_textures[5]);
+    shapes.story_mode_cut_scene_backgrounds[5].setScale((1300.0 / 1800), (800.0 / 1100));
+
+    textures.story_mode_cut_scene_backgrounds_textures[6].loadFromFile("cut scene 7.png");
+    shapes.story_mode_cut_scene_backgrounds[6].setTexture(textures.story_mode_cut_scene_backgrounds_textures[6]);
+    shapes.story_mode_cut_scene_backgrounds[6].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_cut_scene_backgrounds_textures[7].loadFromFile("cut scene 8.png");
+    shapes.story_mode_cut_scene_backgrounds[7].setTexture(textures.story_mode_cut_scene_backgrounds_textures[7]);
+    shapes.story_mode_cut_scene_backgrounds[7].setScale((1300.0 / 1800), (800.0 / 1300));
+
     //textures.story_mode_backgrounds_textures[8].loadFromFile(".png");
     //shapes.story_mode_backgrounds[8].setTexture(textures.story_mode_backgrounds_textures[8]);
     //shapes.story_mode_backgrounds[8].setScale((1300.0 / 1800), (800.0 / 1300));
@@ -859,22 +890,29 @@ int main() {
                 window.draw(shapes.story_mode_page);
                 window.display();
             }
+            else if (check.number_of_levels_done == 8) {
+                window.clear();
+                window.display();
+            }
             else {
                 if (number_of_eaten_apples == 1) {
-                    check.number_of_levels_done++;
-                    number_of_eaten_apples = 0;
-                    sizenposition();
-                    check.is_the_snake_alive = 1;
-                    check.if_the_player_started_playing = 0;
-                    check.is_the_restart_button_pressed = 0;
-                    check.is_the_setting_in_game_button_pressed = 0;
-                    check.did_snake_hit_something = 0;
-                    check.did_snake_hit_bomb = 0;
-                    randbomb(shapes, check, number_of_eaten_apples);
-                    randapple(shapes, check, number_of_eaten_apples);
-                    randrottenapple(shapes, check, number_of_eaten_apples);
+                    
+                        check.number_of_levels_done++;
+                        number_of_eaten_apples = 0;
+                        sizenposition();
+                        check.is_the_snake_alive = 1;
+                        check.if_the_player_started_playing = 0;
+                        check.is_the_restart_button_pressed = 0;
+                        check.is_the_setting_in_game_button_pressed = 0;
+                        check.did_snake_hit_something = 0;
+                        check.did_snake_hit_bomb = 0;
+                        randbomb(shapes, check, number_of_eaten_apples);
+                        randapple(shapes, check, number_of_eaten_apples);
+                        randrottenapple(shapes, check, number_of_eaten_apples);
+                        check.did_cut_scene_start = 1;
+                    
                 }
-                if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed) {
+                if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed&&!check.did_cut_scene_start) {
                     update_game(shapes, game_counter, check, number_of_eaten_apples);
                 }
 
@@ -892,7 +930,14 @@ int main() {
                     randrottenapple(shapes, check, number_of_eaten_apples);
 
                 }
-                draw_game(shapes, number_of_eaten_apples, check, font, textures);
+                else if (check.did_cut_scene_start) {
+                    window.clear();
+                    window.draw(shapes.story_mode_cut_scene_backgrounds[check.number_of_levels_done]);
+                    window.display();
+                }
+                if (!check.did_cut_scene_start) {
+                    draw_game(shapes, number_of_eaten_apples, check, font, textures);
+                }
 
 
             }
@@ -1040,6 +1085,8 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
                 width - snake_size_and_speed) && snake[0].getGlobalBounds().top < shapes.stone_block[i].getGlobalBounds().height + shapes.stone_block[i].
                 getGlobalBounds().top && snake[0].getGlobalBounds().top >= shapes.stone_block[i].getGlobalBounds().top && speed[0][0] < 0);
     }
+
+
     bool fourth_level_stones[4];
     for (int i = 0; i < 4; i++) {
         fourth_level_stones[i] =
@@ -1065,6 +1112,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
                 width - snake_size_and_speed) && snake[0].getGlobalBounds().top < shapes.stone_block[i].getGlobalBounds().height + shapes.stone_block[i].
                 getGlobalBounds().top && snake[0].getGlobalBounds().top >= shapes.stone_block[i].getGlobalBounds().top && speed[0][0] < 0);
     }
+
     for (int i = 1; i < number_of_eaten_apples + 3; i++) {
         if (snake[0].getGlobalBounds().intersects(snake[i].getGlobalBounds()) && check.is_the_snake_alive == 1) {
             check.is_the_snake_alive = 0;
@@ -1122,6 +1170,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             changing_ranking(number_of_eaten_apples, ranking);
             explosion_sound.setVolume(50);
             explosion_sound.play();
+
         }
     }
     else if (check.number_of_levels_done == 6) {
@@ -1399,6 +1448,10 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         check.is_space_pressed_once = 0;
     if (check.is_space_pressed_once > 1)
         space_button_is_pressed = 0;
+
+    if (check.did_cut_scene_start&&space_button_is_pressed) {
+        check.did_cut_scene_start = 0;
+    }
     if (check.is_the_snake_alive) {
         mouse_position_is_inside_resume_icon_box_in_game =
             Mouse::getPosition(window).x >= in_game_buttons_x_position * screen_factor_x &&
@@ -1435,7 +1488,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
     }
 
     //in game buttons 
-    if (!check.is_the_setting_in_game_button_pressed && ((left_or_right_mouse_button_pressed &&
+    if (!check.is_the_setting_in_game_button_pressed && !check.did_cut_scene_start&&((left_or_right_mouse_button_pressed &&
         mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed)) {
         check.is_the_setting_in_game_button_pressed = 1;
     }
