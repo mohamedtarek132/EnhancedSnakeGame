@@ -1169,6 +1169,19 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             changing_ranking(number_of_eaten_apples, ranking);
             losing_sound.play();
         }
+        if (check.did_snake_hit_bomb = 1)
+        {
+            for (int x = 0; x < 3; ++x)
+            {
+                for (int y = 0; y < 3; ++y)
+                {
+                    shapes.Bomb_explosion_sprite.setTextureRect(IntRect(400 * x, 400 * y, 400, 400));
+                    window.clear();
+                    window.draw(shapes.Bomb_explosion_sprite);
+                    window.display();
+                }
+            }
+        }
     }
     else if (check.number_of_levels_done == 5) {
         if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
@@ -1206,7 +1219,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         check.is_the_rotten_apple_eaten = 1;
         rotten_apple_eating_sound.play();
     }
-    
+
     //in game buttons
     int icon_width = 765 - 580;
     int icon_height = 485 - 425;
