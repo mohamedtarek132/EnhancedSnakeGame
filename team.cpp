@@ -100,6 +100,7 @@ struct shapetextures {
     Texture game_over_texture;
     Texture change_snake_page_texture;
     Texture Truee;
+    Texture Bomb_Explosion;
     Texture* resume_icon_texture;
     Texture* restart_icon_texture;
     Texture* apple_icon_texture;
@@ -144,6 +145,7 @@ struct shape {
     Sprite fall_game_background;
     Sprite summer_game_background;
     Sprite story_mode_backgrounds[10];
+    Sprite Bomb_explosion_sprite;
 
     RectangleShape pause_icon;
     RectangleShape resume_icon;
@@ -346,6 +348,10 @@ int main() {
     //loading texture of the apple icon
     textures.appletexture.loadFromFile("apple.png", IntRect(0, 182, 61, 70));
     shapes.apple_icon.setTexture(textures.apple_icon_texture);
+
+    //loading texture of the bomb explosion
+    textures.Bomb_Explosion.loadFromFile("explosion.png");
+    shapes.Bomb_explosion_sprite.setTexture(textures.Bomb_Explosion);
 
     //loading texture of the rotten apple
     textures.rottenappletexture.loadFromFile("rotten_apple-removebg-preview.png");
@@ -1178,6 +1184,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             losing_sound.play();
         }
     }
+    
     else {
         if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
             did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box)) {
@@ -1199,7 +1206,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         check.is_the_rotten_apple_eaten = 1;
         rotten_apple_eating_sound.play();
     }
-
+    
     //in game buttons
     int icon_width = 765 - 580;
     int icon_height = 485 - 425;
