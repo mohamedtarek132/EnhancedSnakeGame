@@ -2260,7 +2260,13 @@ void set_color(int square_number, int number_of_eaten_apples, Check check) {
                 snake[square_number].setFillColor(Color(102, 0, 0));
             }
             else if (check.number_of_levels_done == 5) {
-                snake[square_number].setFillColor(Color(255, 102, 0));
+                snake[square_number].setFillColor(Color(204, 255, 255));
+            }
+            else if (check.number_of_levels_done == 6) {
+                snake[square_number].setFillColor(Color(102, 102, 153));
+            }
+            else if (check.number_of_levels_done == 7) {
+                snake[square_number].setFillColor(Color(255,255, 255));
             }
         }
 
