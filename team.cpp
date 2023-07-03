@@ -474,16 +474,17 @@ int main() {
                     window.draw(shapes.story_mode_cut_scene_backgrounds[check.number_of_levels_done]);
                     shapes.text_box.setSize(Vector2f(1100, 100));
                     shapes.text_box.setPosition(Vector2f(100, 650));
-                    window.draw(shapes.text_box); 
+                    window.draw(shapes.text_box);
                     if (check.opening_story_mode == 0)
                     {
                         open_scene_snake_texture(shapes, check);
                     }
-                    else if (check.number_of_levels_done == 0&& check.opening_story_mode == 1) {
+                    else if (check.number_of_levels_done == 0 && check.opening_story_mode == 1) {
                         the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Be careful of the rotten apple, It will decrease \n your score");
                         text_box_text.setPosition(Vector2f(200, 660));
                         window.draw(text_box_text);
+                        cout << 1;
                     }
                     else if (check.number_of_levels_done == 1) {
                         the_conversation(check, shapes);
@@ -1155,13 +1156,22 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
 
     //in game buttons 
     if (check.did_cut_scene_start && space_button_is_pressed) {
-        if ((check.number_of_levels_done != 2) && check.number_of_monolge_being_played == 0) {
+        if (!check.opening_story_mode&&check.number_of_monolge_being_played==6) {
+            check.opening_story_mode = 1;
+        }
+        else if (check.number_of_levels_done == 0 && check.number_of_monolge_being_played == 7&&check.opening_story_mode) {
             check.did_cut_scene_start = 0;
             sizenposition();
+        }
+        else if ((check.number_of_levels_done != 2&&check.number_of_levels_done!=0) && check.number_of_monolge_being_played == 0) {
+            check.did_cut_scene_start = 0;
+            sizenposition();
+            cout << 2;
         }
         else if (check.number_of_levels_done == 2 && check.number_of_monolge_being_played == 2) {
             check.did_cut_scene_start = 0;
             sizenposition();
+            cout << 3;
         }
         check.number_of_monolge_being_played++;
     }
@@ -3366,7 +3376,6 @@ void open_scene_snake_texture(shape& shapes, Check& check)
     window.draw(snake[1]);
     window.draw(snake[2]);
     window.draw(shapes.opening_scene_story_mode);
-    window.clear();
 }
 
 void uploading_music_sounds_and_icons(Check& check, shape& shapes, Font& font, shapetextures& textures, SoundBuffer& apple_eating_sound_buffer, SoundBuffer& rotten_apple_eating_sound_buffer, SoundBuffer& losing_sound_buffer, SoundBuffer& explosion_sound_buffer, Text& text_box_text)
