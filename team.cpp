@@ -85,6 +85,8 @@ struct Check {
     int number_of_monolge_being_played;
 
     bool did_the_first_song_start;
+
+    int number_of_idle_moves_of_the_witch;
 };
 
 struct shapetextures {
@@ -2146,6 +2148,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 if (check.did_snake_hit_bomb == 0) {
                     window.draw(shapes.bomb_icon[0]);
                     window.draw(shapes.bomb_icon[1]);
+                shapes.witch.setPosition(1040, 330);
                 }
 
             }
@@ -2171,11 +2174,32 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 window.draw(shapes.bomb_icon[0]);
                 window.draw(shapes.bomb_icon[1]);
             }
-            if (witch_counter > 12 * 6)
-                witch_counter = 0;
-            if (witch_counter % 6 == 0)
-                shapes.witch.setTextureRect(IntRect(85 * witch_counter / 6, 0, 85, 56));
-            shapes.witch.setPosition(1040, 330);
+            if (check.number_of_idle_moves_of_the_witch %3!=2) {
+                shapes.witch.setTexture(textures.witch_idle_texture);
+                if (witch_counter > 12 * 8) {
+                    witch_counter = 0;
+                    check.number_of_idle_moves_of_the_witch++;
+                }
+                if (witch_counter % 8 == 0)
+                    shapes.witch.setTextureRect(IntRect(85 * witch_counter / 8, 0, 85, 56));
+            }
+            else {
+                shapes.witch.setTexture(textures.witch_death_texture);
+                if (witch_counter > 10 * 8) {
+                    witch_counter = 0;
+                    if (check.number_of_idle_moves_of_the_witch<3)
+                    shapes.witch.setPosition(160, 330);
+                    else if (check.number_of_idle_moves_of_the_witch<6)
+                        shapes.witch.setPosition(550, 330);
+                    else if(check.number_of_idle_moves_of_the_witch<9)
+                        shapes.witch.setPosition(550, 630);
+                    else if (check.number_of_idle_moves_of_the_witch)
+                        shapes.witch.setPosition(550, 430);
+                    check.number_of_idle_moves_of_the_witch++;
+                }
+                if (witch_counter % 8 == 0)
+                    shapes.witch.setTextureRect(IntRect(85 * witch_counter / 8, 0, 85, 56));
+            }
             shapes.witch.setScale(2, 2);
             window.draw(shapes.witch);
             witch_counter++;
