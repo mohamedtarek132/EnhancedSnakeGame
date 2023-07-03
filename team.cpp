@@ -81,7 +81,7 @@ struct Check {
     bool did_snake_texture_change;
 
     bool did_cut_scene_start;
-    
+
     int number_of_monolge_being_played;
 
 };
@@ -239,9 +239,11 @@ int number_of_apples_shown = 0;
 
 Text text;
 
-Sound apple_eating_sound, rotten_apple_eating_sound, losing_sound,explosion_sound;
+Sound apple_eating_sound, rotten_apple_eating_sound, losing_sound, explosion_sound;
 
 Music music;
+
+Music levels_music[10];
 
 RenderWindow window(VideoMode(window_width, window_height), "Snake Game");
 
@@ -257,7 +259,7 @@ void snake_movement(Check& check);
 
 void changexny(Check check);
 
-void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& font, shapetextures& texture,int& witch_counter);
+void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& font, shapetextures& texture, int& witch_counter);
 
 void set_color(int square_number, int number_of_eaten_apples, Check check);
 
@@ -316,7 +318,7 @@ int main() {
 
     shape shapes;
 
-    SoundBuffer apple_eating_sound_buffer, rotten_apple_eating_sound_buffer, losing_sound_buffer,explosion_sound_buffer;
+    SoundBuffer apple_eating_sound_buffer, rotten_apple_eating_sound_buffer, losing_sound_buffer, explosion_sound_buffer;
 
     Font font;
 
@@ -332,11 +334,36 @@ int main() {
     music.setLoop(true);
     music.play();
     music.setVolume(0);
+    //loading music for each level
+    levels_music[0].openFromFile("level-1.wav");
+    levels_music[0].setLoop(true);
+    levels_music[0].setVolume(0);
+    levels_music[1].openFromFile("level-2.wav");
+    levels_music[1].setLoop(true);
+    levels_music[1].setVolume(0);
+    levels_music[2].openFromFile("level-3.wav");
+    levels_music[2].setLoop(true);
+    levels_music[2].setVolume(0);
+    levels_music[3].openFromFile("level-4.wav");
+    levels_music[3].setLoop(true);
+    levels_music[3].setVolume(0);
+    levels_music[4].openFromFile("level-5.wav");
+    levels_music[4].setLoop(true);
+    levels_music[4].setVolume(0);
+    levels_music[5].openFromFile("level-6.wav");
+    levels_music[5].setLoop(true);
+    levels_music[5].setVolume(0);
+    levels_music[6].openFromFile("level-7.wav");
+    levels_music[6].setLoop(true);
+    levels_music[6].setVolume(0);
+    levels_music[7].openFromFile("level-8.wav");
+    levels_music[7].setLoop(true);
+    levels_music[7].setVolume(0);
 
     //loading fong and setting the font of the text
     font.loadFromFile("font file 2.ttf");
     text.setFont(font);
-    
+
     text_box_text.setFont(font);
     text_box_text.setCharacterSize(25);
     //text_box_text.setColor(Color::White);
@@ -917,29 +944,39 @@ int main() {
                 window.display();
             }
             else if (check.number_of_levels_done == 8) {
+                music.play();
+                levels_music[0].stop();
+                levels_music[1].stop();
+                levels_music[2].stop();
+                levels_music[3].stop();
+                levels_music[4].stop();
+                levels_music[5].stop();
+                levels_music[6].stop();
+                levels_music[7].stop();
                 window.clear();
                 window.display();
             }
             else {
+                music.stop();
                 if (number_of_eaten_apples == 1) {
-                    
-                        check.number_of_levels_done++;
-                        number_of_eaten_apples = 0;
-                        sizenposition();
-                        check.is_the_snake_alive = 1;
-                        check.if_the_player_started_playing = 0;
-                        check.is_the_restart_button_pressed = 0;
-                        check.is_the_setting_in_game_button_pressed = 0;
-                        check.did_snake_hit_something = 0;
-                        check.did_snake_hit_bomb = 0;
-                        randbomb(shapes, check, number_of_eaten_apples);
-                        randapple(shapes, check, number_of_eaten_apples);
-                        randrottenapple(shapes, check, number_of_eaten_apples);
-                        check.did_cut_scene_start = 1;
-                        check.number_of_monolge_being_played = 0;
-                    
+                    levels_music[check.number_of_levels_done].stop();
+                    check.number_of_levels_done++;
+                    levels_music[check.number_of_levels_done].play();
+                    number_of_eaten_apples = 0;
+                    sizenposition();
+                    check.is_the_snake_alive = 1;
+                    check.if_the_player_started_playing = 0;
+                    check.is_the_restart_button_pressed = 0;
+                    check.is_the_setting_in_game_button_pressed = 0;
+                    check.did_snake_hit_something = 0;
+                    check.did_snake_hit_bomb = 0;
+                    randbomb(shapes, check, number_of_eaten_apples);
+                    randapple(shapes, check, number_of_eaten_apples);
+                    randrottenapple(shapes, check, number_of_eaten_apples);
+                    check.did_cut_scene_start = 1;
+                    check.number_of_monolge_being_played = 0;
                 }
-                if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed&&!check.did_cut_scene_start) {
+                if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed && !check.did_cut_scene_start) {
                     update_game(shapes, game_counter, check, number_of_eaten_apples);
                 }
 
@@ -973,13 +1010,13 @@ int main() {
                         text_box_text.setPosition(Vector2f(200, 660));
                         window.draw(text_box_text);
                     }
-                    else if (check.number_of_levels_done == 2 ) {
+                    else if (check.number_of_levels_done == 2) {
                         if (check.number_of_monolge_being_played == 0) {
                             text_box_text.setString("The Wicked Sorceress: Well done, you cunning snake.");
                         }
                         else if (check.number_of_monolge_being_played == 1) {
                             text_box_text.setString("The Snake: What now?");
-                        }  
+                        }
                         else if (check.number_of_monolge_being_played == 2) {
                             text_box_text.setString("The Wicked Sorceress: I told you it wouldn't be easy. Be cautious now \n of those walls.");
                         }
@@ -996,7 +1033,7 @@ int main() {
                         text_box_text.setPosition(Vector2f(200, 660));
                         text_box_text.setCharacterSize(22);
                         window.draw(text_box_text);
-                    }  
+                    }
                     else if (check.number_of_levels_done == 5) {
                         text_box_text.setString("The Wicked Sorceress: You are quite clever! What if your speed were greater?\n Would you be able to keep up with the challenge? Not only that, the number \n of bombs will increase. I believe it won't be pleasant.");
                         text_box_text.setPosition(Vector2f(200, 660));
@@ -1018,7 +1055,7 @@ int main() {
                     window.display();
                 }
                 if (!check.did_cut_scene_start) {
-                    draw_game(shapes, number_of_eaten_apples, check, font, textures,witch_counter);
+                    draw_game(shapes, number_of_eaten_apples, check, font, textures, witch_counter);
                 }
 
 
@@ -1039,7 +1076,7 @@ int main() {
                 check.did_snake_hit_bomb = 0;
 
             }
-            draw_game(shapes, number_of_eaten_apples, check, font, textures,witch_counter);
+            draw_game(shapes, number_of_eaten_apples, check, font, textures, witch_counter);
         }
         else if (opening_counter <= 200) {
             window.clear();
@@ -1583,8 +1620,8 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
     }
 
     //in game buttons 
-    if (check.did_cut_scene_start&&space_button_is_pressed) {
-        if ((check.number_of_levels_done!=2)&& check.number_of_monolge_being_played == 0) {
+    if (check.did_cut_scene_start && space_button_is_pressed) {
+        if ((check.number_of_levels_done != 2) && check.number_of_monolge_being_played == 0) {
             check.did_cut_scene_start = 0;
         }
         else if (check.number_of_levels_done == 2 && check.number_of_monolge_being_played == 2) {
@@ -1592,7 +1629,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         }
         check.number_of_monolge_being_played++;
     }
-    else if (!check.is_the_setting_in_game_button_pressed && !check.did_cut_scene_start&&((left_or_right_mouse_button_pressed &&
+    else if (!check.is_the_setting_in_game_button_pressed && !check.did_cut_scene_start && ((left_or_right_mouse_button_pressed &&
         mouse_position_is_inside_pause_icon_box_in_game) || space_button_is_pressed)) {
         check.is_the_setting_in_game_button_pressed = 1;
     }
@@ -1699,9 +1736,26 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         }
         else if (mouse_position_is_inside_ON_Music_in_setting_page) {
             music.setVolume(100);
+            levels_music[0].setVolume(100);
+            levels_music[1].setVolume(100);
+            levels_music[2].setVolume(100);
+            levels_music[3].setVolume(100);
+            levels_music[4].setVolume(100);
+            levels_music[5].setVolume(100);
+            levels_music[6].setVolume(100);
+            levels_music[7].setVolume(100);
+            levels_music[8].setVolume(100);
         }
         else if (mouse_position_is_inside_OFF_Music_in_setting_page) {
             music.setVolume(0);
+            levels_music[1].setVolume(0);
+            levels_music[2].setVolume(0);
+            levels_music[3].setVolume(0);
+            levels_music[4].setVolume(0);
+            levels_music[5].setVolume(0);
+            levels_music[6].setVolume(0);
+            levels_music[7].setVolume(0);
+            levels_music[8].setVolume(0);
         }
         else if (mouse_position_is_inside_exit_button_in_music_setting_page) {
             check.is_audio_button_pressed = 0;
@@ -1897,7 +1951,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
 
 void update_game(shape& shapes, int& game_counter, Check& check, int number_of_eaten_apples) {
     //the time it will take the snake to change positions which will make it move faster
-    int speedtimer = snake_size_and_speed * 0.25 ;
+    int speedtimer = snake_size_and_speed * 0.25;
     //the time it will take the apple to change positions
     int apple_timer = 6 * 50 * screen_factor_x;
     if (check.is_story_mode_pressed) {
@@ -1932,8 +1986,8 @@ void update_game(shape& shapes, int& game_counter, Check& check, int number_of_e
         else if (check.number_of_levels_done < 5) {
             speedtimer = snake_size_and_speed * 0.25 * screen_factor_x;
         }
-        else{
-            speedtimer = snake_size_and_speed * 0.25*0.75 * screen_factor_x;
+        else {
+            speedtimer = snake_size_and_speed * 0.25 * 0.75 * screen_factor_x;
         }
     }
     if (game_counter % speedtimer == 0)
@@ -1966,7 +2020,7 @@ void snake_movement(Check& check) {
     bool snake_isnt_going_right = speed[0][0] != snake_size_and_speed;
     bool snake_isnt_going_up = speed[0][1] != -1 * snake_size_and_speed;
     bool snake_isnt_going_down = speed[0][1] != snake_size_and_speed;
-   
+
 
     if (is_d_or_right_key_pressed && snake_isnt_going_left) {
         speed[0][0] = snake_size_and_speed; speed[0][1] = 0;
@@ -2022,7 +2076,7 @@ void changexny(Check check) {
 
 //use check apple and collided
 //to draw everything in the game
-void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& font, shapetextures& textures,int& witch_counter) {
+void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& font, shapetextures& textures, int& witch_counter) {
 
     window.clear();
     //Background
@@ -2064,7 +2118,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
             window.draw(shapes.bomb_icon[0]);
             window.draw(shapes.bomb_icon[1]);
         }
-        else if ((check.number_of_levels_done == 6) ) {
+        else if ((check.number_of_levels_done == 6)) {
             for (int i = 0; i < 2; i++) {
                 shapes.stone_block[i].setTexture(textures.stone_block_texture[0]);
                 shapes.stone_block[0].setSize(Vector2f(snake_size_and_speed * 8, snake_size_and_speed * 2));
@@ -2080,7 +2134,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
 
             }
         }
-        else if ((check.number_of_levels_done == 7) ) {
+        else if ((check.number_of_levels_done == 7)) {
             for (int i = 0; i < 4; i++) {
                 shapes.stone_block[i].setTexture(textures.stone_block_texture[0]);
 
@@ -2101,10 +2155,10 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 window.draw(shapes.bomb_icon[0]);
                 window.draw(shapes.bomb_icon[1]);
             }
-            if (witch_counter > 12*6)
+            if (witch_counter > 12 * 6)
                 witch_counter = 0;
-            if (witch_counter%6==0)
-            shapes.witch.setTextureRect(IntRect(85 * witch_counter/6, 0, 85, 56));
+            if (witch_counter % 6 == 0)
+                shapes.witch.setTextureRect(IntRect(85 * witch_counter / 6, 0, 85, 56));
             shapes.witch.setPosition(1040, 330);
             shapes.witch.setScale(2, 2);
             window.draw(shapes.witch);
@@ -2138,7 +2192,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
     if (check.is_the_rotten_apple_eaten == 0 && number_of_eaten_apples > 0) {
         window.draw(shapes.rotten_apple_icon);
     }
-    if (check.did_snake_hit_bomb > 0&&check.did_snake_hit_bomb<=11) {
+    if (check.did_snake_hit_bomb > 0 && check.did_snake_hit_bomb <= 11) {
         if (check.number_of_levels_done == 4) {
             shapes.bomb_explosion.setTextureRect(IntRect(400 * (check.did_snake_hit_bomb % 4), 400 * (check.did_snake_hit_bomb / 4), 400, 400));
             shapes.bomb_explosion.setPosition(Vector2f(shapes.bomb_icon[0].getPosition().x, shapes.bomb_icon[0].getPosition().y));
@@ -2147,7 +2201,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
             check.did_snake_hit_bomb++;
             cout << 1 << endl;
         }
-        else if (check.number_of_levels_done >4) {
+        else if (check.number_of_levels_done > 4) {
             shapes.bomb_explosion.setTextureRect(IntRect(400 * (check.did_snake_hit_bomb % 4), 400 * (check.did_snake_hit_bomb / 4), 400, 400));
             shapes.bomb_explosion.setPosition(Vector2f(shapes.bomb_icon[0].getPosition().x, shapes.bomb_icon[0].getPosition().y));
             shapes.bomb_explosion.setRadius(shapes.bomb_icon[0].getRadius());
@@ -2458,7 +2512,7 @@ void set_color(int square_number, int number_of_eaten_apples, Check check) {
                 snake[square_number].setFillColor(Color(102, 102, 153));
             }
             else if (check.number_of_levels_done == 7) {
-                snake[square_number].setFillColor(Color(255,255, 255));
+                snake[square_number].setFillColor(Color(255, 255, 255));
             }
         }
 
@@ -2488,7 +2542,7 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
         rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
 
     //to make sure that the apple do not appear on the snake body
-    if (check.number_of_levels_done == 2||check.number_of_levels_done == 6) {
+    if (check.number_of_levels_done == 2 || check.number_of_levels_done == 6) {
         for (int j = 0; j < 2; j++) {
             if (shapes.apple_icon.getGlobalBounds().left > shapes.stone_block[j].getGlobalBounds().left - shapes.apple_icon.getGlobalBounds().width
                 && shapes.apple_icon.getGlobalBounds().top < shapes.stone_block[j].getGlobalBounds().height + shapes.stone_block[j].getGlobalBounds().top
