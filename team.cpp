@@ -84,6 +84,7 @@ struct Check {
 
     int number_of_monolge_being_played;
 
+    bool did_the_first_song_start;
 };
 
 struct shapetextures {
@@ -376,7 +377,7 @@ int main() {
     rotten_apple_eating_sound.setBuffer(rotten_apple_eating_sound_buffer);
 
     //loading sound of the snake diying
-    losing_sound_buffer.loadFromFile("duck is not for you.wav");
+    losing_sound_buffer.loadFromFile("gameover.wav");
     losing_sound.setBuffer(losing_sound_buffer);
 
     explosion_sound_buffer.loadFromFile("Explosion.wav");
@@ -958,6 +959,10 @@ int main() {
             }
             else {
                 music.stop();
+                if (!check.did_the_first_song_start) {
+                    levels_music[0].play();
+                    check.did_the_first_song_start = 1;
+                }
                 if (number_of_eaten_apples == 1) {
                     levels_music[check.number_of_levels_done].stop();
                     check.number_of_levels_done++;
@@ -973,8 +978,8 @@ int main() {
                     randbomb(shapes, check, number_of_eaten_apples);
                     randapple(shapes, check, number_of_eaten_apples);
                     randrottenapple(shapes, check, number_of_eaten_apples);
-                    check.did_cut_scene_start = 1;
                     check.number_of_monolge_being_played = 0;
+                    check.did_cut_scene_start = 1;
                 }
                 if (check.is_the_snake_alive && !check.is_the_setting_in_game_button_pressed && !check.did_cut_scene_start) {
                     update_game(shapes, game_counter, check, number_of_eaten_apples);
@@ -1112,8 +1117,14 @@ int main() {
             check.is_main_menu_open = 1;
             check.did_snake_hit_something = 0;
             check.did_snake_hit_bomb = 0;
-
-
+            levels_music[0].stop();
+            levels_music[1].stop();
+            levels_music[2].stop();
+            levels_music[3].stop();
+            levels_music[4].stop();
+            levels_music[5].stop();
+            levels_music[6].stop();
+            levels_music[7].stop();
         }
 
     }
@@ -1653,6 +1664,9 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             check.is_story_mode_pressed = 0;
             check.is_continue_story_mode_pressed = 0;
             check.is_new_story_mode_pressed = 0;
+            music.play();
+
+
         }
     }
     //main menu buttons
@@ -1935,9 +1949,11 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         if (mouse_position_is_inside_new_game_button_in_story_mode_page) {
             check.is_new_story_mode_pressed = 1;
             check.number_of_levels_done = 0;
+            check.did_the_first_song_start = 0;
         }
         else if (mouse_position_is_inside_continue_button_in_story_mode_page) {
             check.is_continue_story_mode_pressed = 1;
+            levels_music[check.number_of_levels_done].play();
         }
         else if (mouse_position_is_inside_exit_button_in_game_modes_page) {
             check.is_story_mode_pressed = 0;
@@ -2550,7 +2566,7 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
                 shapes.apple_icon.getGlobalBounds().top < shapes.stone_block[j].getGlobalBounds().top + shapes.stone_block[j].getGlobalBounds().height) {
                 shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                     145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                j = 0;
+                j = -1;
             }
         }
         for (int i = 0; i < number_of_eaten_apples + 2; i++) {
@@ -2560,7 +2576,7 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
                 intersects(shapes.bomb_icon[1].getGlobalBounds())) {
                 shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                     145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                i = 0;
+                i = -1;
                 for (int j = 0; j < 2; j++) {
                     if (shapes.apple_icon.getGlobalBounds().left > shapes.stone_block[j].getGlobalBounds().left - shapes.apple_icon.getGlobalBounds().width
                         && shapes.apple_icon.getGlobalBounds().top < shapes.stone_block[j].getGlobalBounds().height + shapes.stone_block[j].getGlobalBounds().top
@@ -2568,18 +2584,18 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
                         shapes.apple_icon.getGlobalBounds().top < shapes.stone_block[j].getGlobalBounds().top + shapes.stone_block[j].getGlobalBounds().height) {
                         shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                             145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                        j = 0;
+                        j = -1;
                     }
                 }
             }
         }
     }
-    else if (check.number_of_levels_done == 3) {
+    else if (check.number_of_levels_done == 3||check.number_of_levels_done==7) {
         for (int j = 0; j < 4; j++) {
             if (shapes.apple_icon.getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                 shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                     145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                j = 0;
+                j = -1;
             }
         }
         for (int i = 0; i < number_of_eaten_apples + 2; i++) {
@@ -2589,12 +2605,12 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
                 intersects(shapes.bomb_icon[1].getGlobalBounds())) {
                 shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                     145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                i = 0;
+                i = -1;
                 for (int j = 0; j < 4; j++) {
                     if (shapes.apple_icon.getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                         shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                             145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                        j = 0;
+                        j = -1;
                     }
                 }
             }
@@ -2608,7 +2624,7 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
                 intersects(shapes.bomb_icon[1].getGlobalBounds())) {
                 shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                     145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                i = 0;
+                i = -1;
             }
         }
     }
@@ -2626,7 +2642,7 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
             if (shapes.rotten_apple_icon.getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                 shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
                     rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                j = 0;
+                j = -1;
             }
         }
         for (int i = 0; i < number_of_eaten_apples + 2; i++) {
@@ -2636,12 +2652,12 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
                 intersects(shapes.bomb_icon[1].getGlobalBounds())) {
                 shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
                     rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                i = 0;
+                i = -1;
                 for (int j = 0; j < 2; j++) {
                     if (shapes.rotten_apple_icon.getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                         shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
                             rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                        j = 0;
+                        j = -1;
                     }
                 }
             }
@@ -2653,7 +2669,7 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
             if (shapes.rotten_apple_icon.getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                 shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
                     rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                j = 0;
+                j = -1;
             }
         }
         for (int i = 0; i < number_of_eaten_apples + 2; i++) {
@@ -2663,12 +2679,12 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
                 intersects(shapes.bomb_icon[1].getGlobalBounds())) {
                 shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
                     rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                i = 0;
+                i = -1;
                 for (int j = 0; j < 4; j++) {
                     if (shapes.rotten_apple_icon.getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                         shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
                             rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                        j = 0;
+                        j = -1;
                     }
                 }
             }
@@ -2683,7 +2699,7 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
                 intersects(shapes.bomb_icon[1].getGlobalBounds())) {
                 shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
                     rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                i = 0;
+                i = -1;
             }
         }
     }
@@ -2704,7 +2720,7 @@ void randbomb(shape& shapes, Check& check, int number_of_eaten_apples) {
                 if (shapes.bomb_icon[i].getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                     shapes.bomb_icon[i].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                         145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                    j = 0;
+                    j = -1;
                 }
             }
         }
@@ -2715,12 +2731,12 @@ void randbomb(shape& shapes, Check& check, int number_of_eaten_apples) {
                     intersects(shapes.bomb_icon[q].getGlobalBounds())) {
                     shapes.bomb_icon[q].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                         145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                    i = 0;
+                    i = -1;
                     for (int j = 0; j < 2; j++) {
                         if (shapes.bomb_icon[q].getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                             shapes.bomb_icon[q].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                                 145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                            j = 0;
+                            j = -1;
                         }
                     }
                 }
@@ -2733,7 +2749,7 @@ void randbomb(shape& shapes, Check& check, int number_of_eaten_apples) {
                 if (shapes.bomb_icon[i].getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                     shapes.bomb_icon[i].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                         145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                    j = 0;
+                    j = -1;
                 }
             }
         }
@@ -2744,12 +2760,12 @@ void randbomb(shape& shapes, Check& check, int number_of_eaten_apples) {
                     intersects(shapes.bomb_icon[q].getGlobalBounds())) {
                     shapes.bomb_icon[q].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                         145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                    i = 0;
+                    i = -1;
                     for (int j = 0; j < 4; j++) {
                         if (shapes.bomb_icon[q].getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                             shapes.bomb_icon[q].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                                 145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                            j = 0;
+                            j = -1;
                         }
                     }
                 }
@@ -2765,7 +2781,7 @@ void randbomb(shape& shapes, Check& check, int number_of_eaten_apples) {
                     intersects(shapes.bomb_icon[1].getGlobalBounds())) {
                     shapes.bomb_icon[q].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                         145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
-                    i = 0;
+                    i = -1;
                 }
             }
         }
