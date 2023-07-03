@@ -482,10 +482,10 @@ int main() {
                         window.draw(shapes.text_box);
                         if (check.number_of_monolge_being_played == 0) {
                             text_box_text.setString("In the Great Kingdom of the Snake, there was a true love between the snake and the\n duck. However, the snake had a bitter enemy in a neighboring kingdom who hated and\n resented him. One day, the enemy seized the opportunity and kidnapped his beloved duck.");
-                            text_box_text.setCharacterSize(20);
+                            text_box_text.setCharacterSize(19);
                         }
                         else if (check.number_of_monolge_being_played == 1) {
-                            text_box_text.setString("The snake experienced a mix of emotions, feeling anger, sadness, and regret. He didn't know how to handle the situation and rescue his beloved duck until he received a call from the wicked Sorceress who had kidnapped the duck.");
+                            text_box_text.setString("The snake experienced a mix of emotions, feeling anger, sadness, and regret. He didn't know\n how to handle the situation and rescue his beloved duck until he received a call from the\n wicked Sorceress who had kidnapped the duck.");
                             text_box_text.setCharacterSize(18);
 
                         }
@@ -500,12 +500,12 @@ int main() {
 
                         }
                         else if (check.number_of_monolge_being_played == 4) {
-                            text_box_text.setString("The Snake: You are so audacious. Who are you? Where is she?");
+                            text_box_text.setString("The Snake: You are so audacious. Who are you? Where is\n she?");
                             text_box_text.setCharacterSize(30);
 
                         }
                         else if (check.number_of_monolge_being_played == 5) {
-                            text_box_text.setString("The Wicked Sorceress: Shh! (trying to silence him) How dare you be insolent and arrogant! Well, your beloved is now imprisoned in our dungeon. Come and try to save her, but know that it won't be easy. You'll surely die, hahaha! (evil laughter)");
+                            text_box_text.setString("The Wicked Sorceress: Shh! (trying to silence him) How dare you be insolent and arrogant! Well,\n your beloved is now imprisoned in our dungeon. Come and try to save her, but know that it\n won't be easy. You'll surely die, hahaha! (evil laughter)");
 
                             text_box_text.setCharacterSize(18);
 
@@ -515,16 +515,16 @@ int main() {
                             text_box_text.setCharacterSize(30);
 
                         }
-                        else if (check.number_of_levels_done == 7) {
-                            text_box_text.setString("The phone went dead. It seems that the situation is indeed complicated. But surely the snake will risk his life for his beloved. Let's see if he can rescue her or not.?");
-                            text_box_text.setCharacterSize(30);
+                        else if (check.number_of_monolge_being_played== 7) {
+                            text_box_text.setString("The phone went dead. It seems that the situation is indeed complicated.\n But surely the snake will risk his life for his beloved. Let's see if \nhe can rescue her or not.?");
+                            text_box_text.setCharacterSize(24);
                         }
-                        else if (check.number_of_levels_done == 8) {
+                        else if (check.number_of_monolge_being_played == 8) {
                             text_box_text.setString("The fate is in your hands, controller.");
                             text_box_text.setCharacterSize(30);
                         }
-                        else if (check.number_of_levels_done == 9) {
-                            text_box_text.setString("Play and try to save the duck.");
+                        else if (check.number_of_monolge_being_played == 9) {
+                            text_box_text.setString("Play and try to save the duck.");
                             text_box_text.setCharacterSize(30);
                         }
                         text_box_text.setPosition(Vector2f(200, 660));
@@ -534,18 +534,20 @@ int main() {
                     else if (check.number_of_levels_done == 0 && check.opening_story_mode == 1) {
                         the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Be careful of the rotten apple, It will decrease \n your score");
+                        text_box_text.setCharacterSize(25);
                         text_box_text.setPosition(Vector2f(200, 660));
                         window.draw(text_box_text);
-                        cout << 1;
                     }
                     else if (check.number_of_levels_done == 1) {
                         the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Was that easy? Welcome to the desert now,\n your speed will be faster.");
+                        text_box_text.setCharacterSize(25);
                         text_box_text.setPosition(Vector2f(200, 660));
                         window.draw(text_box_text);
                     }
                     else if (check.number_of_levels_done == 2) {
                         the_conversation(check, shapes);
+                        text_box_text.setCharacterSize(25);
                         if (check.number_of_monolge_being_played == 0) {
                             text_box_text.setString("The Wicked Sorceress: Well done, you cunning snake.");
                         }
@@ -562,6 +564,7 @@ int main() {
                         the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Oh, my! You are truly skilled. Show me how \n you will overcome them now.");
                         text_box_text.setPosition(Vector2f(200, 660));
+                        text_box_text.setCharacterSize(25);
                         window.draw(text_box_text);
                     }
                     else if (check.number_of_levels_done == 4) {
