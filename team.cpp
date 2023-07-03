@@ -479,6 +479,57 @@ int main() {
                     if (check.opening_story_mode == 0)
                     {
                         open_scene_snake_texture(shapes, check);
+                        window.draw(shapes.text_box);
+                        if (check.number_of_monolge_being_played == 0) {
+                            text_box_text.setString("In the Great Kingdom of the Snake, there was a true love between the snake and the\n duck. However, the snake had a bitter enemy in a neighboring kingdom who hated and\n resented him. One day, the enemy seized the opportunity and kidnapped his beloved duck.");
+                            text_box_text.setCharacterSize(20);
+                        }
+                        else if (check.number_of_monolge_being_played == 1) {
+                            text_box_text.setString("The snake experienced a mix of emotions, feeling anger, sadness, and regret. He didn't know how to handle the situation and rescue his beloved duck until he received a call from the wicked Sorceress who had kidnapped the duck.");
+                            text_box_text.setCharacterSize(18);
+
+                        }
+                        else if (check.number_of_monolge_being_played == 2) {
+                            text_box_text.setString("The Snake: Who is there?");
+                            text_box_text.setCharacterSize(30);
+
+                        }
+                        else if (check.number_of_monolge_being_played == 3) {
+                            text_box_text.setString("The Wicked Sorceress: Do you want your beloved back?");
+                            text_box_text.setCharacterSize(30);
+
+                        }
+                        else if (check.number_of_monolge_being_played == 4) {
+                            text_box_text.setString("The Snake: You are so audacious. Who are you? Where is she?");
+                            text_box_text.setCharacterSize(30);
+
+                        }
+                        else if (check.number_of_monolge_being_played == 5) {
+                            text_box_text.setString("The Wicked Sorceress: Shh! (trying to silence him) How dare you be insolent and arrogant! Well, your beloved is now imprisoned in our dungeon. Come and try to save her, but know that it won't be easy. You'll surely die, hahaha! (evil laughter)");
+
+                            text_box_text.setCharacterSize(18);
+
+                        }
+                        else if (check.number_of_monolge_being_played == 6) {
+                            text_box_text.setString("The Snake: What? Hello? Hello?");
+                            text_box_text.setCharacterSize(30);
+
+                        }
+                        else if (check.number_of_levels_done == 7) {
+                            text_box_text.setString("The phone went dead. It seems that the situation is indeed complicated. But surely the snake will risk his life for his beloved. Let's see if he can rescue her or not.?");
+                            text_box_text.setCharacterSize(30);
+                        }
+                        else if (check.number_of_levels_done == 8) {
+                            text_box_text.setString("The fate is in your hands, controller.");
+                            text_box_text.setCharacterSize(30);
+                        }
+                        else if (check.number_of_levels_done == 9) {
+                            text_box_text.setString("Play and try to save the duck.");
+                            text_box_text.setCharacterSize(30);
+                        }
+                        text_box_text.setPosition(Vector2f(200, 660));
+                        window.draw(text_box_text);
+
                     }
                     else if (check.number_of_levels_done == 0 && check.opening_story_mode == 1) {
                         the_conversation(check, shapes);
@@ -1195,10 +1246,10 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
 
     //in game buttons 
     if (check.did_cut_scene_start && space_button_is_pressed) {
-        if (!check.opening_story_mode&&check.number_of_monolge_being_played==6) {
+        if (!check.opening_story_mode&&check.number_of_monolge_being_played==9) {
             check.opening_story_mode = 1;
         }
-        else if (check.number_of_levels_done == 0 && check.number_of_monolge_being_played == 7&&check.opening_story_mode) {
+        else if (check.number_of_levels_done == 0 && check.number_of_monolge_being_played == 10&&check.opening_story_mode) {
             check.did_cut_scene_start = 0;
             sizenposition();
         }
@@ -1529,6 +1580,8 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             check.is_new_story_mode_pressed = 1;
             check.number_of_levels_done = 0;
             check.did_the_first_song_start = 0;
+            check.opening_story_mode = 0;
+
         }
         else if (mouse_position_is_inside_continue_button_in_story_mode_page) {
             check.is_continue_story_mode_pressed = 1;
