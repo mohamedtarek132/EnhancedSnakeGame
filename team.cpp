@@ -145,6 +145,8 @@ struct shapetextures {
     Texture magicspelltexture;
     Texture* magic_spell_texture;
     Texture witch_attacking_reversed;
+    Texture Press_space_texture;
+    Texture opening_scene_story_mode_texture;
 };
 struct shape {
     CircleShape apple_icon;
@@ -174,6 +176,8 @@ struct shape {
     Sprite witch;
     Sprite witch_for_conversation;
     Sprite The_arrow;
+    Sprite Press_space;
+    Sprite opening_scene_story_mode;
 
     RectangleShape pause_icon;
     RectangleShape resume_icon;
@@ -712,6 +716,18 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
                 width - snake_size_and_speed) && snake[0].getGlobalBounds().top < shapes.stone_block[i].getGlobalBounds().height + shapes.stone_block[i].
                 getGlobalBounds().top && snake[0].getGlobalBounds().top >= shapes.stone_block[i].getGlobalBounds().top && speed[0][0] < 0);
     }
+    if (check.did_the_witch_attack && check.is_the_snake_alive) {
+        for (int i = 0; i < number_of_eaten_apples + 3; i++) {
+            if (shapes.magic_spell.getGlobalBounds().intersects(snake[i].getGlobalBounds()) && check.is_the_snake_alive == 1) {
+                check.is_the_snake_alive = 0;
+                losing_sound.play();
+                check.did_the_witch_attack = 0;
+                shapes.magic_spell.setTextureRect(IntRect(16 + 13, 0, 16, 16));
+                changing_ranking(number_of_eaten_apples, ranking);
+                break;
+            }
+        }
+    }
 
     for (int i = 1; i < number_of_eaten_apples + 3; i++) {
         if (snake[0].getGlobalBounds().intersects(snake[i].getGlobalBounds()) && check.is_the_snake_alive == 1) {
@@ -806,6 +822,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             explosion_sound.setVolume(50);
             explosion_sound.play();
         }
+
     }
     else {
         if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
@@ -833,6 +850,8 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         check.did_the_snake_hit_the_witch==0) {
         check.number_of_hits_did_the_witch_recieve++;
         check.did_the_snake_hit_the_witch = 1;
+        check.did_the_witch_attack = 0;
+        check.number_of_idle_moves_of_the_witch = 0;
         witch_counter = 0;
     }
 
@@ -1651,7 +1670,8 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 window.draw(shapes.bomb_icon[0]);
                 window.draw(shapes.bomb_icon[1]);
             }
-            if (check.number_of_idle_moves_of_the_witch % 3 != 2 && !check.did_the_snake_hit_the_witch) {
+            if ((check.number_of_idle_moves_of_the_witch % 3 != 2 && !check.did_the_snake_hit_the_witch) || !check.is_the_snake_alive||
+                !check.if_the_player_started_playing) {
                 if (witch_counter > 12 * 8) {
                     witch_counter = 0;
                     check.number_of_idle_moves_of_the_witch++;
@@ -1668,7 +1688,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                         shapes.witch.setTextureRect(IntRect(1105-(22+25 + 60 * witch_counter / 8 + 25 * witch_counter / 8), 0, 25, 56));
                 }
             }
-            else if (check.number_of_idle_moves_of_the_witch%3==2) {
+            else if (check.number_of_idle_moves_of_the_witch%3==2&&check.is_the_snake_alive&&check.if_the_player_started_playing) {
                 
                 if (check.attack_counter > 7 * 8) {
                     witch_counter = 0;
@@ -1707,7 +1727,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                        
                         shapes.witch.setTexture(textures.witch_attacking_reversed);
                         if ((check.attack_counter / 8 == 0 || check.attack_counter / 8 == 1 || check.attack_counter / 8 == 2))
-                            shapes.witch.setTextureRect(IntRect( 850- (22 + 25 + 60 * witch_counter / 8 + 25 * witch_counter / 8), 0, 25, 56));
+                            shapes.witch.setTextureRect(IntRect( 850 - (22 + 25 + 60 * witch_counter / 8 + 25 * witch_counter / 8), 0, 25, 56));
                         else if (check.attack_counter / 8 == 3) {
                             shapes.witch.setTextureRect(IntRect(850 - 306, 0, 36, 56));
                         }
@@ -1808,7 +1828,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
             check.did_snake_hit_bomb++;
         }
     }
-    if (check.did_the_witch_attack) {
+    if (check.did_the_witch_attack&&check.is_the_snake_alive) {
         if (check.number_of_hits_did_the_witch_recieve ==0) {
             shapes.magic_spell.move(-2, 0);
         }
@@ -1888,8 +1908,7 @@ void the_conversation(Check& check, shape& shapes)
     snake[2].setPosition(190, 450);
     window.draw(snake[2]);
 
-    shapes.The_arrow.setPosition(100, 70);
-    window.draw(shapes.The_arrow);
+    window.draw(shapes.Press_space);
 }
 
 
@@ -3285,6 +3304,16 @@ void uploading_the_pages_and_icons(shape& shapes, shapetextures& textures)
 
     textures.witch_attacking_reversed.loadFromFile("AttackAnimation reversed.png");
 
+    //loading Press space to continue
+    textures.Press_space_texture.loadFromFile("Press space to continue.png");
+    shapes.Press_space.setTexture(textures.Press_space_texture);
+    shapes.Press_space.setScale(0.7, 0.7);
+    shapes.Press_space.setPosition(740, 600);
+
+    //loading the opening scene story texture
+    textures.opening_scene_story_mode_texture.loadFromFile("opening scene story mode.png");
+    shapes.opening_scene_story_mode.setTexture(textures.opening_scene_story_mode_texture);
+    shapes.opening_scene_story_mode.setScale((1300.0 / 1800), (800.0 / 1300));
 }
 
 void uploading_music_sounds_and_icons(Check& check, shape& shapes, Font& font, shapetextures& textures, SoundBuffer& apple_eating_sound_buffer, SoundBuffer& rotten_apple_eating_sound_buffer, SoundBuffer& losing_sound_buffer, SoundBuffer& explosion_sound_buffer, Text& text_box_text)
