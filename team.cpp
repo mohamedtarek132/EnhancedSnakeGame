@@ -343,7 +343,7 @@ int main() {
     rotten_apple_eating_sound.setBuffer(rotten_apple_eating_sound_buffer);
 
     //loading sound of the snake diying
-    losing_sound_buffer.loadFromFile("gameover.wav");
+    losing_sound_buffer.loadFromFile("duck is not for you.wav");
     losing_sound.setBuffer(losing_sound_buffer);
 
     explosion_sound_buffer.loadFromFile("Explosion.wav");
@@ -1023,7 +1023,6 @@ int main() {
                 check.is_the_restart_button_pressed = 0;
                 check.is_the_setting_in_game_button_pressed = 0;
                 check.did_snake_hit_something = 0;
-
                 check.did_snake_hit_bomb = 0;
 
             }
@@ -1246,6 +1245,23 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         for (int i = 0; i < 2; i++) {
             if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
                 did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || third_level_stones[i])) {
+                check.is_the_snake_alive = 0;
+                changing_ranking(number_of_eaten_apples, ranking);
+                losing_sound.play();
+            }
+        }
+        if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
+            check.is_the_snake_alive = 0;
+            check.did_snake_hit_bomb = 1;
+            changing_ranking(number_of_eaten_apples, ranking);
+            explosion_sound.setVolume(50);
+            explosion_sound.play();
+        }
+    }
+    else if (check.number_of_levels_done == 7) {
+        for (int i = 0; i < 4; i++) {
+            if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
+                did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || fourth_level_stones[i])) {
                 check.is_the_snake_alive = 0;
                 changing_ranking(number_of_eaten_apples, ranking);
                 losing_sound.play();
@@ -2035,19 +2051,43 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
             window.draw(shapes.bomb_icon[0]);
             window.draw(shapes.bomb_icon[1]);
         }
-        else if ((check.number_of_levels_done == 6) && check.did_snake_hit_bomb == 0) {
+        else if ((check.number_of_levels_done == 6) ) {
             for (int i = 0; i < 2; i++) {
+                shapes.stone_block[i].setTexture(textures.stone_block_texture[0]);
+                shapes.stone_block[0].setSize(Vector2f(snake_size_and_speed * 8, snake_size_and_speed * 2));
+                shapes.stone_block[0].setPosition((325 * screen_factor_x + snake_size_and_speed * -2), (461 * screen_factor_y + snake_size_and_speed * 2));
+                window.draw(shapes.stone_block[0]);
+                shapes.stone_block[1].setSize(Vector2f(snake_size_and_speed * 8, snake_size_and_speed * 2));
+                shapes.stone_block[1].setPosition((325 * screen_factor_x + snake_size_and_speed * 17), (461 * screen_factor_y + snake_size_and_speed * -9));
+                window.draw(shapes.stone_block[1]);
+                if (check.did_snake_hit_bomb == 0) {
+                    window.draw(shapes.bomb_icon[0]);
+                    window.draw(shapes.bomb_icon[1]);
+                }
+
+            }
+        }
+        else if ((check.number_of_levels_done == 7) ) {
+            for (int i = 0; i < 4; i++) {
                 shapes.stone_block[i].setTexture(textures.stone_block_texture[0]);
 
             }
+            shapes.stone_block[2].setSize(Vector2f(snake_size_and_speed * 2, snake_size_and_speed * 8));
+            shapes.stone_block[2].setPosition((325 * screen_factor_x + snake_size_and_speed * 1), (461 * screen_factor_y + snake_size_and_speed * -9));
+            window.draw(shapes.stone_block[2]);
             shapes.stone_block[0].setSize(Vector2f(snake_size_and_speed * 8, snake_size_and_speed * 2));
-            shapes.stone_block[0].setPosition((325 * screen_factor_x + snake_size_and_speed * -2), (461 * screen_factor_y + snake_size_and_speed * 2));
+            shapes.stone_block[0].setPosition((325 * screen_factor_x + snake_size_and_speed * 14), (461 * screen_factor_y + snake_size_and_speed * -9));
             window.draw(shapes.stone_block[0]);
             shapes.stone_block[1].setSize(Vector2f(snake_size_and_speed * 8, snake_size_and_speed * 2));
-            shapes.stone_block[1].setPosition((325 * screen_factor_x + snake_size_and_speed * 17), (461 * screen_factor_y + snake_size_and_speed * -9));
+            shapes.stone_block[1].setPosition((325 * screen_factor_x + snake_size_and_speed * 1), (461 * screen_factor_y + snake_size_and_speed * 4));
             window.draw(shapes.stone_block[1]);
-            window.draw(shapes.bomb_icon[0]);
-            window.draw(shapes.bomb_icon[1]);
+            shapes.stone_block[3].setSize(Vector2f(snake_size_and_speed * 2, snake_size_and_speed * 8));
+            shapes.stone_block[3].setPosition((325 * screen_factor_x + snake_size_and_speed * 20), (461 * screen_factor_y + snake_size_and_speed * -2));
+            window.draw(shapes.stone_block[3]);
+            if (check.did_snake_hit_bomb == 0) {
+                window.draw(shapes.bomb_icon[0]);
+                window.draw(shapes.bomb_icon[1]);
+            }
         }
     }
     if (check.is_survive_mode_pressed) {
@@ -2086,7 +2126,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
             check.did_snake_hit_bomb++;
             cout << 1 << endl;
         }
-        else if (check.number_of_levels_done == 5 || check.number_of_levels_done == 6) {
+        else if (check.number_of_levels_done >4) {
             shapes.bomb_explosion.setTextureRect(IntRect(400 * (check.did_snake_hit_bomb % 4), 400 * (check.did_snake_hit_bomb / 4), 400, 400));
             shapes.bomb_explosion.setPosition(Vector2f(shapes.bomb_icon[0].getPosition().x, shapes.bomb_icon[0].getPosition().y));
             shapes.bomb_explosion.setRadius(shapes.bomb_icon[0].getRadius());
@@ -2602,6 +2642,35 @@ void randbomb(shape& shapes, Check& check, int number_of_eaten_apples) {
                         145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
                     i = 0;
                     for (int j = 0; j < 2; j++) {
+                        if (shapes.bomb_icon[q].getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
+                            shapes.bomb_icon[q].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
+                                145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                            j = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else if (check.number_of_levels_done == 7) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (shapes.bomb_icon[i].getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
+                    shapes.bomb_icon[i].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
+                        145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                    j = 0;
+                }
+            }
+        }
+        for (int q = 0; q < 2; q++) {
+            for (int i = 0; i < number_of_eaten_apples + 2; i++) {
+                if (snake[i].getGlobalBounds().intersects(shapes.bomb_icon[q].getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
+                    intersects(shapes.bomb_icon[q].getGlobalBounds()) || shapes.apple_icon.getGlobalBounds().
+                    intersects(shapes.bomb_icon[q].getGlobalBounds())) {
+                    shapes.bomb_icon[q].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
+                        145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
+                    i = 0;
+                    for (int j = 0; j < 4; j++) {
                         if (shapes.bomb_icon[q].getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                             shapes.bomb_icon[q].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                                 145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
