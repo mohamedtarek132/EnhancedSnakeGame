@@ -131,6 +131,9 @@ struct shapetextures {
     Texture story_mode_cut_scene_backgrounds_textures[8];
     Texture textboxtexture;
     Texture* text_box_texture;
+    Texture witch_attacking_texture;
+    Texture witch_idle_texture;
+    Texture witch_death_texture;
 };
 struct shape {
     CircleShape apple_icon;
@@ -156,6 +159,7 @@ struct shape {
     Sprite summer_game_background;
     Sprite story_mode_backgrounds[8];
     Sprite story_mode_cut_scene_backgrounds[8];
+    Sprite witch;
 
     RectangleShape pause_icon;
     RectangleShape resume_icon;
@@ -253,7 +257,7 @@ void snake_movement(Check& check);
 
 void changexny(Check check);
 
-void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& font, shapetextures& texture);
+void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& font, shapetextures& texture,int& witch_counter);
 
 void set_color(int square_number, int number_of_eaten_apples, Check check);
 
@@ -298,6 +302,8 @@ int main() {
     int ranking[3] = {};
 
     int collision_counter = 0;
+
+    int witch_counter = 0;
     //1 for check snake , 0 for if the player started playing, 0 for is the apple eaten,
     Check check = {};
     check.is_the_snake_alive = 1;
@@ -867,6 +873,13 @@ int main() {
     textures.text_box_texture = &textures.textboxtexture;
     shapes.text_box.setTexture(textures.text_box_texture);
 
+    textures.witch_attacking_texture.loadFromFile("witch attack sprite sheet.png");
+
+    textures.witch_idle_texture.loadFromFile("witch idle sprite sheet.png");
+    shapes.witch.setTexture(textures.witch_idle_texture);
+
+    textures.witch_death_texture.loadFromFile("witch death sprite sheet.png");
+
     window.setFramerateLimit(70);
 
     sizenposition();
@@ -1005,7 +1018,7 @@ int main() {
                     window.display();
                 }
                 if (!check.did_cut_scene_start) {
-                    draw_game(shapes, number_of_eaten_apples, check, font, textures);
+                    draw_game(shapes, number_of_eaten_apples, check, font, textures,witch_counter);
                 }
 
 
@@ -1026,7 +1039,7 @@ int main() {
                 check.did_snake_hit_bomb = 0;
 
             }
-            draw_game(shapes, number_of_eaten_apples, check, font, textures);
+            draw_game(shapes, number_of_eaten_apples, check, font, textures,witch_counter);
         }
         else if (opening_counter <= 200) {
             window.clear();
@@ -2009,7 +2022,7 @@ void changexny(Check check) {
 
 //use check apple and collided
 //to draw everything in the game
-void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& font, shapetextures& textures) {
+void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& font, shapetextures& textures,int& witch_counter) {
 
     window.clear();
     //Background
@@ -2088,6 +2101,14 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 window.draw(shapes.bomb_icon[0]);
                 window.draw(shapes.bomb_icon[1]);
             }
+            if (witch_counter > 12*6)
+                witch_counter = 0;
+            if (witch_counter%6==0)
+            shapes.witch.setTextureRect(IntRect(85 * witch_counter/6, 0, 85, 56));
+            shapes.witch.setPosition(1040, 330);
+            shapes.witch.setScale(2, 2);
+            window.draw(shapes.witch);
+            witch_counter++;
         }
     }
     if (check.is_survive_mode_pressed) {
