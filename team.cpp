@@ -546,12 +546,12 @@ int main() {
                         window.draw(shapes.ending_scene_story_mode);
                         the_conversation(check, shapes);
                         if (check.number_of_monolge_being_played == 0) {
-                            text_box_text.setString("The Duck: My lovely snake, you are truly a hero! You risked your life for me. I love you so much.");
-                            text_box_text.setCharacterSize(22);
+                            text_box_text.setString("The Duck: My lovely snake, you are truly a hero! You risked \nyour life for me. I love you so much.");
+                            text_box_text.setCharacterSize(30);
                         }
                         else if (check.number_of_monolge_being_played == 1) {
-                            text_box_text.setString("And things returned to how they were in the happy kingdom, even better than before. Some thought the snake was crazy for betting his life, but he only thought of his beautiful duck and believed that he could do anything for her. When love is real, you can become a superhero.");
-                            text_box_text.setCharacterSize(30);
+                            text_box_text.setString("And things returned to how they were in the happy kingdom, even better than before. Some\n thought the snake was crazy for betting his life,  but he only thought of his beautiful duck and\n believed that he could do anything for her. When love is real, you can become a superhero.");
+                            text_box_text.setCharacterSize(18);
 
                         }
                         else if (check.number_of_monolge_being_played == 2) {
@@ -570,7 +570,7 @@ int main() {
 
                         }
                         else if (check.number_of_monolge_being_played == 5) {
-                            text_box_text.setString("Now we can say : The end, and farewell.");
+                            text_box_text.setString("Now we can say : The end, and farewell.");
                             text_box_text.setCharacterSize(30);
 
                         }
