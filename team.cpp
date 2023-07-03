@@ -97,6 +97,8 @@ struct Check {
     bool did_the_witch_attack;
 
     bool did_the_magic_spell_hit_something;
+
+    int attack_counter;
 };
 
 struct shapetextures {
@@ -142,6 +144,7 @@ struct shapetextures {
     Texture arrow_for_discussing;
     Texture magicspelltexture;
     Texture* magic_spell_texture;
+    Texture witch_attacking_reversed;
 };
 struct shape {
     CircleShape apple_icon;
@@ -1666,36 +1669,68 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 }
             }
             else if (check.number_of_idle_moves_of_the_witch%3==2) {
-                shapes.witch.setTexture(textures.witch_attacking_texture);
-                if (witch_counter > 7 * 8) {
+                
+                if (check.attack_counter > 7 * 8) {
                     witch_counter = 0;
+                    check.attack_counter = 0;
                     check.number_of_idle_moves_of_the_witch++;
                 }
-                if (witch_counter % 8 == 0) {
-                    if ((witch_counter / 8 == 0 || witch_counter / 8 == 1 || witch_counter / 8 == 2))
-                        shapes.witch.setTextureRect(IntRect(22 + 60 * witch_counter / 8 + 25 * witch_counter / 8, 0, 25, 56));
-                    else if (witch_counter / 8 == 3) {
-                        shapes.witch.setTextureRect(IntRect(269, 0, 36, 56));
+                if (check.attack_counter % 8 == 0) {
+                   
+                    if (check.number_of_hits_did_the_witch_recieve != 0) {
+                        shapes.witch.setTexture(textures.witch_attacking_texture);
+                        if ((check.attack_counter / 8 == 0 || check.attack_counter / 8 == 1 || check.attack_counter / 8 == 2))
+                            shapes.witch.setTextureRect(IntRect(22 + 60 * check.attack_counter / 8 + 25 * check.attack_counter / 8, 0, 25, 56));
+                        else if (check.attack_counter / 8 == 3) {
+                            shapes.witch.setTextureRect(IntRect(269, 0, 36, 56));
+                        }
+                        else if (check.attack_counter / 8 == 4) {
+                            shapes.witch.setTextureRect(IntRect(339, 0, 51, 56));
+                        }
+                        else if (check.attack_counter / 8 == 5) {
+                            shapes.witch.setTextureRect(IntRect(429, 0, 45, 56));
+                        }
+                        else if (check.attack_counter / 8 == 6) {
+                            shapes.witch.setTextureRect(IntRect(519, 0, 58, 56));
+                            check.did_the_witch_attack = 1;
+                            shapes.magic_spell.setPosition(Vector2f(shapes.witch.getGlobalBounds().left +
+                                shapes.witch.getGlobalBounds().width,
+                                shapes.witch.getGlobalBounds().top + 50));
+                            shapes.magic_spell.setTextureRect(IntRect(0, 0, 16, 16));
+                            shapes.magic_spell.setRadius(10);
+                        }
+                        else if (check.attack_counter / 8 == 7) {
+                            shapes.witch.setTextureRect(IntRect(618, 0, 43, 56));
+                        }
                     }
-                    else if (witch_counter / 8 == 4) {
-                        shapes.witch.setTextureRect(IntRect(339, 0, 51, 56));
-                    }
-                    else if (witch_counter / 8 == 5) {
-                        shapes.witch.setTextureRect(IntRect(429, 0, 45, 56));
-                    }
-                    else if (witch_counter / 8 == 6) {
-                        shapes.witch.setTextureRect(IntRect(519, 0, 58, 56));
-                        check.did_the_witch_attack = 1;
-                        shapes.magic_spell.setPosition(Vector2f(shapes.witch.getGlobalBounds().left + 
-                            shapes.witch.getGlobalBounds().width,
-                            shapes.witch.getGlobalBounds().top + 50));
-                        shapes.magic_spell.setTextureRect(IntRect(0, 0, 16, 16));
-                        shapes.magic_spell.setRadius(10);
-                    }
-                    else if (witch_counter / 8 == 7) {
-                        shapes.witch.setTextureRect(IntRect(618, 0, 43, 56));
+                    else if (check.number_of_hits_did_the_witch_recieve == 0) {
+                       
+                        shapes.witch.setTexture(textures.witch_attacking_reversed);
+                        if ((check.attack_counter / 8 == 0 || check.attack_counter / 8 == 1 || check.attack_counter / 8 == 2))
+                            shapes.witch.setTextureRect(IntRect( 850- (22 + 25 + 60 * witch_counter / 8 + 25 * witch_counter / 8), 0, 25, 56));
+                        else if (check.attack_counter / 8 == 3) {
+                            shapes.witch.setTextureRect(IntRect(850 - 306, 0, 36, 56));
+                        }
+                        else if (check.attack_counter / 8 == 4) {
+                            shapes.witch.setTextureRect(IntRect(850 - 391, 0, 51, 56));
+                        }
+                        else if (check.attack_counter / 8 == 5) {
+                            shapes.witch.setTextureRect(IntRect(850 - 476, 0, 45, 56));
+                        }
+                        else if (check.attack_counter / 8 == 6) {
+                            shapes.witch.setTextureRect(IntRect(850 - 579, 0, 58, 56));
+                            check.did_the_witch_attack = 1;
+                            shapes.magic_spell.setPosition(Vector2f(shapes.witch.getGlobalBounds().left ,
+                                shapes.witch.getGlobalBounds().top + 50));
+                            shapes.magic_spell.setTextureRect(IntRect(0, 0, 16, 16));
+                            shapes.magic_spell.setRadius(10);
+                        }
+                        else if (check.attack_counter / 8 == 7) {
+                            shapes.witch.setTextureRect(IntRect(850 - (622 + 43), 0, 43, 56));
+                        }
                     }
                 }
+                    check.attack_counter++;
             }
             else {
                 shapes.witch.setTexture(textures.witch_death_texture);
@@ -1774,10 +1809,19 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
         }
     }
     if (check.did_the_witch_attack) {
-        if (check.number_of_hits_did_the_witch_recieve !=0) {
-            shapes.magic_spell.move(2, 0);
-            window.draw(shapes.magic_spell);
+        if (check.number_of_hits_did_the_witch_recieve ==0) {
+            shapes.magic_spell.move(-2, 0);
         }
+        else if (check.number_of_hits_did_the_witch_recieve == 1) {
+            shapes.magic_spell.move(2, 0);
+        }
+        else if (check.number_of_hits_did_the_witch_recieve == 2) {
+            shapes.magic_spell.move(0, -2);
+        }
+        else if (check.number_of_hits_did_the_witch_recieve == 3) {
+            shapes.magic_spell.move(0, 2);
+        }
+            window.draw(shapes.magic_spell);
     }
     set_texture(number_of_eaten_apples, check, textures);
 
@@ -3238,6 +3282,8 @@ void uploading_the_pages_and_icons(shape& shapes, shapetextures& textures)
     textures.magicspelltexture.loadFromFile("MagicSpellSpriteSheet.png");
     textures.magic_spell_texture = &textures.magicspelltexture;
     shapes.magic_spell.setTexture(textures.magic_spell_texture);
+
+    textures.witch_attacking_reversed.loadFromFile("AttackAnimation reversed.png");
 
 }
 
