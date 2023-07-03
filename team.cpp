@@ -99,6 +99,8 @@ struct Check {
     bool did_the_magic_spell_hit_something;
 
     int attack_counter;
+
+    bool is_the_witch_alive;
 };
 
 struct shapetextures {
@@ -339,6 +341,7 @@ int main() {
     check.is_snake_1_being_used = 1;
     check.did_cut_scene_start = 1;
     check.number_of_levels_done = 7;
+    check.is_the_witch_alive = 1;
 
     shapetextures textures;
 
@@ -455,6 +458,7 @@ int main() {
                     randrottenapple(shapes, check, number_of_eaten_apples);
                     check.number_of_hits_did_the_witch_recieve = 0;
                     check.did_the_snake_hit_the_witch = 0;
+                    check.is_the_witch_alive = 1;
                     shapes.witch.setPosition(1040, 330);
 
                 }
@@ -596,7 +600,7 @@ int main() {
             levels_music[7].stop();
             shapes.witch.setTexture(textures.witch_idle_reversed);
             shapes.witch.setPosition(1040, 330);
-
+            check.is_the_witch_alive = 1;
             check.number_of_hits_did_the_witch_recieve = 0;
             check.did_the_snake_hit_the_witch = 0;
 
@@ -733,6 +737,8 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         if (snake[0].getGlobalBounds().intersects(snake[i].getGlobalBounds()) && check.is_the_snake_alive == 1) {
             check.is_the_snake_alive = 0;
             losing_sound.play();
+            check.did_the_witch_attack = 0;
+
             changing_ranking(number_of_eaten_apples, ranking);
             break;
         }
@@ -811,6 +817,8 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
                 did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || fourth_level_stones[i])) {
                 check.is_the_snake_alive = 0;
+                check.did_the_witch_attack = 0;
+
                 changing_ranking(number_of_eaten_apples, ranking);
                 losing_sound.play();
             }
@@ -818,6 +826,8 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
             check.is_the_snake_alive = 0;
             check.did_snake_hit_bomb = 1;
+            check.did_the_witch_attack = 0;
+
             changing_ranking(number_of_eaten_apples, ranking);
             explosion_sound.setVolume(50);
             explosion_sound.play();
@@ -834,21 +844,26 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
     }
 
     if (snake[0].getGlobalBounds().intersects(shapes.apple_icon.getGlobalBounds()) && check.is_the_apple_eaten == 0) {
-        check.is_the_apple_eaten = 1;
-        number_of_eaten_apples++;
-        apple_eating_sound.play();
+        if (check.number_of_levels_done != 7||(check.number_of_levels_done==7 && !check.is_the_witch_alive)) {
+            check.is_the_apple_eaten = 1;
+            number_of_eaten_apples++;
+            apple_eating_sound.play();
+        }
     }
 
     if (snake[0].getGlobalBounds().intersects(shapes.rotten_apple_icon.getGlobalBounds()) && check.is_the_rotten_apple_eaten == 0
         && number_of_eaten_apples > 0) {
-        number_of_eaten_apples--;
-        check.is_the_rotten_apple_eaten = 1;
-        rotten_apple_eating_sound.play();
+        if (check.number_of_levels_done != 7 || (check.number_of_levels_done == 7 && !check.is_the_witch_alive)) {
+            number_of_eaten_apples--;
+            check.is_the_rotten_apple_eaten = 1;
+            rotten_apple_eating_sound.play();
+        }
     }
 
     if (snake[0].getGlobalBounds().intersects(shapes.witch.getGlobalBounds()) && check.number_of_levels_done == 7&&
         check.did_the_snake_hit_the_witch==0) {
         check.number_of_hits_did_the_witch_recieve++;
+        
         check.did_the_snake_hit_the_witch = 1;
         check.did_the_witch_attack = 0;
         check.number_of_idle_moves_of_the_witch = 0;
@@ -1670,7 +1685,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 window.draw(shapes.bomb_icon[0]);
                 window.draw(shapes.bomb_icon[1]);
             }
-            if ((check.number_of_idle_moves_of_the_witch % 3 != 2 && !check.did_the_snake_hit_the_witch) || !check.is_the_snake_alive||
+            if ((check.number_of_idle_moves_of_the_witch % 3 != 2 && !check.did_the_snake_hit_the_witch) || !check.is_the_snake_alive ||
                 !check.if_the_player_started_playing) {
                 if (witch_counter > 12 * 8) {
                     witch_counter = 0;
@@ -1685,18 +1700,18 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 else {
                     shapes.witch.setTexture(textures.witch_idle_reversed);
                     if (witch_counter % 8 == 0)
-                        shapes.witch.setTextureRect(IntRect(1105-(22+25 + 60 * witch_counter / 8 + 25 * witch_counter / 8), 0, 25, 56));
+                        shapes.witch.setTextureRect(IntRect(1105 - (22 + 25 + 60 * witch_counter / 8 + 25 * witch_counter / 8), 0, 25, 56));
                 }
             }
-            else if (check.number_of_idle_moves_of_the_witch%3==2&&check.is_the_snake_alive&&check.if_the_player_started_playing) {
-                
+            else if (check.number_of_idle_moves_of_the_witch % 3 == 2 && check.is_the_snake_alive && check.if_the_player_started_playing) {
+
                 if (check.attack_counter > 7 * 8) {
                     witch_counter = 0;
                     check.attack_counter = 0;
                     check.number_of_idle_moves_of_the_witch++;
                 }
                 if (check.attack_counter % 8 == 0) {
-                   
+
                     if (check.number_of_hits_did_the_witch_recieve != 0) {
                         shapes.witch.setTexture(textures.witch_attacking_texture);
                         if ((check.attack_counter / 8 == 0 || check.attack_counter / 8 == 1 || check.attack_counter / 8 == 2))
@@ -1724,10 +1739,10 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                         }
                     }
                     else if (check.number_of_hits_did_the_witch_recieve == 0) {
-                       
+
                         shapes.witch.setTexture(textures.witch_attacking_reversed);
                         if ((check.attack_counter / 8 == 0 || check.attack_counter / 8 == 1 || check.attack_counter / 8 == 2))
-                            shapes.witch.setTextureRect(IntRect( 850 - (22 + 25 + 60 * witch_counter / 8 + 25 * witch_counter / 8), 0, 25, 56));
+                            shapes.witch.setTextureRect(IntRect(850 - (22 + 25 + 60 * witch_counter / 8 + 25 * witch_counter / 8), 0, 25, 56));
                         else if (check.attack_counter / 8 == 3) {
                             shapes.witch.setTextureRect(IntRect(850 - 306, 0, 36, 56));
                         }
@@ -1740,7 +1755,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                         else if (check.attack_counter / 8 == 6) {
                             shapes.witch.setTextureRect(IntRect(850 - 579, 0, 58, 56));
                             check.did_the_witch_attack = 1;
-                            shapes.magic_spell.setPosition(Vector2f(shapes.witch.getGlobalBounds().left ,
+                            shapes.magic_spell.setPosition(Vector2f(shapes.witch.getGlobalBounds().left,
                                 shapes.witch.getGlobalBounds().top + 50));
                             shapes.magic_spell.setTextureRect(IntRect(0, 0, 16, 16));
                             shapes.magic_spell.setRadius(10);
@@ -1750,13 +1765,13 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                         }
                     }
                 }
-                    check.attack_counter++;
+                check.attack_counter++;
             }
             else {
                 shapes.witch.setTexture(textures.witch_death_texture);
                 if (witch_counter > 10 * 8) {
                     witch_counter = 0;
-                    if (check.number_of_hits_did_the_witch_recieve==1) {
+                    if (check.number_of_hits_did_the_witch_recieve == 1) {
                         shapes.witch.setPosition(160, 330);
                     }
                     else if (check.number_of_hits_did_the_witch_recieve == 2) {
@@ -1767,7 +1782,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                         shapes.witch.setPosition(560, 620);
                         shapes.witch.setTexture(textures.witch_idle_texture);
                     }
-                   
+
                     else if (check.number_of_hits_did_the_witch_recieve == 4) {
                         shapes.witch.setPosition(550, 330);
                         shapes.witch.setTexture(textures.witch_idle_texture);
@@ -1802,11 +1817,12 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
     }
 
     //to check if the apple was eaten
-    if (check.is_the_apple_eaten == 0) {
+    if (check.is_the_apple_eaten == 0 && (check.number_of_levels_done != 7||(check.number_of_levels_done==7&&!check.is_the_witch_alive))) {
         window.draw(shapes.apple_icon);
     }
 
-    if (check.is_the_rotten_apple_eaten == 0 && number_of_eaten_apples > 0) {
+    if (check.is_the_rotten_apple_eaten == 0 && number_of_eaten_apples > 0&& (check.number_of_levels_done != 7 || 
+        (check.number_of_levels_done == 7 && !check.is_the_witch_alive))) {
         window.draw(shapes.rotten_apple_icon);
     }
     if (check.did_snake_hit_bomb > 0 && check.did_snake_hit_bomb <= 11) {
@@ -1842,6 +1858,11 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
             shapes.magic_spell.move(0, 2);
         }
             window.draw(shapes.magic_spell);
+    }
+    if (check.number_of_hits_did_the_witch_recieve == 5) {
+        shapes.witch.move(0, 2);
+        check.is_the_witch_alive = 0;
+        window.draw(shapes.witch);
     }
     set_texture(number_of_eaten_apples, check, textures);
 
@@ -2263,7 +2284,8 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
             if (snake[i].getGlobalBounds().intersects(shapes.apple_icon.getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
                 intersects(shapes.apple_icon.getGlobalBounds()) || shapes.apple_icon.getGlobalBounds().
                 intersects(shapes.bomb_icon[0].getGlobalBounds()) || shapes.apple_icon.getGlobalBounds().
-                intersects(shapes.bomb_icon[1].getGlobalBounds())) {
+                intersects(shapes.bomb_icon[1].getGlobalBounds())|| shapes.apple_icon.getGlobalBounds().
+                intersects(shapes.witch.getGlobalBounds())) {
                 shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                     145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
                 i = -1;
@@ -2325,7 +2347,7 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
 
         }
     }
-    else if (check.number_of_levels_done == 3) {
+    else if (check.number_of_levels_done == 3 ||check.number_of_levels_done==7) {
         for (int j = 0; j < 4; j++) {
             if (shapes.rotten_apple_icon.getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                 shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
@@ -2337,7 +2359,8 @@ void randrottenapple(shape& shapes, Check& check, int number_of_eaten_apples) {
             if (snake[i].getGlobalBounds().intersects(shapes.rotten_apple_icon.getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
                 intersects(shapes.apple_icon.getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
                 intersects(shapes.bomb_icon[0].getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
-                intersects(shapes.bomb_icon[1].getGlobalBounds())) {
+                intersects(shapes.bomb_icon[1].getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
+                intersects(shapes.witch.getGlobalBounds())) {
                 shapes.rotten_apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) + 145 * screen_factor_x,
                     rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
                 i = -1;
@@ -2418,7 +2441,8 @@ void randbomb(shape& shapes, Check& check, int number_of_eaten_apples) {
             for (int i = 0; i < number_of_eaten_apples + 2; i++) {
                 if (snake[i].getGlobalBounds().intersects(shapes.bomb_icon[q].getGlobalBounds()) || shapes.rotten_apple_icon.getGlobalBounds().
                     intersects(shapes.bomb_icon[q].getGlobalBounds()) || shapes.apple_icon.getGlobalBounds().
-                    intersects(shapes.bomb_icon[q].getGlobalBounds())) {
+                    intersects(shapes.bomb_icon[q].getGlobalBounds()) || shapes.bomb_icon[q].getGlobalBounds().
+                    intersects(shapes.witch.getGlobalBounds())) {
                     shapes.bomb_icon[q].setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
                         145 * screen_factor_x, rand() % ((int)(640 * screen_factor_y) - (int)snake_size_and_speed) + 70 * screen_factor_y));
                     i = -1;
