@@ -87,17 +87,15 @@ struct Check {
     bool did_the_first_song_start;
 
     int number_of_idle_moves_of_the_witch;
+
+    bool the_witch_sprite_reach_its_end;
 };
 
 struct shapetextures {
     Texture resumeicontexture;
     Texture restarticontexture;
-    Texture snakeheadtexture;
     Texture rottenappletexture;
     Texture appletexture;
-    Texture snaketurntexture;
-    Texture snakebodytexture;
-    Texture snaketailtexture;
     Texture exiticontexture;
     Texture opening_texture;
     Texture main_menu_page_texture;
@@ -108,18 +106,14 @@ struct shapetextures {
     Texture game_over_texture;
     Texture change_snake_page_texture;
     Texture Truee;
+    Texture witch_idle_reversed;
     Texture* resume_icon_texture;
     Texture* restart_icon_texture;
     Texture* apple_icon_texture;
     Texture* rotten_apple_icon_texture;
-    Texture* snake_head_texture;
     Texture* exit_icon_texture;
-    Texture* snake_turn_texture;
-    Texture* snake_body_texture;
-    Texture* snake_tail_texture;
     Texture game_mode_page_texture;
     Texture story_mode_page_texture;
-    Texture level_2_background_texture;
     Texture spring_game_background_texture;
     Texture winter_game_background_texture;
     Texture fall_game_background_texture;
@@ -137,6 +131,7 @@ struct shapetextures {
     Texture witch_attacking_texture;
     Texture witch_idle_texture;
     Texture witch_death_texture;
+    Texture arrow_for_discussing;
 };
 struct shape {
     CircleShape apple_icon;
@@ -163,6 +158,8 @@ struct shape {
     Sprite story_mode_backgrounds[8];
     Sprite story_mode_cut_scene_backgrounds[8];
     Sprite witch;
+    Sprite witch_for_conversation;
+    Sprite The_arrow;
 
     RectangleShape pause_icon;
     RectangleShape resume_icon;
@@ -198,8 +195,6 @@ struct textures_of_snake
     Texture body___left_tail_top;
     Texture body___left_tail_bottom;
 
-
-
     Texture* body_top_left;
     Texture* body_bottom_right;
     Texture* body_bottom_left;
@@ -229,6 +224,8 @@ int window_width = 1300, window_height = 800;
 // The maximum number of square for the snake
 const int MAX_NUMBER_OF_SQUARES = 1000;
 
+int witch_counter = 0;
+
 /* the speed array to make the snake parts to follow each other the 0 in the first dimension means its direction in the x axis and
  the 1 in the first dimension means its direction in the y axis*/
 int speed[MAX_NUMBER_OF_SQUARES][2];
@@ -253,6 +250,16 @@ RenderWindow window(VideoMode(window_width, window_height), "Snake Game");
 RectangleShape snake[MAX_NUMBER_OF_SQUARES];
 
 void sizenposition();
+
+void uploading_music_sounds_and_icons(Check &check, shape &shapes, Font &font, shapetextures &textures,
+SoundBuffer &apple_eating_sound_buffer, SoundBuffer& rotten_apple_eating_sound_buffer,
+SoundBuffer& losing_sound_buffer, SoundBuffer& explosion_sound_buffer, Text &text_box_text);
+
+void uploading_the_pages_and_icons(shape& shapes, shapetextures& textures);
+
+void uploading_snake_textures();
+
+void the_conversation(Check &check,shape &shapes);
 
 void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ranking[], int& collision_counter);
 
@@ -308,7 +315,6 @@ int main() {
 
     int collision_counter = 0;
 
-    int witch_counter = 0;
     //1 for check snake , 0 for if the player started playing, 0 for is the apple eaten,
     Check check = {};
     check.is_the_snake_alive = 1;
@@ -325,590 +331,15 @@ int main() {
 
     Font font;
 
-    textures.resume_icon_texture = &textures.resumeicontexture;
-    textures.restart_icon_texture = &textures.restarticontexture;
-    textures.exit_icon_texture = &textures.exiticontexture;
-    textures.apple_icon_texture = &textures.appletexture;
-    textures.rotten_apple_icon_texture = &textures.rottenappletexture;
-    textures.snake_head_texture = &textures.snakeheadtexture;
-
-    //loading backgroung music
-    music.openFromFile("Snake Game _music.wav");
-    music.setLoop(true);
-    music.play();
-    music.setVolume(0);
-    //loading music for each level
-    levels_music[0].openFromFile("level-1.wav");
-    levels_music[0].setLoop(true);
-    levels_music[0].setVolume(0);
-    levels_music[1].openFromFile("level-2.wav");
-    levels_music[1].setLoop(true);
-    levels_music[1].setVolume(0);
-    levels_music[2].openFromFile("level-3.wav");
-    levels_music[2].setLoop(true);
-    levels_music[2].setVolume(0);
-    levels_music[3].openFromFile("level-4.wav");
-    levels_music[3].setLoop(true);
-    levels_music[3].setVolume(0);
-    levels_music[4].openFromFile("level-5.wav");
-    levels_music[4].setLoop(true);
-    levels_music[4].setVolume(0);
-    levels_music[5].openFromFile("level-6.wav");
-    levels_music[5].setLoop(true);
-    levels_music[5].setVolume(0);
-    levels_music[6].openFromFile("level-7.wav");
-    levels_music[6].setLoop(true);
-    levels_music[6].setVolume(0);
-    levels_music[7].openFromFile("level-8.wav");
-    levels_music[7].setLoop(true);
-    levels_music[7].setVolume(0);
-
-    //loading fong and setting the font of the text
-    font.loadFromFile("font file 2.ttf");
-    text.setFont(font);
-
-    text_box_text.setFont(font);
-    text_box_text.setCharacterSize(25);
-    //text_box_text.setColor(Color::White);
-    //loading sound of the apple being eaten
-    apple_eating_sound_buffer.loadFromFile("apple_crunch.wav");
-    apple_eating_sound.setBuffer(apple_eating_sound_buffer);
-
-    //loading sound of the rotten apple being eaten
-    rotten_apple_eating_sound_buffer.loadFromFile("player_hurt.wav");
-    rotten_apple_eating_sound.setBuffer(rotten_apple_eating_sound_buffer);
-
-    //loading sound of the snake diying
-    losing_sound_buffer.loadFromFile("gameover.wav");
-    losing_sound.setBuffer(losing_sound_buffer);
-
-    explosion_sound_buffer.loadFromFile("Explosion.wav");
-    explosion_sound.setBuffer(explosion_sound_buffer);
-
+    //loading music,sounds and icons
+    uploading_music_sounds_and_icons(check, shapes, font, textures, apple_eating_sound_buffer,
+        rotten_apple_eating_sound_buffer, losing_sound_buffer, explosion_sound_buffer,text_box_text);
 
     //loading textures
+    uploading_snake_textures();
 
-    //loading texture of the restart icon 
-    textures.restarticontexture.loadFromFile("restart_button.png");
-    textures.restarticontexture.setSmooth(1);
-    shapes.restart_icon.setTexture(textures.restart_icon_texture);
-
-    //loading texture of the resume icon 
-    textures.resumeicontexture.loadFromFile("resume_button.png");
-    textures.resumeicontexture.setSmooth(1);
-    shapes.resume_icon.setTexture(textures.resume_icon_texture);
-
-    //loading texture of the exit icon
-    textures.exiticontexture.loadFromFile("exit_button.png");
-    textures.exiticontexture.setSmooth(1);
-    shapes.exit_icon.setTexture(textures.exit_icon_texture);
-
-    //loading texture of the apple icon
-    textures.appletexture.loadFromFile("apple.png", IntRect(0, 182, 61, 70));
-    shapes.apple_icon.setTexture(textures.apple_icon_texture);
-
-    //loading texture of the rotten apple
-    textures.rottenappletexture.loadFromFile("rotten_apple-removebg-preview.png");
-    shapes.rotten_apple_icon.setTexture(textures.rotten_apple_icon_texture);
-
-    //loading texture of the game background
-    textures.spring_game_background_texture.loadFromFile("Background.png");
-    shapes.spring_game_background.setTexture(textures.spring_game_background_texture);
-    shapes.spring_game_background.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
-
-    //loading textures for the snake
-    textures.snakeheadtexture.loadFromFile("Snake sprite sheet.png", IntRect(0, 2, 40, 40));
-    textures.snakeheadtexture.setSmooth(1);
-    textures.snakebodytexture.loadFromFile("Snake sprite sheet.png", IntRect(84, 85, 40, 40));
-    textures.snakebodytexture.setSmooth(1);
-    textures.snaketurntexture.loadFromFile("Snake sprite sheet.png", IntRect(42, 0, 40, 40));
-    textures.snaketurntexture.setSmooth(1);
-    textures.snaketailtexture.loadFromFile("Snake sprite sheet.png", IntRect(44, 85, 40, 40));
-    textures.snaketailtexture.setSmooth(1);
-
-
-    //load the textures of the first snake
-    snake_texture[0].body___topleft.loadFromFile("body top left(1).png");
-    snake_texture[0].body_top_left = &snake_texture[0].body___topleft;
-
-    snake_texture[0].body___bottomright.loadFromFile("body bottom right(1).png");
-    snake_texture[0].body_bottom_right = &snake_texture[0].body___bottomright;
-
-    snake_texture[0].body___bottomleft.loadFromFile("body bottom left(1).png");
-    snake_texture[0].body_bottom_left = &snake_texture[0].body___bottomleft;
-
-    snake_texture[0].body___horizontal.loadFromFile("body horizontal(1).png");
-    snake_texture[0].body_horizontal = &snake_texture[0].body___horizontal;
-
-    snake_texture[0].body___topright.loadFromFile("body top right(1).png");
-    snake_texture[0].body_top_right = &snake_texture[0].body___topright;
-
-    snake_texture[0].body___vertical.loadFromFile("body vertical(1).png");
-    snake_texture[0].body_vertical = &snake_texture[0].body___vertical;
-
-    snake_texture[0].head___down.loadFromFile("head bottom(1).png");
-    snake_texture[0].head_down = &snake_texture[0].head___down;
-
-    snake_texture[0].head___left.loadFromFile("head left(1).png");
-    snake_texture[0].head_left = &snake_texture[0].head___left;
-
-    snake_texture[0].head___right.loadFromFile("head right(1).png");
-    snake_texture[0].head_right = &snake_texture[0].head___right;
-
-    snake_texture[0].head___up.loadFromFile("head top(1).png");
-    snake_texture[0].head_up = &snake_texture[0].head___up;
-
-    snake_texture[0].tail___down.loadFromFile("tail bottom(1).png");
-    snake_texture[0].tail_down = &snake_texture[0].tail___down;
-
-    snake_texture[0].tail___left.loadFromFile("tail left(1).png");
-    snake_texture[0].tail_left = &snake_texture[0].tail___left;
-
-    snake_texture[0].tail___right.loadFromFile("tail right(1).png");
-    snake_texture[0].tail_right = &snake_texture[0].tail___right;
-
-    snake_texture[0].tail___up.loadFromFile("tail top(1).png");
-    snake_texture[0].tail_up = &snake_texture[0].tail___up;
-
-    /*Texture body___bottom_tail_left;
-    Texture body___bottom_tail_right;
-    Texture body___right_tail_top;
-    Texture body___right_tail_bottom;
-    Texture body___top_tail_right;
-    Texture body___top_tail_left;
-    Texture body___left_tail_top;
-    Texture body___left_tail_bottom;*/
-
-    snake_texture[0].body___bottom_tail_left.loadFromFile("body bottom tail left(1).png");
-    snake_texture[0].body_bottom_tail_left = &snake_texture[0].body___bottom_tail_left;
-
-    snake_texture[0].body___bottom_tail_right.loadFromFile("body bottom tail right(1).png");
-    snake_texture[0].body_bottom_tail_right = &snake_texture[0].body___bottom_tail_right;
-
-    snake_texture[0].body___right_tail_top.loadFromFile("body right tail top(1).png");
-    snake_texture[0].body_right_tail_top = &snake_texture[0].body___right_tail_top;
-
-    snake_texture[0].body___right_tail_bottom.loadFromFile("body right tail bottom(1).png");
-    snake_texture[0].body_right_tail_bottom = &snake_texture[0].body___right_tail_bottom;
-
-    snake_texture[0].body___top_tail_right.loadFromFile("body top tail right(1).png");
-    snake_texture[0].body_top_tail_right = &snake_texture[0].body___top_tail_right;
-
-    snake_texture[0].body___top_tail_left.loadFromFile("body top tail left(1).png");
-    snake_texture[0].body_top_tail_left = &snake_texture[0].body___top_tail_left;
-
-    snake_texture[0].body___left_tail_top.loadFromFile("body left tail top(1).png");
-    snake_texture[0].body_left_tail_top = &snake_texture[0].body___left_tail_top;
-
-    snake_texture[0].body___left_tail_bottom.loadFromFile("body left tail bottom(1).png");
-    snake_texture[0].body_left_tail_bottom = &snake_texture[0].body___left_tail_bottom;
-
-    //load the textures of the second snake
-    snake_texture[1].body___topleft.loadFromFile("body top left(2).png");
-    snake_texture[1].body___bottomright.loadFromFile("body bottom right(2).png");
-    snake_texture[1].body___bottomleft.loadFromFile("body bottom left(2).png");
-    snake_texture[1].body___horizontal.loadFromFile("body horizontal(2).png");
-    snake_texture[1].body___topright.loadFromFile("body top right(2).png");
-    snake_texture[1].body___vertical.loadFromFile("body vertical(2).png");
-    snake_texture[1].head___down.loadFromFile("head bottom(2).png");
-    snake_texture[1].head___left.loadFromFile("head left(2).png");
-    snake_texture[1].head___right.loadFromFile("head right(2).png");
-    snake_texture[1].head___up.loadFromFile("head top(2).png");
-    snake_texture[1].tail___down.loadFromFile("tail bottom(2).png");
-    snake_texture[1].tail___left.loadFromFile("tail left(2).png");
-    snake_texture[1].tail___right.loadFromFile("tail right(2).png");
-    snake_texture[1].tail___up.loadFromFile("tail top(2).png");
-    snake_texture[1].body_top_left = &snake_texture[1].body___topleft;
-    snake_texture[1].body_bottom_right = &snake_texture[1].body___bottomright;
-    snake_texture[1].body_bottom_left = &snake_texture[1].body___bottomleft;
-    snake_texture[1].body_horizontal = &snake_texture[1].body___horizontal;
-    snake_texture[1].body_top_right = &snake_texture[1].body___topright;
-    snake_texture[1].body_vertical = &snake_texture[1].body___vertical;
-    snake_texture[1].head_down = &snake_texture[1].head___down;
-    snake_texture[1].head_left = &snake_texture[1].head___left;
-    snake_texture[1].head_right = &snake_texture[1].head___right;
-    snake_texture[1].head_up = &snake_texture[1].head___up;
-    snake_texture[1].tail_down = &snake_texture[1].tail___down;
-    snake_texture[1].tail_left = &snake_texture[1].tail___left;
-    snake_texture[1].tail_right = &snake_texture[1].tail___right;
-    snake_texture[1].tail_up = &snake_texture[1].tail___up;
-
-    //load the textures of the third snake
-    snake_texture[2].body___topleft.loadFromFile("body top left(3).png");
-    snake_texture[2].body___bottomright.loadFromFile("body bottom right(3).png");
-    snake_texture[2].body___bottomleft.loadFromFile("body bottom left(3).png");
-    snake_texture[2].body___horizontal.loadFromFile("body horizontal(3).png");
-    snake_texture[2].body___topright.loadFromFile("body top right(3).png");
-    snake_texture[2].body___vertical.loadFromFile("body vertical(3).png");
-    snake_texture[2].head___down.loadFromFile("head bottom(3).png");
-    snake_texture[2].head___left.loadFromFile("head left(3).png");
-    snake_texture[2].head___right.loadFromFile("head right(3).png");
-    snake_texture[2].head___up.loadFromFile("head top(3).png");
-    snake_texture[2].tail___down.loadFromFile("tail bottom(3).png");
-    snake_texture[2].tail___left.loadFromFile("tail left(3).png");
-    snake_texture[2].tail___right.loadFromFile("tail right(3).png");
-    snake_texture[2].tail___up.loadFromFile("tail top(3).png");
-    snake_texture[2].body_top_left = &snake_texture[2].body___topleft;
-    snake_texture[2].body_bottom_right = &snake_texture[2].body___bottomright;
-    snake_texture[2].body_bottom_left = &snake_texture[2].body___bottomleft;
-    snake_texture[2].body_horizontal = &snake_texture[2].body___horizontal;
-    snake_texture[2].body_top_right = &snake_texture[2].body___topright;
-    snake_texture[2].body_vertical = &snake_texture[2].body___vertical;
-    snake_texture[2].head_down = &snake_texture[2].head___down;
-    snake_texture[2].head_left = &snake_texture[2].head___left;
-    snake_texture[2].head_right = &snake_texture[2].head___right;
-    snake_texture[2].head_up = &snake_texture[2].head___up;
-    snake_texture[2].tail_down = &snake_texture[2].tail___down;
-    snake_texture[2].tail_left = &snake_texture[2].tail___left;
-    snake_texture[2].tail_right = &snake_texture[2].tail___right;
-    snake_texture[2].tail_up = &snake_texture[2].tail___up;
-
-    //load the textures of the fourth snake
-    snake_texture[3].body___topleft.loadFromFile("body top left(4).png");
-    snake_texture[3].body___bottomright.loadFromFile("body bottom right(4).png");
-    snake_texture[3].body___bottomleft.loadFromFile("body bottom left(4).png");
-    snake_texture[3].body___horizontal.loadFromFile("body horizontal(4).png");
-    snake_texture[3].body___topright.loadFromFile("body top right(4).png");
-    snake_texture[3].body___vertical.loadFromFile("body vertical(4).png");
-    snake_texture[3].head___down.loadFromFile("head bottom(4).png");
-    snake_texture[3].head___left.loadFromFile("head left(4).png");
-    snake_texture[3].head___right.loadFromFile("head right(4).png");
-    snake_texture[3].head___up.loadFromFile("head top(4).png");
-    snake_texture[3].tail___down.loadFromFile("tail bottom(4).png");
-    snake_texture[3].tail___left.loadFromFile("tail left(4).png");
-    snake_texture[3].tail___right.loadFromFile("tail right(4).png");
-    snake_texture[3].tail___up.loadFromFile("tail top(4).png");
-    snake_texture[3].body_top_left = &snake_texture[3].body___topleft;
-    snake_texture[3].body_bottom_right = &snake_texture[3].body___bottomright;
-    snake_texture[3].body_bottom_left = &snake_texture[3].body___bottomleft;
-    snake_texture[3].body_horizontal = &snake_texture[3].body___horizontal;
-    snake_texture[3].body_top_right = &snake_texture[3].body___topright;
-    snake_texture[3].body_vertical = &snake_texture[3].body___vertical;
-    snake_texture[3].head_down = &snake_texture[3].head___down;
-    snake_texture[3].head_left = &snake_texture[3].head___left;
-    snake_texture[3].head_right = &snake_texture[3].head___right;
-    snake_texture[3].head_up = &snake_texture[3].head___up;
-    snake_texture[3].tail_down = &snake_texture[3].tail___down;
-    snake_texture[3].tail_left = &snake_texture[3].tail___left;
-    snake_texture[3].tail_right = &snake_texture[3].tail___right;
-    snake_texture[3].tail_up = &snake_texture[3].tail___up;
-
-    //load the textures of the fifth snake
-    snake_texture[4].body___topleft.loadFromFile("body top left(5).png");
-    snake_texture[4].body___bottomright.loadFromFile("body bottom right(5).png");
-    snake_texture[4].body___bottomleft.loadFromFile("body bottom left(5).png");
-    snake_texture[4].body___horizontal.loadFromFile("body horizontal(5).png");
-    snake_texture[4].body___topright.loadFromFile("body top right(5).png");
-    snake_texture[4].body___vertical.loadFromFile("body vertical(5).png");
-    snake_texture[4].head___down.loadFromFile("head bottom(5).png");
-    snake_texture[4].head___left.loadFromFile("head left(5).png");
-    snake_texture[4].head___right.loadFromFile("head right(5).png");
-    snake_texture[4].head___up.loadFromFile("head top(5).png");
-    snake_texture[4].tail___down.loadFromFile("tail bottom(5).png");
-    snake_texture[4].tail___left.loadFromFile("tail left(5).png");
-    snake_texture[4].tail___right.loadFromFile("tail right(5).png");
-    snake_texture[4].tail___up.loadFromFile("tail top(5).png");
-    snake_texture[4].body_top_left = &snake_texture[4].body___topleft;
-    snake_texture[4].body_bottom_right = &snake_texture[4].body___bottomright;
-    snake_texture[4].body_bottom_left = &snake_texture[4].body___bottomleft;
-    snake_texture[4].body_horizontal = &snake_texture[4].body___horizontal;
-    snake_texture[4].body_top_right = &snake_texture[4].body___topright;
-    snake_texture[4].body_vertical = &snake_texture[4].body___vertical;
-    snake_texture[4].head_down = &snake_texture[4].head___down;
-    snake_texture[4].head_left = &snake_texture[4].head___left;
-    snake_texture[4].head_right = &snake_texture[4].head___right;
-    snake_texture[4].head_up = &snake_texture[4].head___up;
-    snake_texture[4].tail_down = &snake_texture[4].tail___down;
-    snake_texture[4].tail_left = &snake_texture[4].tail___left;
-    snake_texture[4].tail_right = &snake_texture[4].tail___right;
-    snake_texture[4].tail_up = &snake_texture[4].tail___up;
-
-    //load the textures of the sixth snake
-    snake_texture[5].body___topleft.loadFromFile("body top left(6).png");
-    snake_texture[5].body___bottomright.loadFromFile("body bottom right(6).png");
-    snake_texture[5].body___bottomleft.loadFromFile("body bottom left(6).png");
-    snake_texture[5].body___horizontal.loadFromFile("body horizontal(6).png");
-    snake_texture[5].body___topright.loadFromFile("body top right(6).png");
-    snake_texture[5].body___vertical.loadFromFile("body vertical(6).png");
-    snake_texture[5].head___down.loadFromFile("head bottom(6).png");
-    snake_texture[5].head___left.loadFromFile("head left(6).png");
-    snake_texture[5].head___right.loadFromFile("head right(6).png");
-    snake_texture[5].head___up.loadFromFile("head top(6).png");
-    snake_texture[5].tail___down.loadFromFile("tail bottom(6).png");
-    snake_texture[5].tail___left.loadFromFile("tail left(6).png");
-    snake_texture[5].tail___right.loadFromFile("tail right(6).png");
-    snake_texture[5].tail___up.loadFromFile("tail top(6).png");
-    snake_texture[5].body_top_left = &snake_texture[5].body___topleft;
-    snake_texture[5].body_bottom_right = &snake_texture[5].body___bottomright;
-    snake_texture[5].body_bottom_left = &snake_texture[5].body___bottomleft;
-    snake_texture[5].body_horizontal = &snake_texture[5].body___horizontal;
-    snake_texture[5].body_top_right = &snake_texture[5].body___topright;
-    snake_texture[5].body_vertical = &snake_texture[5].body___vertical;
-    snake_texture[5].head_down = &snake_texture[5].head___down;
-    snake_texture[5].head_left = &snake_texture[5].head___left;
-    snake_texture[5].head_right = &snake_texture[5].head___right;
-    snake_texture[5].head_up = &snake_texture[5].head___up;
-    snake_texture[5].tail_down = &snake_texture[5].tail___down;
-    snake_texture[5].tail_left = &snake_texture[5].tail___left;
-    snake_texture[5].tail_right = &snake_texture[5].tail___right;
-    snake_texture[5].tail_up = &snake_texture[5].tail___up;
-
-    //load the textures of the seventh snake
-    snake_texture[6].body___topleft.loadFromFile("body top left(7).png");
-    snake_texture[6].body___bottomright.loadFromFile("body bottom right(7).png");
-    snake_texture[6].body___bottomleft.loadFromFile("body bottom left(7).png");
-    snake_texture[6].body___horizontal.loadFromFile("body horizontal(7).png");
-    snake_texture[6].body___topright.loadFromFile("body top right(7).png");
-    snake_texture[6].body___vertical.loadFromFile("body vertical(7).png");
-    snake_texture[6].head___down.loadFromFile("head bottom(7).png");
-    snake_texture[6].head___left.loadFromFile("head left(7).png");
-    snake_texture[6].head___right.loadFromFile("head right(7).png");
-    snake_texture[6].head___up.loadFromFile("head top(7).png");
-    snake_texture[6].tail___down.loadFromFile("tail bottom(7).png");
-    snake_texture[6].tail___left.loadFromFile("tail left(7).png");
-    snake_texture[6].tail___right.loadFromFile("tail right(7).png");
-    snake_texture[6].tail___up.loadFromFile("tail top(7).png");
-    snake_texture[6].body_top_left = &snake_texture[6].body___topleft;
-    snake_texture[6].body_bottom_right = &snake_texture[6].body___bottomright;
-    snake_texture[6].body_bottom_left = &snake_texture[6].body___bottomleft;
-    snake_texture[6].body_horizontal = &snake_texture[6].body___horizontal;
-    snake_texture[6].body_top_right = &snake_texture[6].body___topright;
-    snake_texture[6].body_vertical = &snake_texture[6].body___vertical;
-    snake_texture[6].head_down = &snake_texture[6].head___down;
-    snake_texture[6].head_left = &snake_texture[6].head___left;
-    snake_texture[6].head_right = &snake_texture[6].head___right;
-    snake_texture[6].head_up = &snake_texture[6].head___up;
-    snake_texture[6].tail_down = &snake_texture[6].tail___down;
-    snake_texture[6].tail_left = &snake_texture[6].tail___left;
-    snake_texture[6].tail_right = &snake_texture[6].tail___right;
-    snake_texture[6].tail_up = &snake_texture[6].tail___up;
-
-    //load the textures of the eighth snake
-    snake_texture[7].body___topleft.loadFromFile("body top left(8).png");
-    snake_texture[7].body___bottomright.loadFromFile("body bottom right(8).png");
-    snake_texture[7].body___bottomleft.loadFromFile("body bottom left(8).png");
-    snake_texture[7].body___horizontal.loadFromFile("body horizontal(8).png");
-    snake_texture[7].body___topright.loadFromFile("body top right(8).png");
-    snake_texture[7].body___vertical.loadFromFile("body vertical(8).png");
-    snake_texture[7].head___down.loadFromFile("head bottom(8).png");
-    snake_texture[7].head___left.loadFromFile("head left(8).png");
-    snake_texture[7].head___right.loadFromFile("head right(8).png");
-    snake_texture[7].head___up.loadFromFile("head top(8).png");
-    snake_texture[7].tail___down.loadFromFile("tail bottom(8).png");
-    snake_texture[7].tail___left.loadFromFile("tail left(8).png");
-    snake_texture[7].tail___right.loadFromFile("tail right(8).png");
-    snake_texture[7].tail___up.loadFromFile("tail top(8).png");
-    snake_texture[7].body_top_left = &snake_texture[7].body___topleft;
-    snake_texture[7].body_bottom_right = &snake_texture[7].body___bottomright;
-    snake_texture[7].body_bottom_left = &snake_texture[7].body___bottomleft;
-    snake_texture[7].body_horizontal = &snake_texture[7].body___horizontal;
-    snake_texture[7].body_top_right = &snake_texture[7].body___topright;
-    snake_texture[7].body_vertical = &snake_texture[7].body___vertical;
-    snake_texture[7].head_down = &snake_texture[7].head___down;
-    snake_texture[7].head_left = &snake_texture[7].head___left;
-    snake_texture[7].head_right = &snake_texture[7].head___right;
-    snake_texture[7].head_up = &snake_texture[7].head___up;
-    snake_texture[7].tail_down = &snake_texture[7].tail___down;
-    snake_texture[7].tail_left = &snake_texture[7].tail___left;
-    snake_texture[7].tail_right = &snake_texture[7].tail___right;
-    snake_texture[7].tail_up = &snake_texture[7].tail___up;
-
-    //load the textures of the ninth snake
-    snake_texture[8].body___topleft.loadFromFile("body(9).png");
-    snake_texture[8].body___bottomright.loadFromFile("body(9).png");
-    snake_texture[8].body___bottomleft.loadFromFile("body(9).png");
-    snake_texture[8].body___horizontal.loadFromFile("body(9).png");
-    snake_texture[8].body___topright.loadFromFile("body(9).png");
-    snake_texture[8].body___vertical.loadFromFile("body(9).png");
-    snake_texture[8].head___down.loadFromFile("head bottom(9).png");
-    snake_texture[8].head___left.loadFromFile("head left(9).png");
-    snake_texture[8].head___right.loadFromFile("head right(9).png");
-    snake_texture[8].head___up.loadFromFile("head top(9).png");
-    snake_texture[8].tail___down.loadFromFile("tail bottom(9).png");
-    snake_texture[8].tail___left.loadFromFile("tail left(9).png");
-    snake_texture[8].tail___right.loadFromFile("tail right(9).png");
-    snake_texture[8].tail___up.loadFromFile("tail top(9).png");
-    snake_texture[8].body_top_left = &snake_texture[8].body___topleft;
-    snake_texture[8].body_bottom_right = &snake_texture[8].body___bottomright;
-    snake_texture[8].body_bottom_left = &snake_texture[8].body___bottomleft;
-    snake_texture[8].body_horizontal = &snake_texture[8].body___horizontal;
-    snake_texture[8].body_top_right = &snake_texture[8].body___topright;
-    snake_texture[8].body_vertical = &snake_texture[8].body___vertical;
-    snake_texture[8].head_down = &snake_texture[8].head___down;
-    snake_texture[8].head_left = &snake_texture[8].head___left;
-    snake_texture[8].head_right = &snake_texture[8].head___right;
-    snake_texture[8].head_up = &snake_texture[8].head___up;
-    snake_texture[8].tail_down = &snake_texture[8].tail___down;
-    snake_texture[8].tail_left = &snake_texture[8].tail___left;
-    snake_texture[8].tail_right = &snake_texture[8].tail___right;
-    snake_texture[8].tail_up = &snake_texture[8].tail___up;
-
-
-    /*loading texture for the opening*/
-    textures.opening_texture.loadFromFile("opening page.png");
-    shapes.opening.setTexture(textures.opening_texture);
-    shapes.opening.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
-
-    //loading texture for the main menu
-    textures.main_menu_page_texture.loadFromFile("main menu.png");
-    shapes.main_menu_page.setTexture(textures.main_menu_page_texture);
-    shapes.main_menu_page.setScale((1300.0 / 1800), (800.0 / 1300));
-
-    //loading texture for the setting page
-    textures.setting_page_texture.loadFromFile("setting menu.png");
-    textures.setting_page_texture.setSmooth(1);
-    shapes.setting_page.setTexture(textures.setting_page_texture);
-    shapes.setting_page.setScale((1300.0 / 1800), (800.0 / 1300.0));
-
-    //loading texture for the setting music page
-    textures.setting_music_page_texture.loadFromFile("Setting music page.png");
-    shapes.setting_music_page.setTexture(textures.setting_music_page_texture);
-    shapes.setting_music_page.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
-
-    //loading texture for the exit setting music 
-    textures.exit_icon_in_setting_music_page_texture.loadFromFile("exit setting music page.png");
-    shapes.exit_icon_in_setting_music_page.setTexture(textures.exit_icon_in_setting_music_page_texture);
-    shapes.exit_icon_in_setting_music_page.setScale(0.7, 0.7);
-
-    //loading texture for the ranking page
-    textures.ranking_page_texture.loadFromFile("ranking page.png");
-    shapes.ranking_page.setTexture(textures.ranking_page_texture);
-    shapes.ranking_page.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
-
-    //loading texturer for the game over 
-    textures.game_over_texture.loadFromFile("game_over.png");
-    shapes.game_over.setTexture(textures.game_over_texture);
-    shapes.game_over.setScale(0.65, 0.65);
-
-    textures.change_snake_page_texture.loadFromFile("change snake.png");
-    shapes.change_snake_page.setTexture(textures.change_snake_page_texture);
-
-    textures.Truee.loadFromFile("true.png");
-    shapes.Tru_ee.setTexture(textures.Truee);
-
-    textures.game_mode_page_texture.loadFromFile("game mode.png");
-    shapes.game_mode_page.setTexture(textures.game_mode_page_texture);
-    shapes.game_mode_page.setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_page_texture.loadFromFile("story mode.png");
-    shapes.story_mode_page.setTexture(textures.story_mode_page_texture);
-    shapes.story_mode_page.setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.fall_game_background_texture.loadFromFile("fall game background.png");
-    shapes.fall_game_background.setTexture(textures.fall_game_background_texture);
-    shapes.fall_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.winter_game_background_texture.loadFromFile("winter game background.png");
-    shapes.winter_game_background.setTexture(textures.winter_game_background_texture);
-    shapes.winter_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.spring_game_background_texture.loadFromFile("spring game background.png");
-    shapes.spring_game_background.setTexture(textures.spring_game_background_texture);
-    shapes.spring_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.summer_game_background_texture.loadFromFile("Background.png");
-    shapes.summer_game_background.setTexture(textures.summer_game_background_texture);
-    shapes.summer_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.stoneblocktexture[0].loadFromFile("stone block.png");
-    textures.stone_block_texture[0] = &textures.stoneblocktexture[0];
-    for (int i = 0; i < 4; i++)
-        shapes.stone_block[i].setTexture(textures.stone_block_texture[0]);
-
-    textures.stoneblocktexture[1].loadFromFile("stone block 2.png");
-    textures.stone_block_texture[1] = &textures.stoneblocktexture[1];
-
-    textures.story_mode_backgrounds_textures[0].loadFromFile("Background.png");
-    shapes.story_mode_backgrounds[0].setTexture(textures.story_mode_backgrounds_textures[0]);
-    shapes.story_mode_backgrounds[0].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_backgrounds_textures[1].loadFromFile("level 2.png");
-    shapes.story_mode_backgrounds[1].setTexture(textures.story_mode_backgrounds_textures[1]);
-    shapes.story_mode_backgrounds[1].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_backgrounds_textures[2].loadFromFile("level 3.png");
-    shapes.story_mode_backgrounds[2].setTexture(textures.story_mode_backgrounds_textures[2]);
-    shapes.story_mode_backgrounds[2].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_backgrounds_textures[3].loadFromFile("level 4.png");
-    shapes.story_mode_backgrounds[3].setTexture(textures.story_mode_backgrounds_textures[3]);
-    shapes.story_mode_backgrounds[3].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_backgrounds_textures[4].loadFromFile("level 5.png");
-    shapes.story_mode_backgrounds[4].setTexture(textures.story_mode_backgrounds_textures[4]);
-    shapes.story_mode_backgrounds[4].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_backgrounds_textures[5].loadFromFile("level 6.png");
-    shapes.story_mode_backgrounds[5].setTexture(textures.story_mode_backgrounds_textures[5]);
-    shapes.story_mode_backgrounds[5].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_backgrounds_textures[6].loadFromFile("level 7.png");
-    shapes.story_mode_backgrounds[6].setTexture(textures.story_mode_backgrounds_textures[6]);
-    shapes.story_mode_backgrounds[6].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_backgrounds_textures[7].loadFromFile("level 8.png");
-    shapes.story_mode_backgrounds[7].setTexture(textures.story_mode_backgrounds_textures[7]);
-    shapes.story_mode_backgrounds[7].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_cut_scene_backgrounds_textures[0].loadFromFile("cut scene.png");
-    shapes.story_mode_cut_scene_backgrounds[0].setTexture(textures.story_mode_cut_scene_backgrounds_textures[0]);
-    shapes.story_mode_cut_scene_backgrounds[0].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_cut_scene_backgrounds_textures[1].loadFromFile("cut scene 2.png");
-    shapes.story_mode_cut_scene_backgrounds[1].setTexture(textures.story_mode_cut_scene_backgrounds_textures[1]);
-    shapes.story_mode_cut_scene_backgrounds[1].setScale((1300.0 / 3840), (800.0 / 2160));
-
-    textures.story_mode_cut_scene_backgrounds_textures[2].loadFromFile("cut scene 3.png");
-    shapes.story_mode_cut_scene_backgrounds[2].setTexture(textures.story_mode_cut_scene_backgrounds_textures[2]);
-    shapes.story_mode_cut_scene_backgrounds[2].setScale((1300.0 / 1920), (800.0 / 1080));
-
-    textures.story_mode_cut_scene_backgrounds_textures[3].loadFromFile("cut scene 4.jpg");
-    shapes.story_mode_cut_scene_backgrounds[3].setTexture(textures.story_mode_cut_scene_backgrounds_textures[3]);
-    shapes.story_mode_cut_scene_backgrounds[3].setScale((1300.0 / 1280), (800.0 / 720));
-
-    textures.story_mode_cut_scene_backgrounds_textures[4].loadFromFile("cut scene 5.png");
-    shapes.story_mode_cut_scene_backgrounds[4].setTexture(textures.story_mode_cut_scene_backgrounds_textures[4]);
-    shapes.story_mode_cut_scene_backgrounds[4].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_cut_scene_backgrounds_textures[5].loadFromFile("cut scene 6.jpg");
-    shapes.story_mode_cut_scene_backgrounds[5].setTexture(textures.story_mode_cut_scene_backgrounds_textures[5]);
-    shapes.story_mode_cut_scene_backgrounds[5].setScale((1300.0 / 1800), (800.0 / 1100));
-
-    textures.story_mode_cut_scene_backgrounds_textures[6].loadFromFile("cut scene 7.png");
-    shapes.story_mode_cut_scene_backgrounds[6].setTexture(textures.story_mode_cut_scene_backgrounds_textures[6]);
-    shapes.story_mode_cut_scene_backgrounds[6].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.story_mode_cut_scene_backgrounds_textures[7].loadFromFile("cut scene 8.png");
-    shapes.story_mode_cut_scene_backgrounds[7].setTexture(textures.story_mode_cut_scene_backgrounds_textures[7]);
-    shapes.story_mode_cut_scene_backgrounds[7].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    //textures.story_mode_backgrounds_textures[8].loadFromFile(".png");
-    //shapes.story_mode_backgrounds[8].setTexture(textures.story_mode_backgrounds_textures[8]);
-    //shapes.story_mode_backgrounds[8].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    //textures.story_mode_backgrounds_textures[9].loadFromFile(".png");
-    //shapes.story_mode_backgrounds[9].setTexture(textures.story_mode_backgrounds_textures[9]);
-    //shapes.story_mode_backgrounds[9].setScale((1300.0 / 1800), (800.0 / 1300));
-
-    textures.bombicontexture.loadFromFile("bomb1.png");
-    textures.bomb_icon_texture = &textures.bombicontexture;
-    shapes.bomb_icon[0].setTexture(textures.bomb_icon_texture);
-    shapes.bomb_icon[1].setTexture(textures.bomb_icon_texture);
-
-    textures.bombexplosiontexture.loadFromFile("explosion.png");
-    textures.bomb_explosion_texture = &textures.bombexplosiontexture;
-    shapes.bomb_explosion.setTexture(textures.bomb_explosion_texture);
-
-    textures.textboxtexture.loadFromFile("text box.png");
-    textures.text_box_texture = &textures.textboxtexture;
-    shapes.text_box.setTexture(textures.text_box_texture);
-
-    textures.witch_attacking_texture.loadFromFile("witch attack sprite sheet.png");
-
-    textures.witch_idle_texture.loadFromFile("witch idle sprite sheet.png");
-    shapes.witch.setTexture(textures.witch_idle_texture);
-
-    textures.witch_death_texture.loadFromFile("witch death sprite sheet.png");
+    //uploading the pages 
+    uploading_the_pages_and_icons(shapes,textures);
 
     window.setFramerateLimit(70);
 
@@ -1008,16 +439,19 @@ int main() {
                     shapes.text_box.setPosition(Vector2f(100, 650));
                     window.draw(shapes.text_box);
                     if (check.number_of_levels_done == 0) {
+                        the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Be careful of the rotten apple, It will decrease \n your score");
                         text_box_text.setPosition(Vector2f(200, 660));
                         window.draw(text_box_text);
                     }
                     else if (check.number_of_levels_done == 1) {
+                        the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Was that easy? Welcome to the desert now,\n your speed will be faster.");
                         text_box_text.setPosition(Vector2f(200, 660));
                         window.draw(text_box_text);
                     }
                     else if (check.number_of_levels_done == 2) {
+                        the_conversation(check, shapes);
                         if (check.number_of_monolge_being_played == 0) {
                             text_box_text.setString("The Wicked Sorceress: Well done, you cunning snake.");
                         }
@@ -1031,29 +465,34 @@ int main() {
                         window.draw(text_box_text);
                     }
                     else if (check.number_of_levels_done == 3) {
+                        the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Oh, my! You are truly skilled. Show me how \n you will overcome them now.");
                         text_box_text.setPosition(Vector2f(200, 660));
                         window.draw(text_box_text);
                     }
                     else if (check.number_of_levels_done == 4) {
+                        the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Welcome to the video games now. Remember, \n you are betting your life. The bomb kills instantly, there is no second\n option, hope you enjoy.");
                         text_box_text.setPosition(Vector2f(200, 660));
                         text_box_text.setCharacterSize(22);
                         window.draw(text_box_text);
                     }
                     else if (check.number_of_levels_done == 5) {
+                        the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: You are quite clever! What if your speed were greater?\n Would you be able to keep up with the challenge? Not only that, the number \n of bombs will increase. I believe it won't be pleasant.");
                         text_box_text.setPosition(Vector2f(200, 660));
                         text_box_text.setCharacterSize(22);
                         window.draw(text_box_text);
                     }
                     else if (check.number_of_levels_done == 6) {
+                        the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Oh, you're getting closer! Enjoy these risks \nbecause you will truly experience hell in the next level.");
                         text_box_text.setPosition(Vector2f(200, 660));
                         text_box_text.setCharacterSize(25);
                         window.draw(text_box_text);
                     }
                     else if (check.number_of_levels_done == 7) {
+                        the_conversation(check, shapes);
                         text_box_text.setString("The Wicked Sorceress: Welcome to my home! Now I can tell you that you\n have truly entered hell, and you won't be able to keep up with it at all! \nIt's either me or you who will remain alive! You will die now, without a doubt.");
                         text_box_text.setPosition(Vector2f(200, 660));
                         text_box_text.setCharacterSize(22);
@@ -1636,6 +1075,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
     if (check.did_cut_scene_start && space_button_is_pressed) {
         if ((check.number_of_levels_done != 2) && check.number_of_monolge_being_played == 0) {
             check.did_cut_scene_start = 0;
+            sizenposition();
         }
         else if (check.number_of_levels_done == 2 && check.number_of_monolge_being_played == 2) {
             check.did_cut_scene_start = 0;
@@ -2148,7 +1588,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 if (check.did_snake_hit_bomb == 0) {
                     window.draw(shapes.bomb_icon[0]);
                     window.draw(shapes.bomb_icon[1]);
-                shapes.witch.setPosition(1040, 330);
+                    shapes.witch.setPosition(1040, 330);
                 }
 
             }
@@ -2174,7 +1614,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 window.draw(shapes.bomb_icon[0]);
                 window.draw(shapes.bomb_icon[1]);
             }
-            if (check.number_of_idle_moves_of_the_witch %3!=2) {
+            if (check.number_of_idle_moves_of_the_witch % 3 != 2) {
                 shapes.witch.setTexture(textures.witch_idle_texture);
                 if (witch_counter > 12 * 8) {
                     witch_counter = 0;
@@ -2187,11 +1627,11 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 shapes.witch.setTexture(textures.witch_death_texture);
                 if (witch_counter > 10 * 8) {
                     witch_counter = 0;
-                    if (check.number_of_idle_moves_of_the_witch<3)
-                    shapes.witch.setPosition(160, 330);
-                    else if (check.number_of_idle_moves_of_the_witch<6)
+                    if (check.number_of_idle_moves_of_the_witch < 3)
+                        shapes.witch.setPosition(160, 330);
+                    else if (check.number_of_idle_moves_of_the_witch < 6)
                         shapes.witch.setPosition(550, 330);
-                    else if(check.number_of_idle_moves_of_the_witch<9)
+                    else if (check.number_of_idle_moves_of_the_witch < 9)
                         shapes.witch.setPosition(550, 630);
                     else if (check.number_of_idle_moves_of_the_witch)
                         shapes.witch.setPosition(550, 430);
@@ -2275,6 +1715,53 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
     window.display();
 
 }
+
+
+
+
+void the_conversation(Check &check, shape &shapes)
+{
+    if (check.the_witch_sprite_reach_its_end)
+    {
+        if (witch_counter % 8 == 0)
+            shapes.witch_for_conversation.setTextureRect(IntRect(85 * witch_counter / 8, 0, 85, 56));
+        shapes.witch_for_conversation.setPosition(1000, 330);
+        shapes.witch_for_conversation.setScale(3, 3);
+        window.draw(shapes.witch_for_conversation);
+        witch_counter--;
+    }
+    else
+    {
+        if (witch_counter % 8 == 0)
+            shapes.witch_for_conversation.setTextureRect(IntRect(85 * witch_counter / 8, 0, 85, 56));
+        shapes.witch_for_conversation.setPosition(1000, 330);
+        shapes.witch_for_conversation.setScale(3, 3);
+        window.draw(shapes.witch_for_conversation);
+        witch_counter++;
+    }
+    if (witch_counter > 12 * 8)
+    {
+        check.the_witch_sprite_reach_its_end = 1;
+    }
+    else if (witch_counter < 0)
+    {
+        check.the_witch_sprite_reach_its_end = 0;
+    }
+    snake[0].setTexture(snake_texture[check.number_of_snake_being_used].head_right);
+    snake[0].setPosition(250, 450);
+    window.draw(snake[0]);
+    snake[1].setTexture(snake_texture[check.number_of_snake_being_used].body_horizontal);
+    snake[1].setPosition(220, 450);
+    window.draw(snake[1]);
+    snake[2].setTexture(snake_texture[check.number_of_snake_being_used].tail_left);
+    snake[2].setPosition(190, 450);
+    window.draw(snake[2]);
+
+    shapes.The_arrow.setPosition(100,70);
+    window.draw(shapes.The_arrow);
+}
+
+
 
 void set_texture(int number_of_eaten_apples, Check check, shapetextures& textures) {
 
@@ -2614,7 +2101,7 @@ void randapple(shape& shapes, Check& check, int number_of_eaten_apples) {
             }
         }
     }
-    else if (check.number_of_levels_done == 3||check.number_of_levels_done==7) {
+    else if (check.number_of_levels_done == 3 || check.number_of_levels_done == 7) {
         for (int j = 0; j < 4; j++) {
             if (shapes.apple_icon.getGlobalBounds().intersects(shapes.stone_block[j].getGlobalBounds())) {
                 shapes.apple_icon.setPosition(Vector2f(rand() % ((int)(1005 * screen_factor_x) - (int)snake_size_and_speed) +
@@ -3056,4 +2543,669 @@ void draw_change_color(shape& shapes, Check& check)
     }
     window.draw(shapes.Tru_ee);
     window.display();
+}
+
+void uploading_snake_textures()
+{
+    //load the textures of the first snake
+    snake_texture[0].body___topleft.loadFromFile("body top left(1).png");
+    snake_texture[0].body_top_left = &snake_texture[0].body___topleft;
+    snake_texture[0].body___bottomright.loadFromFile("body bottom right(1).png");
+    snake_texture[0].body_bottom_right = &snake_texture[0].body___bottomright;
+    snake_texture[0].body___bottomleft.loadFromFile("body bottom left(1).png");
+    snake_texture[0].body_bottom_left = &snake_texture[0].body___bottomleft;
+    snake_texture[0].body___horizontal.loadFromFile("body horizontal(1).png");
+    snake_texture[0].body_horizontal = &snake_texture[0].body___horizontal;
+    snake_texture[0].body___topright.loadFromFile("body top right(1).png");
+    snake_texture[0].body_top_right = &snake_texture[0].body___topright;
+    snake_texture[0].body___vertical.loadFromFile("body vertical(1).png");
+    snake_texture[0].body_vertical = &snake_texture[0].body___vertical;
+    snake_texture[0].head___down.loadFromFile("head bottom(1).png");
+    snake_texture[0].head_down = &snake_texture[0].head___down;
+    snake_texture[0].head___left.loadFromFile("head left(1).png");
+    snake_texture[0].head_left = &snake_texture[0].head___left;
+    snake_texture[0].head___right.loadFromFile("head right(1).png");
+    snake_texture[0].head_right = &snake_texture[0].head___right;
+    snake_texture[0].head___up.loadFromFile("head top(1).png");
+    snake_texture[0].head_up = &snake_texture[0].head___up;
+    snake_texture[0].tail___down.loadFromFile("tail bottom(1).png");
+    snake_texture[0].tail_down = &snake_texture[0].tail___down;
+    snake_texture[0].tail___left.loadFromFile("tail left(1).png");
+    snake_texture[0].tail_left = &snake_texture[0].tail___left;
+    snake_texture[0].tail___right.loadFromFile("tail right(1).png");
+    snake_texture[0].tail_right = &snake_texture[0].tail___right;
+    snake_texture[0].tail___up.loadFromFile("tail top(1).png");
+    snake_texture[0].tail_up = &snake_texture[0].tail___up;
+    snake_texture[0].body___bottom_tail_left.loadFromFile("body bottom tail left(1).png");
+    snake_texture[0].body_bottom_tail_left = &snake_texture[0].body___bottom_tail_left;
+    snake_texture[0].body___bottom_tail_right.loadFromFile("body bottom tail right(1).png");
+    snake_texture[0].body_bottom_tail_right = &snake_texture[0].body___bottom_tail_right;
+    snake_texture[0].body___right_tail_top.loadFromFile("body right tail top(1).png");
+    snake_texture[0].body_right_tail_top = &snake_texture[0].body___right_tail_top;
+    snake_texture[0].body___right_tail_bottom.loadFromFile("body right tail bottom(1).png");
+    snake_texture[0].body_right_tail_bottom = &snake_texture[0].body___right_tail_bottom;
+    snake_texture[0].body___top_tail_right.loadFromFile("body top tail right(1).png");
+    snake_texture[0].body_top_tail_right = &snake_texture[0].body___top_tail_right;
+    snake_texture[0].body___top_tail_left.loadFromFile("body top tail left(1).png");
+    snake_texture[0].body_top_tail_left = &snake_texture[0].body___top_tail_left;
+    snake_texture[0].body___left_tail_top.loadFromFile("body left tail top(1).png");
+    snake_texture[0].body_left_tail_top = &snake_texture[0].body___left_tail_top;
+    snake_texture[0].body___left_tail_bottom.loadFromFile("body left tail bottom(1).png");
+    snake_texture[0].body_left_tail_bottom = &snake_texture[0].body___left_tail_bottom;
+    //load the textures of the second snake
+    snake_texture[1].body___topleft.loadFromFile("body top left(2).png");
+    snake_texture[1].body_top_left = &snake_texture[1].body___topleft;
+    snake_texture[1].body___bottomright.loadFromFile("body bottom right(2).png");
+    snake_texture[1].body_bottom_right = &snake_texture[1].body___bottomright;
+    snake_texture[1].body___bottomleft.loadFromFile("body bottom left(2).png");
+    snake_texture[1].body_bottom_left = &snake_texture[1].body___bottomleft;
+    snake_texture[1].body___horizontal.loadFromFile("body horizontal(2).png");
+    snake_texture[1].body_horizontal = &snake_texture[1].body___horizontal;
+    snake_texture[1].body___topright.loadFromFile("body top right(2).png");
+    snake_texture[1].body_top_right = &snake_texture[1].body___topright;
+    snake_texture[1].body___vertical.loadFromFile("body vertical(2).png");
+    snake_texture[1].body_vertical = &snake_texture[1].body___vertical;
+    snake_texture[1].head___down.loadFromFile("head bottom(2).png");
+    snake_texture[1].head_down = &snake_texture[1].head___down;
+    snake_texture[1].head___left.loadFromFile("head left(2).png");
+    snake_texture[1].head_left = &snake_texture[1].head___left;
+    snake_texture[1].head___right.loadFromFile("head right(2).png");
+    snake_texture[1].head_right = &snake_texture[1].head___right;
+    snake_texture[1].head___up.loadFromFile("head top(2).png");
+    snake_texture[1].head_up = &snake_texture[1].head___up;
+    snake_texture[1].tail___down.loadFromFile("tail bottom(2).png");
+    snake_texture[1].tail_down = &snake_texture[1].tail___down;
+    snake_texture[1].tail___left.loadFromFile("tail left(2).png");
+    snake_texture[1].tail_left = &snake_texture[1].tail___left;
+    snake_texture[1].tail___right.loadFromFile("tail right(2).png");
+    snake_texture[1].tail_right = &snake_texture[1].tail___right;
+    snake_texture[1].tail___up.loadFromFile("tail top(2).png");
+    snake_texture[1].tail_up = &snake_texture[1].tail___up;
+    snake_texture[1].body___bottom_tail_left.loadFromFile("body bottom tail left(2).png");
+    snake_texture[1].body_bottom_tail_left = &snake_texture[1].body___bottom_tail_left;
+    snake_texture[1].body___bottom_tail_right.loadFromFile("body bottom tail right(2).png");
+    snake_texture[1].body_bottom_tail_right = &snake_texture[1].body___bottom_tail_right;
+    snake_texture[1].body___right_tail_top.loadFromFile("body right tail top(2).png");
+    snake_texture[1].body_right_tail_top = &snake_texture[1].body___right_tail_top;
+    snake_texture[1].body___right_tail_bottom.loadFromFile("body right tail bottom(2).png");
+    snake_texture[1].body_right_tail_bottom = &snake_texture[1].body___right_tail_bottom;
+    snake_texture[1].body___top_tail_right.loadFromFile("body top tail right(2).png");
+    snake_texture[1].body_top_tail_right = &snake_texture[1].body___top_tail_right;
+    snake_texture[1].body___top_tail_left.loadFromFile("body top tail left(2).png");
+    snake_texture[1].body_top_tail_left = &snake_texture[1].body___top_tail_left;
+    snake_texture[1].body___left_tail_top.loadFromFile("body left tail top(2).png");
+    snake_texture[1].body_left_tail_top = &snake_texture[1].body___left_tail_top;
+    snake_texture[1].body___left_tail_bottom.loadFromFile("body left tail bottom(2).png");
+    snake_texture[1].body_left_tail_bottom = &snake_texture[1].body___left_tail_bottom;
+    //load the textures of the third snake
+    snake_texture[2].body___topleft.loadFromFile("body top left(3).png");
+    snake_texture[2].body_top_left = &snake_texture[2].body___topleft;
+    snake_texture[2].body___bottomright.loadFromFile("body bottom right(3).png");
+    snake_texture[2].body_bottom_left = &snake_texture[2].body___bottomleft;
+    snake_texture[2].body___bottomleft.loadFromFile("body bottom left(3).png");
+    snake_texture[2].body_horizontal = &snake_texture[2].body___horizontal;
+    snake_texture[2].body___horizontal.loadFromFile("body horizontal(3).png");
+    snake_texture[2].body_top_right = &snake_texture[2].body___topright;
+    snake_texture[2].body___topright.loadFromFile("body top right(3).png");
+    snake_texture[2].body_vertical = &snake_texture[2].body___vertical;
+    snake_texture[2].body___vertical.loadFromFile("body vertical(3).png");
+    snake_texture[2].head_down = &snake_texture[2].head___down;
+    snake_texture[2].head___down.loadFromFile("head bottom(3).png");
+    snake_texture[2].head_left = &snake_texture[2].head___left;
+    snake_texture[2].head___left.loadFromFile("head left(3).png");
+    snake_texture[2].head_right = &snake_texture[2].head___right;
+    snake_texture[2].head___right.loadFromFile("head right(3).png");
+    snake_texture[2].head_up = &snake_texture[2].head___up;
+    snake_texture[2].head___up.loadFromFile("head top(3).png");
+    snake_texture[2].tail_down = &snake_texture[2].tail___down;
+    snake_texture[2].tail___down.loadFromFile("tail bottom(3).png");
+    snake_texture[2].tail_left = &snake_texture[2].tail___left;
+    snake_texture[2].tail___left.loadFromFile("tail left(3).png");
+    snake_texture[2].tail_right = &snake_texture[2].tail___right;
+    snake_texture[2].tail___right.loadFromFile("tail right(3).png");
+    snake_texture[2].tail_up = &snake_texture[2].tail___up;
+    snake_texture[2].tail___up.loadFromFile("tail top(3).png");
+    snake_texture[2].body___bottom_tail_left.loadFromFile("body bottom tail left(3).png");
+    snake_texture[2].body_bottom_tail_left = &snake_texture[2].body___bottom_tail_left;
+    snake_texture[2].body___bottom_tail_right.loadFromFile("body bottom tail right(3).png");
+    snake_texture[2].body_bottom_tail_right = &snake_texture[2].body___bottom_tail_right;
+    snake_texture[2].body___right_tail_top.loadFromFile("body right tail top(3).png");
+    snake_texture[2].body_right_tail_top = &snake_texture[2].body___right_tail_top;
+    snake_texture[2].body___right_tail_bottom.loadFromFile("body right tail bottom(3).png");
+    snake_texture[2].body_right_tail_bottom = &snake_texture[2].body___right_tail_bottom;
+    snake_texture[2].body___top_tail_right.loadFromFile("body top tail right(3).png");
+    snake_texture[2].body_top_tail_right = &snake_texture[2].body___top_tail_right;
+    snake_texture[2].body___top_tail_left.loadFromFile("body top tail left(3).png");
+    snake_texture[2].body_top_tail_left = &snake_texture[2].body___top_tail_left;
+    snake_texture[2].body___left_tail_top.loadFromFile("body left tail top(3).png");
+    snake_texture[2].body_left_tail_top = &snake_texture[2].body___left_tail_top;
+    snake_texture[2].body___left_tail_bottom.loadFromFile("body left tail bottom(3).png");
+    snake_texture[2].body_left_tail_bottom = &snake_texture[2].body___left_tail_bottom;
+    //load the textures of the fourth snake
+    snake_texture[3].body___topleft.loadFromFile("body top left(4).png");
+    snake_texture[3].body_top_left = &snake_texture[3].body___topleft;
+    snake_texture[3].body___bottomright.loadFromFile("body bottom right(4).png");
+    snake_texture[3].body_bottom_right = &snake_texture[3].body___bottomright;
+    snake_texture[3].body___bottomleft.loadFromFile("body bottom left(4).png");
+    snake_texture[3].body_bottom_left = &snake_texture[3].body___bottomleft;
+    snake_texture[3].body___horizontal.loadFromFile("body horizontal(4).png");
+    snake_texture[3].body_horizontal = &snake_texture[3].body___horizontal;
+    snake_texture[3].body___topright.loadFromFile("body top right(4).png");
+    snake_texture[3].body_top_right = &snake_texture[3].body___topright;
+    snake_texture[3].body___vertical.loadFromFile("body vertical(4).png");
+    snake_texture[3].body_vertical = &snake_texture[3].body___vertical;
+    snake_texture[3].head___down.loadFromFile("head bottom(4).png");
+    snake_texture[3].head_down = &snake_texture[3].head___down;
+    snake_texture[3].head___left.loadFromFile("head left(4).png");
+    snake_texture[3].head_left = &snake_texture[3].head___left;
+    snake_texture[3].head___right.loadFromFile("head right(4).png");
+    snake_texture[3].head_right = &snake_texture[3].head___right;
+    snake_texture[3].head___up.loadFromFile("head top(4).png");
+    snake_texture[3].head_up = &snake_texture[3].head___up;
+    snake_texture[3].tail___down.loadFromFile("tail bottom(4).png");
+    snake_texture[3].tail_down = &snake_texture[3].tail___down;
+    snake_texture[3].tail___left.loadFromFile("tail left(4).png");
+    snake_texture[3].tail_left = &snake_texture[3].tail___left;
+    snake_texture[3].tail___right.loadFromFile("tail right(4).png");
+    snake_texture[3].tail_right = &snake_texture[3].tail___right;
+    snake_texture[3].tail___up.loadFromFile("tail top(4).png");
+    snake_texture[3].tail_up = &snake_texture[3].tail___up;
+    snake_texture[3].body___bottom_tail_left.loadFromFile("body bottom tail left(4).png");
+    snake_texture[3].body_bottom_tail_left = &snake_texture[3].body___bottom_tail_left;
+    snake_texture[3].body___bottom_tail_right.loadFromFile("body bottom tail right(4).png");
+    snake_texture[3].body_bottom_tail_right = &snake_texture[3].body___bottom_tail_right;
+    snake_texture[3].body___right_tail_top.loadFromFile("body right tail top(4).png");
+    snake_texture[3].body_right_tail_top = &snake_texture[3].body___right_tail_top;
+    snake_texture[3].body___right_tail_bottom.loadFromFile("body right tail bottom(4).png");
+    snake_texture[3].body_right_tail_bottom = &snake_texture[3].body___right_tail_bottom;
+    snake_texture[3].body___top_tail_right.loadFromFile("body top tail right(4).png");
+    snake_texture[3].body_top_tail_right = &snake_texture[3].body___top_tail_right;
+    snake_texture[3].body___top_tail_left.loadFromFile("body top tail left(4).png");
+    snake_texture[3].body_top_tail_left = &snake_texture[3].body___top_tail_left;
+    snake_texture[3].body___left_tail_top.loadFromFile("body left tail top(4).png");
+    snake_texture[3].body_left_tail_top = &snake_texture[3].body___left_tail_top;
+    snake_texture[3].body___left_tail_bottom.loadFromFile("body left tail bottom(4).png");
+    snake_texture[3].body_left_tail_bottom = &snake_texture[3].body___left_tail_bottom;
+    //load the textures of the fifth snake
+    snake_texture[4].body___topleft.loadFromFile("body top left(5).png");
+    snake_texture[4].body_top_left = &snake_texture[4].body___topleft;
+    snake_texture[4].body___bottomright.loadFromFile("body bottom right(5).png");
+    snake_texture[4].body_bottom_right = &snake_texture[4].body___bottomright;
+    snake_texture[4].body___bottomleft.loadFromFile("body bottom left(5).png");
+    snake_texture[4].body_bottom_left = &snake_texture[4].body___bottomleft;
+    snake_texture[4].body___horizontal.loadFromFile("body horizontal(5).png");
+    snake_texture[4].body_horizontal = &snake_texture[4].body___horizontal;
+    snake_texture[4].body___topright.loadFromFile("body top right(5).png");
+    snake_texture[4].body_top_right = &snake_texture[4].body___topright;
+    snake_texture[4].body___vertical.loadFromFile("body vertical(5).png");
+    snake_texture[4].body_vertical = &snake_texture[4].body___vertical;
+    snake_texture[4].head___down.loadFromFile("head bottom(5).png");
+    snake_texture[4].head_down = &snake_texture[4].head___down;
+    snake_texture[4].head___left.loadFromFile("head left(5).png");
+    snake_texture[4].head_left = &snake_texture[4].head___left;
+    snake_texture[4].head___right.loadFromFile("head right(5).png");
+    snake_texture[4].head_right = &snake_texture[4].head___right;
+    snake_texture[4].head___up.loadFromFile("head top(5).png");
+    snake_texture[4].head_up = &snake_texture[4].head___up;
+    snake_texture[4].tail___down.loadFromFile("tail bottom(5).png");
+    snake_texture[4].tail_down = &snake_texture[4].tail___down;
+    snake_texture[4].tail___left.loadFromFile("tail left(5).png");
+    snake_texture[4].tail_left = &snake_texture[4].tail___left;
+    snake_texture[4].tail___right.loadFromFile("tail right(5).png");
+    snake_texture[4].tail_right = &snake_texture[4].tail___right;
+    snake_texture[4].tail___up.loadFromFile("tail top(5).png");
+    snake_texture[4].tail_up = &snake_texture[4].tail___up;
+    snake_texture[4].body___bottom_tail_left.loadFromFile("tail top(5).png");
+    snake_texture[4].body_bottom_tail_left = &snake_texture[4].body___bottom_tail_left;
+    snake_texture[4].body___bottom_tail_right.loadFromFile("tail top(5).png");
+    snake_texture[4].body_bottom_tail_right = &snake_texture[4].body___bottom_tail_right;
+    snake_texture[4].body___right_tail_top.loadFromFile("tail left(5).png");
+    snake_texture[4].body_right_tail_top = &snake_texture[4].body___right_tail_top;
+    snake_texture[4].body___right_tail_bottom.loadFromFile("tail left(5).png");
+    snake_texture[4].body_right_tail_bottom = &snake_texture[4].body___right_tail_bottom;
+    snake_texture[4].body___top_tail_right.loadFromFile("tail bottom(5).png");
+    snake_texture[4].body_top_tail_right = &snake_texture[4].body___top_tail_right;
+    snake_texture[4].body___top_tail_left.loadFromFile("tail bottom(5).png");
+    snake_texture[4].body_top_tail_left = &snake_texture[4].body___top_tail_left;
+    snake_texture[4].body___left_tail_top.loadFromFile("tail right(5).png");
+    snake_texture[4].body_left_tail_top = &snake_texture[4].body___left_tail_top;
+    snake_texture[4].body___left_tail_bottom.loadFromFile("tail right(5).png");
+    snake_texture[4].body_left_tail_bottom = &snake_texture[4].body___left_tail_bottom;
+    //load the textures of the sixth snake
+    snake_texture[5].body___topleft.loadFromFile("body top left(6).png");
+    snake_texture[5].body_top_left = &snake_texture[5].body___topleft;
+    snake_texture[5].body___bottomright.loadFromFile("body bottom right(6).png");
+    snake_texture[5].body_bottom_right = &snake_texture[5].body___bottomright;
+    snake_texture[5].body___bottomleft.loadFromFile("body bottom left(6).png");
+    snake_texture[5].body_bottom_left = &snake_texture[5].body___bottomleft;
+    snake_texture[5].body___horizontal.loadFromFile("body horizontal(6).png");
+    snake_texture[5].body_horizontal = &snake_texture[5].body___horizontal;
+    snake_texture[5].body___topright.loadFromFile("body top right(6).png");
+    snake_texture[5].body_top_right = &snake_texture[5].body___topright;
+    snake_texture[5].body___vertical.loadFromFile("body vertical(6).png");
+    snake_texture[5].body_vertical = &snake_texture[5].body___vertical;
+    snake_texture[5].head___down.loadFromFile("head bottom(6).png");
+    snake_texture[5].head_down = &snake_texture[5].head___down;
+    snake_texture[5].head___left.loadFromFile("head left(6).png");
+    snake_texture[5].head_left = &snake_texture[5].head___left;
+    snake_texture[5].head___right.loadFromFile("head right(6).png");
+    snake_texture[5].head_right = &snake_texture[5].head___right;
+    snake_texture[5].head___up.loadFromFile("head top(6).png");
+    snake_texture[5].head_up = &snake_texture[5].head___up;
+    snake_texture[5].tail___down.loadFromFile("tail bottom(6).png");
+    snake_texture[5].tail_down = &snake_texture[5].tail___down;
+    snake_texture[5].tail___left.loadFromFile("tail left(6).png");
+    snake_texture[5].tail_left = &snake_texture[5].tail___left;
+    snake_texture[5].tail___right.loadFromFile("tail right(6).png");
+    snake_texture[5].tail_right = &snake_texture[5].tail___right;
+    snake_texture[5].tail___up.loadFromFile("tail top(6).png");
+    snake_texture[5].tail_up = &snake_texture[5].tail___up;
+    snake_texture[5].body___bottom_tail_left.loadFromFile("body bottom tail left(6).png");
+    snake_texture[5].body_bottom_tail_left = &snake_texture[5].body___bottom_tail_left;
+    snake_texture[5].body___bottom_tail_right.loadFromFile("body bottom tail right(6).png");
+    snake_texture[5].body_bottom_tail_right = &snake_texture[5].body___bottom_tail_right;
+    snake_texture[5].body___right_tail_top.loadFromFile("body right tail top(6).png");
+    snake_texture[5].body_right_tail_top = &snake_texture[5].body___right_tail_top;
+    snake_texture[5].body___right_tail_bottom.loadFromFile("body right tail bottom(6).png");
+    snake_texture[5].body_right_tail_bottom = &snake_texture[5].body___right_tail_bottom;
+    snake_texture[5].body___top_tail_right.loadFromFile("body top tail right(6).png");
+    snake_texture[5].body_top_tail_right = &snake_texture[5].body___top_tail_right;
+    snake_texture[5].body___top_tail_left.loadFromFile("body top tail left(6).png");
+    snake_texture[5].body_top_tail_left = &snake_texture[5].body___top_tail_left;
+    snake_texture[5].body___left_tail_top.loadFromFile("body left tail top(6).png");
+    snake_texture[5].body_left_tail_top = &snake_texture[5].body___left_tail_top;
+    snake_texture[5].body___left_tail_bottom.loadFromFile("body left tail bottom(6).png");
+    snake_texture[5].body_left_tail_bottom = &snake_texture[5].body___left_tail_bottom;
+    //load the textures of the seventh snake
+    snake_texture[6].body___topleft.loadFromFile("body top left(7).png");
+    snake_texture[6].body_top_left = &snake_texture[6].body___topleft;
+    snake_texture[6].body___bottomright.loadFromFile("body bottom right(7).png");
+    snake_texture[6].body_bottom_right = &snake_texture[6].body___bottomright;
+    snake_texture[6].body___bottomleft.loadFromFile("body bottom left(7).png");
+    snake_texture[6].body_bottom_left = &snake_texture[6].body___bottomleft;
+    snake_texture[6].body___horizontal.loadFromFile("body horizontal(7).png");
+    snake_texture[6].body_horizontal = &snake_texture[6].body___horizontal;
+    snake_texture[6].body___topright.loadFromFile("body top right(7).png");
+    snake_texture[6].body_top_right = &snake_texture[6].body___topright;
+    snake_texture[6].body___vertical.loadFromFile("body vertical(7).png");
+    snake_texture[6].body_vertical = &snake_texture[6].body___vertical;
+    snake_texture[6].head___down.loadFromFile("head bottom(7).png");
+    snake_texture[6].head_down = &snake_texture[6].head___down;
+    snake_texture[6].head___left.loadFromFile("head left(7).png");
+    snake_texture[6].head_left = &snake_texture[6].head___left;
+    snake_texture[6].head___right.loadFromFile("head right(7).png");
+    snake_texture[6].head_right = &snake_texture[6].head___right;
+    snake_texture[6].head___up.loadFromFile("head top(7).png");
+    snake_texture[6].head_up = &snake_texture[6].head___up;
+    snake_texture[6].tail___down.loadFromFile("tail bottom(7).png");
+    snake_texture[6].tail_down = &snake_texture[6].tail___down;
+    snake_texture[6].tail___left.loadFromFile("tail left(7).png");
+    snake_texture[6].tail_left = &snake_texture[6].tail___left;
+    snake_texture[6].tail___right.loadFromFile("tail right(7).png");
+    snake_texture[6].tail_right = &snake_texture[6].tail___right;
+    snake_texture[6].tail___up.loadFromFile("tail top(7).png");
+    snake_texture[6].tail_up = &snake_texture[6].tail___up;
+    snake_texture[6].body___bottom_tail_left.loadFromFile("tail top(7).png");
+    snake_texture[6].body_bottom_tail_left = &snake_texture[6].body___bottom_tail_left;
+    snake_texture[6].body___bottom_tail_right.loadFromFile("tail top(7).png");
+    snake_texture[6].body_bottom_tail_right = &snake_texture[6].body___bottom_tail_right;
+    snake_texture[6].body___right_tail_top.loadFromFile("tail left(7).png");
+    snake_texture[6].body_right_tail_top = &snake_texture[6].body___right_tail_top;
+    snake_texture[6].body___right_tail_bottom.loadFromFile("tail left(7).png");
+    snake_texture[6].body_right_tail_bottom = &snake_texture[6].body___right_tail_bottom;
+    snake_texture[6].body___top_tail_right.loadFromFile("tail bottom(7).png");
+    snake_texture[6].body_top_tail_right = &snake_texture[6].body___top_tail_right;
+    snake_texture[6].body___top_tail_left.loadFromFile("tail bottom(7).png");
+    snake_texture[6].body_top_tail_left = &snake_texture[6].body___top_tail_left;
+    snake_texture[6].body___left_tail_top.loadFromFile("tail right(7).png");
+    snake_texture[6].body_left_tail_top = &snake_texture[6].body___left_tail_top;
+    snake_texture[6].body___left_tail_bottom.loadFromFile("tail right(7).png");
+    snake_texture[6].body_left_tail_bottom = &snake_texture[6].body___left_tail_bottom;
+    //load the textures of the eighth snake
+    snake_texture[7].body___topleft.loadFromFile("body top left(8).png");
+    snake_texture[7].body_top_left = &snake_texture[7].body___topleft;
+    snake_texture[7].body___bottomright.loadFromFile("body bottom right(8).png");
+    snake_texture[7].body_bottom_right = &snake_texture[7].body___bottomright;
+    snake_texture[7].body___bottomleft.loadFromFile("body bottom left(8).png");
+    snake_texture[7].body_bottom_left = &snake_texture[7].body___bottomleft;
+    snake_texture[7].body___horizontal.loadFromFile("body horizontal(8).png");
+    snake_texture[7].body_horizontal = &snake_texture[7].body___horizontal;
+    snake_texture[7].body___topright.loadFromFile("body top right(8).png");
+    snake_texture[7].body_top_right = &snake_texture[7].body___topright;
+    snake_texture[7].body___vertical.loadFromFile("body vertical(8).png");
+    snake_texture[7].body_vertical = &snake_texture[7].body___vertical;
+    snake_texture[7].head___down.loadFromFile("head bottom(8).png");
+    snake_texture[7].head_down = &snake_texture[7].head___down;
+    snake_texture[7].head___left.loadFromFile("head left(8).png");
+    snake_texture[7].head_left = &snake_texture[7].head___left;
+    snake_texture[7].head___right.loadFromFile("head right(8).png");
+    snake_texture[7].head_right = &snake_texture[7].head___right;
+    snake_texture[7].head___up.loadFromFile("head top(8).png");
+    snake_texture[7].head_up = &snake_texture[7].head___up;
+    snake_texture[7].tail___down.loadFromFile("tail bottom(8).png");
+    snake_texture[7].tail_down = &snake_texture[7].tail___down;
+    snake_texture[7].tail___left.loadFromFile("tail left(8).png");
+    snake_texture[7].tail_left = &snake_texture[7].tail___left;
+    snake_texture[7].tail___right.loadFromFile("tail right(8).png");
+    snake_texture[7].tail_right = &snake_texture[7].tail___right;
+    snake_texture[7].tail___up.loadFromFile("tail top(8).png");
+    snake_texture[7].tail_up = &snake_texture[7].tail___up;
+    snake_texture[7].body___bottom_tail_left.loadFromFile("body bottom tail left(8).png");
+    snake_texture[7].body_bottom_tail_left = &snake_texture[7].body___bottom_tail_left;
+    snake_texture[7].body___bottom_tail_right.loadFromFile("body bottom tail right(8).png");
+    snake_texture[7].body_bottom_tail_right = &snake_texture[7].body___bottom_tail_right;
+    snake_texture[7].body___right_tail_top.loadFromFile("body right tail top(8).png");
+    snake_texture[7].body_right_tail_top = &snake_texture[7].body___right_tail_top;
+    snake_texture[7].body___right_tail_bottom.loadFromFile("body right tail bottom(8).png");
+    snake_texture[7].body_right_tail_bottom = &snake_texture[7].body___right_tail_bottom;
+    snake_texture[7].body___top_tail_right.loadFromFile("body top tail right(8).png");
+    snake_texture[7].body_top_tail_right = &snake_texture[7].body___top_tail_right;
+    snake_texture[7].body___top_tail_left.loadFromFile("body top tail left(8).png");
+    snake_texture[7].body_top_tail_left = &snake_texture[7].body___top_tail_left;
+    snake_texture[7].body___left_tail_top.loadFromFile("body left tail top(8).png");
+    snake_texture[7].body_left_tail_top = &snake_texture[7].body___left_tail_top;
+    snake_texture[7].body___left_tail_bottom.loadFromFile("body left tail bottom(8).png");
+    snake_texture[7].body_left_tail_bottom = &snake_texture[7].body___left_tail_bottom;
+    //load the textures of the ninth snake
+    snake_texture[8].body___topleft.loadFromFile("body(9).png");
+    snake_texture[8].body_top_left = &snake_texture[8].body___topleft;
+    snake_texture[8].body___bottomright.loadFromFile("body(9).png");
+    snake_texture[8].body_bottom_right = &snake_texture[8].body___bottomright;
+    snake_texture[8].body___bottomleft.loadFromFile("body(9).png");
+    snake_texture[8].body_bottom_left = &snake_texture[8].body___bottomleft;
+    snake_texture[8].body___horizontal.loadFromFile("body(9).png");
+    snake_texture[8].body_horizontal = &snake_texture[8].body___horizontal;
+    snake_texture[8].body___topright.loadFromFile("body(9).png");
+    snake_texture[8].body_top_right = &snake_texture[8].body___topright;
+    snake_texture[8].body___vertical.loadFromFile("body(9).png");
+    snake_texture[8].body_vertical = &snake_texture[8].body___vertical;
+    snake_texture[8].head___down.loadFromFile("head bottom(9).png");
+    snake_texture[8].head_down = &snake_texture[8].head___down;
+    snake_texture[8].head___left.loadFromFile("head left(9).png");
+    snake_texture[8].head_left = &snake_texture[8].head___left;
+    snake_texture[8].head___right.loadFromFile("head right(9).png");
+    snake_texture[8].head_right = &snake_texture[8].head___right;
+    snake_texture[8].head___up.loadFromFile("head top(9).png");
+    snake_texture[8].head_up = &snake_texture[8].head___up;
+    snake_texture[8].tail___down.loadFromFile("body(9).png");
+    snake_texture[8].tail_down = &snake_texture[8].tail___down;
+    snake_texture[8].tail___left.loadFromFile("body(9).png");
+    snake_texture[8].tail_left = &snake_texture[8].tail___left;
+    snake_texture[8].tail___right.loadFromFile("body(9).png");
+    snake_texture[8].tail_right = &snake_texture[8].tail___right;
+    snake_texture[8].tail___up.loadFromFile("body(9).png");
+    snake_texture[8].tail_up = &snake_texture[8].tail___up;
+    snake_texture[8].body___bottom_tail_left.loadFromFile("body(9).png");
+    snake_texture[8].body_bottom_tail_left = &snake_texture[8].body___bottom_tail_left;
+    snake_texture[8].body___bottom_tail_right.loadFromFile("body(9).png");
+    snake_texture[8].body_bottom_tail_right = &snake_texture[8].body___bottom_tail_right;
+    snake_texture[8].body___right_tail_top.loadFromFile("body(9).png");
+    snake_texture[8].body_right_tail_top = &snake_texture[8].body___right_tail_top;
+    snake_texture[8].body___right_tail_bottom.loadFromFile("body(9).png");
+    snake_texture[8].body_right_tail_bottom = &snake_texture[8].body___right_tail_bottom;
+    snake_texture[8].body___top_tail_right.loadFromFile("body(9).png");
+    snake_texture[8].body_top_tail_right = &snake_texture[8].body___top_tail_right;
+    snake_texture[8].body___top_tail_left.loadFromFile("body(9).png");
+    snake_texture[8].body_top_tail_left = &snake_texture[8].body___top_tail_left;
+    snake_texture[8].body___left_tail_top.loadFromFile("body(9).png");
+    snake_texture[8].body_left_tail_top = &snake_texture[8].body___left_tail_top;
+    snake_texture[8].body___left_tail_bottom.loadFromFile("body(9).png");
+    snake_texture[8].body_left_tail_bottom = &snake_texture[8].body___left_tail_bottom;
+}
+void uploading_the_pages_and_icons(shape &shapes,shapetextures &textures)
+{
+    //loading texture of the restart icon 
+    textures.restarticontexture.loadFromFile("restart_button.png");
+    textures.restarticontexture.setSmooth(1);
+    shapes.restart_icon.setTexture(textures.restart_icon_texture);
+
+    //loading texture of the resume icon 
+    textures.resumeicontexture.loadFromFile("resume_button.png");
+    textures.resumeicontexture.setSmooth(1);
+    shapes.resume_icon.setTexture(textures.resume_icon_texture);
+
+    //loading texture of the exit icon
+    textures.exiticontexture.loadFromFile("exit_button.png");
+    textures.exiticontexture.setSmooth(1);
+    shapes.exit_icon.setTexture(textures.exit_icon_texture);
+
+    //loading texture of the apple icon
+    textures.appletexture.loadFromFile("apple.png", IntRect(0, 182, 61, 70));
+    shapes.apple_icon.setTexture(textures.apple_icon_texture);
+
+    //loading texture of the rotten apple
+    textures.rottenappletexture.loadFromFile("rotten_apple-removebg-preview.png");
+    shapes.rotten_apple_icon.setTexture(textures.rotten_apple_icon_texture);
+
+    //loading texture of the game background
+    textures.spring_game_background_texture.loadFromFile("Background.png");
+    shapes.spring_game_background.setTexture(textures.spring_game_background_texture);
+    shapes.spring_game_background.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    /*loading texture for the opening*/
+    textures.opening_texture.loadFromFile("opening page.png");
+    shapes.opening.setTexture(textures.opening_texture);
+    shapes.opening.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    //loading texture for the main menu
+    textures.main_menu_page_texture.loadFromFile("main menu.png");
+    shapes.main_menu_page.setTexture(textures.main_menu_page_texture);
+    shapes.main_menu_page.setScale((1300.0 / 1800), (800.0 / 1300));
+
+    //loading texture for the setting page
+    textures.setting_page_texture.loadFromFile("setting menu.png");
+    textures.setting_page_texture.setSmooth(1);
+    shapes.setting_page.setTexture(textures.setting_page_texture);
+    shapes.setting_page.setScale((1300.0 / 1800), (800.0 / 1300.0));
+
+    //loading texture for the setting music page
+    textures.setting_music_page_texture.loadFromFile("Setting music page.png");
+    shapes.setting_music_page.setTexture(textures.setting_music_page_texture);
+    shapes.setting_music_page.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    //loading texture for the exit setting music 
+    textures.exit_icon_in_setting_music_page_texture.loadFromFile("exit setting music page.png");
+    shapes.exit_icon_in_setting_music_page.setTexture(textures.exit_icon_in_setting_music_page_texture);
+    shapes.exit_icon_in_setting_music_page.setScale(0.7, 0.7);
+
+    //loading texture for the ranking page
+    textures.ranking_page_texture.loadFromFile("ranking page.png");
+    shapes.ranking_page.setTexture(textures.ranking_page_texture);
+    shapes.ranking_page.setScale((1300.0 / 1800.0), (800.0 / 1300.0));
+
+    //loading texturer for the game over 
+    textures.game_over_texture.loadFromFile("game_over.png");
+    shapes.game_over.setTexture(textures.game_over_texture);
+    shapes.game_over.setScale(0.65, 0.65);
+
+    textures.change_snake_page_texture.loadFromFile("change snake.png");
+    shapes.change_snake_page.setTexture(textures.change_snake_page_texture);
+
+    textures.Truee.loadFromFile("true.png");
+    shapes.Tru_ee.setTexture(textures.Truee);
+
+    textures.game_mode_page_texture.loadFromFile("game mode.png");
+    shapes.game_mode_page.setTexture(textures.game_mode_page_texture);
+    shapes.game_mode_page.setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_page_texture.loadFromFile("story mode.png");
+    shapes.story_mode_page.setTexture(textures.story_mode_page_texture);
+    shapes.story_mode_page.setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.fall_game_background_texture.loadFromFile("fall game background.png");
+    shapes.fall_game_background.setTexture(textures.fall_game_background_texture);
+    shapes.fall_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.winter_game_background_texture.loadFromFile("winter game background.png");
+    shapes.winter_game_background.setTexture(textures.winter_game_background_texture);
+    shapes.winter_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.spring_game_background_texture.loadFromFile("spring game background.png");
+    shapes.spring_game_background.setTexture(textures.spring_game_background_texture);
+    shapes.spring_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.summer_game_background_texture.loadFromFile("Background.png");
+    shapes.summer_game_background.setTexture(textures.summer_game_background_texture);
+    shapes.summer_game_background.setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.stoneblocktexture[0].loadFromFile("stone block.png");
+    textures.stone_block_texture[0] = &textures.stoneblocktexture[0];
+    for (int i = 0; i < 4; i++)
+        shapes.stone_block[i].setTexture(textures.stone_block_texture[0]);
+
+    textures.stoneblocktexture[1].loadFromFile("stone block 2.png");
+    textures.stone_block_texture[1] = &textures.stoneblocktexture[1];
+
+    textures.story_mode_backgrounds_textures[0].loadFromFile("Background.png");
+    shapes.story_mode_backgrounds[0].setTexture(textures.story_mode_backgrounds_textures[0]);
+    shapes.story_mode_backgrounds[0].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_backgrounds_textures[1].loadFromFile("level 2.png");
+    shapes.story_mode_backgrounds[1].setTexture(textures.story_mode_backgrounds_textures[1]);
+    shapes.story_mode_backgrounds[1].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_backgrounds_textures[2].loadFromFile("level 3.png");
+    shapes.story_mode_backgrounds[2].setTexture(textures.story_mode_backgrounds_textures[2]);
+    shapes.story_mode_backgrounds[2].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_backgrounds_textures[3].loadFromFile("level 4.png");
+    shapes.story_mode_backgrounds[3].setTexture(textures.story_mode_backgrounds_textures[3]);
+    shapes.story_mode_backgrounds[3].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_backgrounds_textures[4].loadFromFile("level 5.png");
+    shapes.story_mode_backgrounds[4].setTexture(textures.story_mode_backgrounds_textures[4]);
+    shapes.story_mode_backgrounds[4].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_backgrounds_textures[5].loadFromFile("level 6.png");
+    shapes.story_mode_backgrounds[5].setTexture(textures.story_mode_backgrounds_textures[5]);
+    shapes.story_mode_backgrounds[5].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_backgrounds_textures[6].loadFromFile("level 7.png");
+    shapes.story_mode_backgrounds[6].setTexture(textures.story_mode_backgrounds_textures[6]);
+    shapes.story_mode_backgrounds[6].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_backgrounds_textures[7].loadFromFile("level 8.png");
+    shapes.story_mode_backgrounds[7].setTexture(textures.story_mode_backgrounds_textures[7]);
+    shapes.story_mode_backgrounds[7].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_cut_scene_backgrounds_textures[0].loadFromFile("cut scene.png");
+    shapes.story_mode_cut_scene_backgrounds[0].setTexture(textures.story_mode_cut_scene_backgrounds_textures[0]);
+    shapes.story_mode_cut_scene_backgrounds[0].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_cut_scene_backgrounds_textures[1].loadFromFile("cut scene 2.png");
+    shapes.story_mode_cut_scene_backgrounds[1].setTexture(textures.story_mode_cut_scene_backgrounds_textures[1]);
+    shapes.story_mode_cut_scene_backgrounds[1].setScale((1300.0 / 3840), (800.0 / 2160));
+
+    textures.story_mode_cut_scene_backgrounds_textures[2].loadFromFile("cut scene 3.png");
+    shapes.story_mode_cut_scene_backgrounds[2].setTexture(textures.story_mode_cut_scene_backgrounds_textures[2]);
+    shapes.story_mode_cut_scene_backgrounds[2].setScale((1300.0 / 1920), (800.0 / 1080));
+
+    textures.story_mode_cut_scene_backgrounds_textures[3].loadFromFile("cut scene 4.jpg");
+    shapes.story_mode_cut_scene_backgrounds[3].setTexture(textures.story_mode_cut_scene_backgrounds_textures[3]);
+    shapes.story_mode_cut_scene_backgrounds[3].setScale((1300.0 / 1280), (800.0 / 720));
+
+    textures.story_mode_cut_scene_backgrounds_textures[4].loadFromFile("cut scene 5.png");
+    shapes.story_mode_cut_scene_backgrounds[4].setTexture(textures.story_mode_cut_scene_backgrounds_textures[4]);
+    shapes.story_mode_cut_scene_backgrounds[4].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_cut_scene_backgrounds_textures[5].loadFromFile("cut scene 6.jpg");
+    shapes.story_mode_cut_scene_backgrounds[5].setTexture(textures.story_mode_cut_scene_backgrounds_textures[5]);
+    shapes.story_mode_cut_scene_backgrounds[5].setScale((1300.0 / 1800), (800.0 / 1100));
+
+    textures.story_mode_cut_scene_backgrounds_textures[6].loadFromFile("cut scene 7.png");
+    shapes.story_mode_cut_scene_backgrounds[6].setTexture(textures.story_mode_cut_scene_backgrounds_textures[6]);
+    shapes.story_mode_cut_scene_backgrounds[6].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.story_mode_cut_scene_backgrounds_textures[7].loadFromFile("cut scene 8.png");
+    shapes.story_mode_cut_scene_backgrounds[7].setTexture(textures.story_mode_cut_scene_backgrounds_textures[7]);
+    shapes.story_mode_cut_scene_backgrounds[7].setScale((1300.0 / 1800), (800.0 / 1300));
+
+    textures.bombicontexture.loadFromFile("bomb1.png");
+    textures.bomb_icon_texture = &textures.bombicontexture;
+    shapes.bomb_icon[0].setTexture(textures.bomb_icon_texture);
+    shapes.bomb_icon[1].setTexture(textures.bomb_icon_texture);
+
+    textures.bombexplosiontexture.loadFromFile("explosion.png");
+    textures.bomb_explosion_texture = &textures.bombexplosiontexture;
+    shapes.bomb_explosion.setTexture(textures.bomb_explosion_texture);
+
+    textures.textboxtexture.loadFromFile("text box.png");
+    textures.text_box_texture = &textures.textboxtexture;
+    shapes.text_box.setTexture(textures.text_box_texture);
+
+    textures.witch_attacking_texture.loadFromFile("witch attack sprite sheet.png");
+
+    textures.witch_idle_texture.loadFromFile("witch idle sprite sheet.png");
+    shapes.witch.setTexture(textures.witch_idle_texture);
+
+    textures.witch_death_texture.loadFromFile("witch death sprite sheet.png");
+
+    textures.witch_idle_reversed.loadFromFile("IdleAnimation reversed.png");
+    shapes.witch_for_conversation.setTexture(textures.witch_idle_reversed);
+
+
+    textures.arrow_for_discussing.loadFromFile("arrow for discussing.png");
+    shapes.The_arrow.setTexture(textures.arrow_for_discussing);
+
+}
+void uploading_music_sounds_and_icons(Check& check, shape& shapes, Font& font, shapetextures& textures, SoundBuffer& apple_eating_sound_buffer, SoundBuffer& rotten_apple_eating_sound_buffer, SoundBuffer& losing_sound_buffer, SoundBuffer& explosion_sound_buffer, Text& text_box_text)
+{
+    textures.resume_icon_texture = &textures.resumeicontexture;
+    textures.restart_icon_texture = &textures.restarticontexture;
+    textures.exit_icon_texture = &textures.exiticontexture;
+    textures.apple_icon_texture = &textures.appletexture;
+    textures.rotten_apple_icon_texture = &textures.rottenappletexture;
+
+    //loading backgroung music
+    music.openFromFile("Snake Game _music.wav");
+    music.setLoop(true);
+    music.play();
+    music.setVolume(0);
+    //loading music for each level
+    levels_music[0].openFromFile("level-1.wav");
+    levels_music[0].setLoop(true);
+    levels_music[0].setVolume(0);
+    levels_music[1].openFromFile("level-2.wav");
+    levels_music[1].setLoop(true);
+    levels_music[1].setVolume(0);
+    levels_music[2].openFromFile("level-3.wav");
+    levels_music[2].setLoop(true);
+    levels_music[2].setVolume(0);
+    levels_music[3].openFromFile("level-4.wav");
+    levels_music[3].setLoop(true);
+    levels_music[3].setVolume(0);
+    levels_music[4].openFromFile("level-5.wav");
+    levels_music[4].setLoop(true);
+    levels_music[4].setVolume(0);
+    levels_music[5].openFromFile("level-6.wav");
+    levels_music[5].setLoop(true);
+    levels_music[5].setVolume(0);
+    levels_music[6].openFromFile("level-7.wav");
+    levels_music[6].setLoop(true);
+    levels_music[6].setVolume(0);
+    levels_music[7].openFromFile("level-8.wav");
+    levels_music[7].setLoop(true);
+    levels_music[7].setVolume(0);
+
+    //loading font and setting the font of the text
+    font.loadFromFile("font file 2.ttf");
+    text.setFont(font);
+
+    text_box_text.setFont(font);
+    text_box_text.setCharacterSize(25);
+    //text_box_text.setColor(Color::White);
+    //loading sound of the apple being eaten
+    apple_eating_sound_buffer.loadFromFile("apple_crunch.wav");
+    apple_eating_sound.setBuffer(apple_eating_sound_buffer);
+
+    //loading sound of the rotten apple being eaten
+    rotten_apple_eating_sound_buffer.loadFromFile("player_hurt.wav");
+    rotten_apple_eating_sound.setBuffer(rotten_apple_eating_sound_buffer);
+
+    //loading sound of the snake diying
+    losing_sound_buffer.loadFromFile("gameover.wav");
+    losing_sound.setBuffer(losing_sound_buffer);
+
+    explosion_sound_buffer.loadFromFile("Explosion.wav");
+    explosion_sound.setBuffer(explosion_sound_buffer);
 }
