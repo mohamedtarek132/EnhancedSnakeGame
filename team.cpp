@@ -417,7 +417,7 @@ int main() {
                     levels_music[0].play();
                     check.did_the_first_song_start = 1;
                 }
-                if (number_of_eaten_apples == 1) {
+                if (number_of_eaten_apples == 40) {
                     levels_music[check.number_of_levels_done].stop();
                     check.number_of_levels_done++;
                     if (check.number_of_levels_done == 8) {
@@ -485,7 +485,7 @@ int main() {
                         open_scene_snake_texture(shapes, check);
                         window.draw(shapes.text_box);
                         if (check.number_of_monolge_being_played == 0) {
-                            window.draw(shapes.Press_space); 
+                            window.draw(shapes.Press_space);
                             text_box_text.setString("In the Great Kingdom of the Snake, there was a true love between the snake and the\n duck. However, the snake had a bitter enemy in a neighboring kingdom who hated and\n resented him. One day, the enemy seized the opportunity and kidnapped his beloved duck.");
                             text_box_text.setCharacterSize(19);
                         }
@@ -620,7 +620,7 @@ int main() {
                         window.draw(snake[1]);
                         snake[2].setTexture(snake_texture[check.number_of_snake_being_used].tail_left);
                         snake[2].setPosition(190, 450);
-                        shapes.the_duck_sprite.setPosition(1125, 450);
+                        shapes.the_duck_sprite.setPosition(1000, 370);
                         window.draw(shapes.the_duck_sprite);
                         window.draw(snake[2]);
                         if (check.number_of_monolge_being_played == 0) {
@@ -878,96 +878,106 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             break;
         }
     }
-    if (check.number_of_levels_done == 2) {
-        for (int i = 0; i < 2; i++) {
-            if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
-                did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || third_level_stones[i])) {
-                check.is_the_snake_alive = 0;
-                changing_ranking(number_of_eaten_apples, ranking);
-                losing_sound.play();
+    if (check.is_story_mode_pressed) {
+        if (check.number_of_levels_done == 2) {
+            for (int i = 0; i < 2; i++) {
+                if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
+                    did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || third_level_stones[i])) {
+                    check.is_the_snake_alive = 0;
+                    changing_ranking(number_of_eaten_apples, ranking);
+                    losing_sound.play();
+                }
             }
-        }
-
-    }
-    else if (check.number_of_levels_done == 3) {
-        for (int i = 0; i < 4; i++) {
-            if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
-                did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || fourth_level_stones[i])) {
-                check.is_the_snake_alive = 0;
-                changing_ranking(number_of_eaten_apples, ranking);
-                losing_sound.play();
-            }
-        }
-    }
-    else if (check.number_of_levels_done == 4) {
-        if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
-            did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box)) {
-            check.is_the_snake_alive = 0;
-            changing_ranking(number_of_eaten_apples, ranking);
-            losing_sound.play();
-        }
-        else if (did_snake_hit_the_bomb[0] && check.is_the_snake_alive) {
-            check.is_the_snake_alive = 0;
-            check.did_snake_hit_bomb = 1;
-            changing_ranking(number_of_eaten_apples, ranking);
-            explosion_sound.setVolume(50);
-            explosion_sound.play();
-        }
-    }
-    else if (check.number_of_levels_done == 5) {
-        if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
-            did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box)) {
-            check.is_the_snake_alive = 0;
-            changing_ranking(number_of_eaten_apples, ranking);
-            losing_sound.play();
-        }
-        else if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
-            check.is_the_snake_alive = 0;
-            check.did_snake_hit_bomb = 1;
-            changing_ranking(number_of_eaten_apples, ranking);
-            explosion_sound.setVolume(50);
-            explosion_sound.play();
 
         }
-    }
-    else if (check.number_of_levels_done == 6) {
-        for (int i = 0; i < 2; i++) {
+        else if (check.number_of_levels_done == 3) {
+            for (int i = 0; i < 4; i++) {
+                if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
+                    did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || fourth_level_stones[i])) {
+                    check.is_the_snake_alive = 0;
+                    changing_ranking(number_of_eaten_apples, ranking);
+                    losing_sound.play();
+                }
+            }
+        }
+        else if (check.number_of_levels_done == 4) {
             if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
-                did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || third_level_stones[i])) {
+                did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box)) {
                 check.is_the_snake_alive = 0;
                 changing_ranking(number_of_eaten_apples, ranking);
                 losing_sound.play();
             }
-        }
-        if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
-            check.is_the_snake_alive = 0;
-            check.did_snake_hit_bomb = 1;
-            changing_ranking(number_of_eaten_apples, ranking);
-            explosion_sound.setVolume(50);
-            explosion_sound.play();
-        }
-    }
-    else if (check.number_of_levels_done == 7) {
-        for (int i = 0; i < 4; i++) {
-            if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
-                did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || fourth_level_stones[i])) {
+            else if (did_snake_hit_the_bomb[0] && check.is_the_snake_alive) {
                 check.is_the_snake_alive = 0;
+                check.did_snake_hit_bomb = 1;
+                changing_ranking(number_of_eaten_apples, ranking);
+                explosion_sound.setVolume(50);
+                explosion_sound.play();
+            }
+        }
+        else if (check.number_of_levels_done == 5) {
+            if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
+                did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box)) {
+                check.is_the_snake_alive = 0;
+                changing_ranking(number_of_eaten_apples, ranking);
+                losing_sound.play();
+            }
+            else if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
+                check.is_the_snake_alive = 0;
+                check.did_snake_hit_bomb = 1;
+                changing_ranking(number_of_eaten_apples, ranking);
+                explosion_sound.setVolume(50);
+                explosion_sound.play();
+
+            }
+        }
+        else if (check.number_of_levels_done == 6) {
+            for (int i = 0; i < 2; i++) {
+                if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
+                    did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || third_level_stones[i])) {
+                    check.is_the_snake_alive = 0;
+                    changing_ranking(number_of_eaten_apples, ranking);
+                    losing_sound.play();
+                }
+            }
+            if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
+                check.is_the_snake_alive = 0;
+                check.did_snake_hit_bomb = 1;
+                changing_ranking(number_of_eaten_apples, ranking);
+                explosion_sound.setVolume(50);
+                explosion_sound.play();
+            }
+        }
+        else if (check.number_of_levels_done == 7) {
+            for (int i = 0; i < 4; i++) {
+                if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
+                    did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || fourth_level_stones[i])) {
+                    check.is_the_snake_alive = 0;
+                    check.did_the_witch_attack = 0;
+
+                    changing_ranking(number_of_eaten_apples, ranking);
+                    losing_sound.play();
+                }
+            }
+            if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
+                check.is_the_snake_alive = 0;
+                check.did_snake_hit_bomb = 1;
                 check.did_the_witch_attack = 0;
 
                 changing_ranking(number_of_eaten_apples, ranking);
+                explosion_sound.setVolume(50);
+                explosion_sound.play();
+            }
+
+        }
+        else {
+            if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
+                did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box)) {
+                check.is_the_snake_alive = 0;
+                changing_ranking(number_of_eaten_apples, ranking);
                 losing_sound.play();
             }
         }
-        if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
-            check.is_the_snake_alive = 0;
-            check.did_snake_hit_bomb = 1;
-            check.did_the_witch_attack = 0;
-
-            changing_ranking(number_of_eaten_apples, ranking);
-            explosion_sound.setVolume(50);
-            explosion_sound.play();
-        }
-
     }
     else {
         if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
@@ -979,7 +989,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
     }
 
     if (snake[0].getGlobalBounds().intersects(shapes.apple_icon.getGlobalBounds()) && check.is_the_apple_eaten == 0) {
-        if (check.number_of_levels_done != 7 || (check.number_of_levels_done == 7 && !check.is_the_witch_alive)) {
+        if (check.number_of_levels_done != 7 || (check.number_of_levels_done == 7 && !check.is_the_witch_alive)||check.is_survive_mode_pressed) {
             check.is_the_apple_eaten = 1;
             number_of_eaten_apples++;
             apple_eating_sound.play();
@@ -1580,11 +1590,13 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         }
         if (mouse_position_is_inside_first_color_option_in_change_color_page)
         {
-            check.is_snake_changing_colors = 1;
+            check.is_snake_changing_colors = 0;
+
         }
         else if (mouse_position_is_inside_second_color_option_in_change_color_page)
         {
-            check.is_snake_changing_colors = 0;
+            check.is_snake_changing_colors = 1;
+
         }
     }
     //game mode buttons
@@ -1614,6 +1626,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             check.number_of_levels_done = 0;
             check.did_the_first_song_start = 0;
             check.opening_story_mode = 0;
+            check.did_cut_scene_start = 1;
 
         }
         else if (mouse_position_is_inside_continue_button_in_story_mode_page) {
@@ -1950,7 +1963,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
         }
     }
     if (check.is_survive_mode_pressed) {
-        int weather = (number_of_apples_shown / 2) % 4;
+        int weather = (number_of_apples_shown / 10) % 4;
         if (weather == 0) {
             window.draw(shapes.spring_game_background);
 
@@ -1969,7 +1982,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
     }
 
     //to check if the apple was eaten
-    if (check.is_the_apple_eaten == 0 && (check.number_of_levels_done != 7 || (check.number_of_levels_done == 7 && !check.is_the_witch_alive))) {
+    if (check.is_the_apple_eaten == 0 && (check.is_survive_mode_pressed||check.number_of_levels_done != 7 || (check.number_of_levels_done == 7 && !check.is_the_witch_alive))) {
         window.draw(shapes.apple_icon);
     }
 
@@ -2376,7 +2389,7 @@ void apple_counter(int number_of_eaten_apples, Check check) {
     text.setCharacterSize(30 * screen_factor_x);
     text.setPosition(70 * screen_factor_x, 20 * screen_factor_y);
     if (check.is_story_mode_pressed) {
-        text.setString(std::to_string(number_of_eaten_apples) + " /80");
+        text.setString(std::to_string(number_of_eaten_apples) + " /40");
 
     }
     else {
@@ -3523,7 +3536,7 @@ void open_scene_snake_texture(shape& shapes, Check& check)
         shapes.Snake_phone_sprite.setPosition(250, 410);
         window.draw(shapes.Snake_phone_sprite);
     }
-    
+
 }
 
 void uploading_music_sounds_and_icons(Check& check, shape& shapes, Font& font, shapetextures& textures, SoundBuffer& apple_eating_sound_buffer, SoundBuffer& rotten_apple_eating_sound_buffer, SoundBuffer& losing_sound_buffer, SoundBuffer& explosion_sound_buffer, Text& text_box_text)
@@ -3538,33 +3551,23 @@ void uploading_music_sounds_and_icons(Check& check, shape& shapes, Font& font, s
     music.openFromFile("Snake Game _music.wav");
     music.setLoop(true);
     music.play();
-    music.setVolume(0);
     //loading music for each level
     levels_music[0].openFromFile("level-1.wav");
     levels_music[0].setLoop(true);
-    levels_music[0].setVolume(0);
     levels_music[1].openFromFile("level-2.wav");
     levels_music[1].setLoop(true);
-    levels_music[1].setVolume(0);
     levels_music[2].openFromFile("level-3.wav");
     levels_music[2].setLoop(true);
-    levels_music[2].setVolume(0);
     levels_music[3].openFromFile("level-4.wav");
     levels_music[3].setLoop(true);
-    levels_music[3].setVolume(0);
     levels_music[4].openFromFile("level-5.wav");
     levels_music[4].setLoop(true);
-    levels_music[4].setVolume(0);
     levels_music[5].openFromFile("level-6.wav");
     levels_music[5].setLoop(true);
-    levels_music[5].setVolume(0);
     levels_music[6].openFromFile("level-7.wav");
     levels_music[6].setLoop(true);
-    levels_music[6].setVolume(0);
     levels_music[7].openFromFile("level-8.wav");
     levels_music[7].setLoop(true);
-    levels_music[7].setVolume(0);
-
     //loading font and setting the font of the text
     font.loadFromFile("font file 2.ttf");
     text.setFont(font);
