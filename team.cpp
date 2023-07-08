@@ -749,6 +749,9 @@ int main() {
             counter.teleportation_counter = 0;
             counter.attack_counter = 0;
             counter.witch_counter = 0;
+            if (check.number_of_levels_done == 8) {
+                check.number_of_levels_done = 0;
+            }
 
         }
 
@@ -884,7 +887,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             check.is_the_snake_alive = 0;
             losing_sound.play();
             check.did_the_witch_attack = 0;
-
+            if (check.is_survive_mode_pressed)
             changing_ranking(number_of_eaten_apples, ranking);
             break;
         }
@@ -895,7 +898,6 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
                 if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
                     did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || third_level_stones[i])) {
                     check.is_the_snake_alive = 0;
-                    changing_ranking(number_of_eaten_apples, ranking);
                     losing_sound.play();
                 }
             }
@@ -906,7 +908,6 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
                 if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
                     did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || fourth_level_stones[i])) {
                     check.is_the_snake_alive = 0;
-                    changing_ranking(number_of_eaten_apples, ranking);
                     losing_sound.play();
                 }
             }
@@ -915,13 +916,11 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
                 did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box)) {
                 check.is_the_snake_alive = 0;
-                changing_ranking(number_of_eaten_apples, ranking);
                 losing_sound.play();
             }
             else if (did_snake_hit_the_bomb[0] && check.is_the_snake_alive) {
                 check.is_the_snake_alive = 0;
                 check.did_snake_hit_bomb = 1;
-                changing_ranking(number_of_eaten_apples, ranking);
                 explosion_sound.setVolume(50);
                 explosion_sound.play();
             }
@@ -930,13 +929,11 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
                 did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box)) {
                 check.is_the_snake_alive = 0;
-                changing_ranking(number_of_eaten_apples, ranking);
                 losing_sound.play();
             }
             else if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
                 check.is_the_snake_alive = 0;
                 check.did_snake_hit_bomb = 1;
-                changing_ranking(number_of_eaten_apples, ranking);
                 explosion_sound.setVolume(50);
                 explosion_sound.play();
 
@@ -947,14 +944,12 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
                 if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
                     did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box || third_level_stones[i])) {
                     check.is_the_snake_alive = 0;
-                    changing_ranking(number_of_eaten_apples, ranking);
                     losing_sound.play();
                 }
             }
             if ((did_snake_hit_the_bomb[0] || did_snake_hit_the_bomb[1]) && check.is_the_snake_alive) {
                 check.is_the_snake_alive = 0;
                 check.did_snake_hit_bomb = 1;
-                changing_ranking(number_of_eaten_apples, ranking);
                 explosion_sound.setVolume(50);
                 explosion_sound.play();
             }
@@ -966,7 +961,6 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
                     check.is_the_snake_alive = 0;
                     check.did_the_witch_attack = 0;
 
-                    changing_ranking(number_of_eaten_apples, ranking);
                     losing_sound.play();
                 }
             }
@@ -975,7 +969,6 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
                 check.did_snake_hit_bomb = 1;
                 check.did_the_witch_attack = 0;
 
-                changing_ranking(number_of_eaten_apples, ranking);
                 explosion_sound.setVolume(50);
                 explosion_sound.play();
             }
@@ -985,7 +978,6 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
             if (check.is_the_snake_alive == 1 && (did_snake_hit_bottom_of_the_box || did_snake_hit_left_side_of_the_box ||
                 did_snake_hit_right_side_of_the_box || did_snake_hit_top_of_the_box)) {
                 check.is_the_snake_alive = 0;
-                changing_ranking(number_of_eaten_apples, ranking);
                 losing_sound.play();
             }
         }
@@ -1448,6 +1440,7 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         }
         else if (mouse_position_is_inside_OFF_Music_in_setting_page) {
             music.setVolume(0);
+            levels_music[0].setVolume(0);
             levels_music[1].setVolume(0);
             levels_music[2].setVolume(0);
             levels_music[3].setVolume(0);
@@ -1634,15 +1627,15 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
         !check.is_audio_button_pressed && !check.is_ranking_button_pressed && !check.is_setting_button_pressed &&
         !check.is_survive_mode_pressed && !check.is_main_menu_open && !check.is_new_story_mode_pressed && !check.is_continue_story_mode_pressed) {
 
-        if (mouse_position_is_inside_new_game_button_in_story_mode_page) {
-            check.is_new_story_mode_pressed = 1;
-            check.number_of_levels_done = 0;
-            check.did_the_first_song_start = 0;
-            check.opening_story_mode = 0;
-            check.did_cut_scene_start = 1;
+            if (mouse_position_is_inside_new_game_button_in_story_mode_page) {
+                check.is_new_story_mode_pressed = 1;
+                check.number_of_levels_done = 0;
+                check.did_the_first_song_start = 0;
+                check.opening_story_mode = 0;
+                check.did_cut_scene_start = 1;
 
-        }
-        else if (mouse_position_is_inside_continue_button_in_story_mode_page) {
+            }
+            else if (mouse_position_is_inside_continue_button_in_story_mode_page&& check.number_of_levels_done >= 1) {
             check.is_continue_story_mode_pressed = 1;
             check.opening_story_mode = 1;
             levels_music[check.number_of_levels_done].play();
