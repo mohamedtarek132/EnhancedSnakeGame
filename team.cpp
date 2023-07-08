@@ -1019,7 +1019,9 @@ void collision(shape& shapes, int& number_of_eaten_apples, Check& check, int ran
     if (snake[0].getGlobalBounds().intersects(shapes.witch.getGlobalBounds()) && check.number_of_levels_done == 7 &&
         !check.did_the_snake_hit_the_witch) {
         check.number_of_hits_did_the_witch_recieve++;
-
+        if (check.number_of_hits_did_the_witch_recieve >= 5) {
+            check.is_the_witch_alive = 0;
+        }
         check.did_the_snake_hit_the_witch = 1;
         check.did_the_witch_attack = 0;
         check.number_of_idle_moves_of_the_witch = 0;
@@ -1659,7 +1661,7 @@ void update_game(shape& shapes, counters &counter, Check& check, int number_of_e
     //the time it will take the snake to change positions which will make it move faster
     int speedtimer = snake_size_and_speed * 0.25;
     //the time it will take the apple to change positions
-    int apple_timer = 6 * 50 * screen_factor_x;
+    int apple_timer = 6 * 50 ;
     if (check.is_story_mode_pressed) {
         apple_timer = apple_timer * 1.5;
     }
@@ -1875,9 +1877,11 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                 if (!check.is_the_snake_alive) {
                     if (check.number_of_hits_did_the_witch_recieve == 0) {
                         shapes.witch.setPosition(1040, 330);
+                        shapes.witch.setTexture(textures.witch_idle_reversed);
                     }
                     else if (check.number_of_hits_did_the_witch_recieve == 1) {
                         shapes.witch.setPosition(160, 330);
+                        shapes.witch.setTexture(textures.witch_idle_texture);
                     }
                     else if (check.number_of_hits_did_the_witch_recieve == 2) {
                         shapes.witch.setPosition(560, 60);
@@ -1971,16 +1975,16 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
             else {
                 shapes.witch.setTexture(textures.witch_death_texture);
                 if (check.number_of_hits_did_the_witch_recieve == 1) {
-                    shapes.witch.setPosition(1040 + 85 + 32, 330);
+                    shapes.witch.setPosition(1040 + 85 + 33, 330);
                 }
                 else if (check.number_of_hits_did_the_witch_recieve == 2) {
-                    shapes.witch.setPosition(160-85+32, 330);
+                    shapes.witch.setPosition(160-85+33, 330);
                 }
                 else if (check.number_of_hits_did_the_witch_recieve == 3) {
-                    shapes.witch.setPosition(560 - 85 + 32 , 60);
+                    shapes.witch.setPosition(560 - 85 + 33 , 60);
                 }
                 else if (check.number_of_hits_did_the_witch_recieve == 4) {
-                    shapes.witch.setPosition(560 - 85 + 32, 620);
+                    shapes.witch.setPosition(560 - 85 + 33, 620);
                 }
                 if (counter.teleportation_counter >= 11 * 8) {
                     counter.witch_counter = -1;
@@ -2001,6 +2005,7 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                         shapes.witch.setPosition(550, 330);
                         shapes.witch.setTexture(textures.witch_idle_texture);
                     }
+                    shapes.witch.setTextureRect(IntRect(22 , 0, 25, 56));
                     randbomb(shapes, check, number_of_eaten_apples);
                     randapple(shapes, check, number_of_eaten_apples);
                     randrottenapple(shapes, check, number_of_eaten_apples);
@@ -2010,16 +2015,13 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
                     shapes.witch.setTextureRect(IntRect(85+85 * counter.witch_counter / 8, 0, 85, 56));
                 counter.teleportation_counter++;
             }
-            if (check.did_the_snake_hit_the_witch&&check.number_of_hits_did_the_witch_recieve==1)
+            if (check.did_the_snake_hit_the_witch&&check.number_of_hits_did_the_witch_recieve==1&&check.is_the_snake_alive)
             shapes.witch.setScale(-2, 2);
             else
                 shapes.witch.setScale(2, 2);
 
             window.draw(shapes.witch);
             counter.witch_counter++;
-            cout << counter.witch_counter << ' ' << counter.attack_counter << ' ' << check.number_of_idle_moves_of_the_witch % 3 <<
-                ' ' << !check.did_the_snake_hit_the_witch<<' ' << !check.is_the_snake_alive << ' '
-                <<!check.if_the_player_started_playing<<' ' << !check.is_the_witch_alive << endl;
         }
     }
     if (check.is_survive_mode_pressed) {
@@ -2085,7 +2087,6 @@ void draw_game(shape& shapes, int& number_of_eaten_apples, Check& check, Font& f
     }
     if (check.number_of_hits_did_the_witch_recieve >= 5) {
         shapes.witch.move(0, 2);
-        check.is_the_witch_alive = 0;
         window.draw(shapes.witch);
     }
     set_texture(number_of_eaten_apples, check, textures);
@@ -3041,6 +3042,7 @@ void uploading_snake_textures()
     snake_texture[2].body___topleft.loadFromFile("body top left(3).png");
     snake_texture[2].body_top_left = &snake_texture[2].body___topleft;
     snake_texture[2].body___bottomright.loadFromFile("body bottom right(3).png");
+    snake_texture[2].body_bottom_right = &snake_texture[2].body___bottomright;
     snake_texture[2].body_bottom_left = &snake_texture[2].body___bottomleft;
     snake_texture[2].body___bottomleft.loadFromFile("body bottom left(3).png");
     snake_texture[2].body_horizontal = &snake_texture[2].body___horizontal;
